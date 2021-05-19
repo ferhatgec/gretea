@@ -51,6 +51,13 @@ impl GreteaParser {
 
         let mut is_fn_call        = false;
 
+        let mut is_alias_replace  = false;
+        let mut is_alias          = false; let mut alias_name = String::new();
+        let mut is_alias_name     = false; let mut alias_data = String::new();
+
+        let mut alias_list: HashMap<String, String>
+                                        = HashMap::new();
+
         let (mut argument_name,
              mut argument_value) = (String::new(), String::new());
 
@@ -60,6 +67,23 @@ impl GreteaParser {
 
         for mut token in tokens {
             if token.is_empty() { continue; }
+
+            if is_alias_replace {
+                let get_alias_data = alias_list.get(token);
+
+                if !get_alias_data.is_none() {
+                    token = get_alias_data.unwrap();
+                } is_alias_replace = false;
+            }
+
+
+            if token == "#"
+                && !is_cpp_linker
+                && !is_fn_call
+                && !is_fn_name
+                && !is_fn_argument {
+                is_alias_replace = true; continue;
+            }
 
             matched_type = *self.init_ast.match_keyword(token);
 
@@ -75,6 +99,9 @@ impl GreteaParser {
                 },
                 GreteaKeywords::Cpp => {
                     is_cpp_linker = true; continue;
+                },
+                GreteaKeywords::Alias=> {
+                    is_alias = true; continue;
                 },
 
                 //GreteaKeywords::LeftParenthese => {
@@ -192,6 +219,25 @@ impl GreteaParser {
 
                     if token == "{" {
                         if !is_cpp_linker { codegen.character(&self.init_ast.ast_curly_left_bracket); }
+
+                        continue;
+                    }
+
+                    if is_alias {
+                        if is_alias_name {
+                            if token == "=" { continue; }
+
+                            alias_data    = to(token.clone().trim_end());
+
+                            alias_list.insert(alias_name.clone(), alias_data.clone());
+
+                            is_alias      = false; alias_name.clear();
+                            is_alias_name = false; alias_data.clear();
+
+                            continue;
+                        }
+
+                        alias_name = token.clone(); is_alias_name = true;
 
                         continue;
                     }

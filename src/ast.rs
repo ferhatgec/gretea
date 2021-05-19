@@ -13,6 +13,7 @@ pub enum GreteaKeywords {
     Fn,
     Var,
     Cpp,
+    Alias,
 
     LeftParenthese,
     RightParenthese,
@@ -31,6 +32,7 @@ pub struct GreteaSyntax {
     pub ast_fn                  : String,
     pub ast_var                 : String,
     pub ast_cpp                 : String,
+    pub ast_alias               : String,
 
     pub ast_left_parenthese     : String,
     pub ast_right_parenthese    : String,
@@ -58,9 +60,10 @@ impl Default for GreteaSyntax {
     fn default() -> Self {
         let mut init = GreteaSyntax {
             ast_import              : ast_helpers::to("import"),
-            ast_fn                  : ast_helpers::to("fn"),
-            ast_var                 : ast_helpers::to("var"),
-            ast_cpp                 : ast_helpers::to("cpp"),
+            ast_fn                  : ast_helpers::to("fn"    ),
+            ast_var                 : ast_helpers::to("var"   ),
+            ast_cpp                 : ast_helpers::to("cpp"   ),
+            ast_alias               : ast_helpers::to("alias" ),
 
             ast_left_parenthese     : ast_helpers::to("("),
             ast_right_parenthese    : ast_helpers::to(")"),
@@ -78,6 +81,7 @@ impl Default for GreteaSyntax {
         init.add(init.ast_fn    .clone(), GreteaKeywords::Fn             );
         init.add(init.ast_var   .clone(), GreteaKeywords::Var            );
         init.add(init.ast_cpp   .clone(), GreteaKeywords::Cpp            );
+        init.add(init.ast_alias .clone(), GreteaKeywords::Alias          );
 
         init.add(init.ast_left_parenthese .clone(), GreteaKeywords::LeftParenthese );
         init.add(init.ast_right_parenthese.clone(), GreteaKeywords::RightParenthese);

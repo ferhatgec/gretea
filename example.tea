@@ -1,7 +1,9 @@
-cpp { #include <iostream> }
+alias linker = cpp
+
+#linker { #include <iostream> }
 
 fn test() = void {
-    cpp {
+    #linker {
         std::cout << "Green tea\n" ;
     }
 }
