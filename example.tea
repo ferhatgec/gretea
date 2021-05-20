@@ -1,18 +1,14 @@
+import header
 alias linker = cpp
-
-#linker {  #include <iostream> }
-
-`set   linux    __linux__ // '`' character is signal for preprocessor
-`alias _linux = __linux__
 
 fn test(pi: double) = void {
     cpp { std::cout << "Green tea\n" << pi << '\n' ; }
 }
 
 fn main() = int {
-    var pi: double    = 3.14     // immutable
-    var three         = 3        // immutable, without type declaration
-    var mut green_tea = "gretea" // mutable, without type declaration
+    var pi: double    = 3.14        // immutable
+    var three         = 3           // immutable, without type declaration
+    var mut green_tea = ProjectName // mutable, without type declaration
 
     test(pi)
 
@@ -27,4 +23,6 @@ fn main() = int {
     cpp {
         std::cout << green_tea << '\n' ;
     }
+
+    hello_world("ferhatgec")
 }

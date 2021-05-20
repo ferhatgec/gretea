@@ -7,7 +7,10 @@
 
 use {
     crate::{
-        ast::{GreteaKeywords},
+        ast::{
+            ast_helpers::{to},
+            GreteaKeywords
+        },
         tokenizer::gretea_tokenizer::{TOKEN_LIST}
     },
     std::collections::{HashMap}
@@ -36,6 +39,8 @@ impl GreteaCodegen {
 
             dir.push_str(format!("{}/", lol).as_str());
         } dir.pop();
+
+        dir = to(dir.trim());
 
         self.sources  .insert(dir.clone(), is_stl);
         self.generated.push_str(

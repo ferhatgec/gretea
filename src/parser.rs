@@ -31,7 +31,7 @@ pub struct GreteaParser {
 }
 
 impl GreteaParser {
-    pub fn parse(&mut self, tokens: &Vec<String>) -> String {
+    pub fn parse(&mut self, tokens: &Vec<String>) -> GreteaCodegen {
         let mut codegen = GreteaCodegen {
             generated: to(""),
             sources  : Default::default()
@@ -357,6 +357,6 @@ impl GreteaParser {
             }
         }
 
-        codegen.generated
+        codegen
     }
 }

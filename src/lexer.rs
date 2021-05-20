@@ -6,25 +6,28 @@
 //
 
 pub mod gretea_lexer {
-    use crate::{
-        ast::{
-            GreteaSyntax,
-            GreteaVariableList
+    use {
+        crate::{
+            ast::{
+                GreteaSyntax,
+                GreteaVariableList
+            },
+            parser::{GreteaParser},
+            read::{GreteaFileData},
+            tokenizer::gretea_tokenizer::{tokenize}
         },
-        parser::{GreteaParser},
-        read::{GreteaFileData},
-        tokenizer::gretea_tokenizer::{tokenize}
+        std::collections::{HashMap}
     };
 
-    pub fn init_lexer(init: &GreteaFileData) -> String {
+    pub fn init_lexer(init: &GreteaFileData) -> (String, HashMap<String, bool>) {
         let tokens = tokenize(init);
         let ast   = GreteaSyntax::default();
         let mut parser = GreteaParser {
             init_ast : ast,
             data_list: GreteaVariableList::default()
         };
+        let data = parser.parse(&tokens);
 
-
-        parser.parse(&tokens)
+        (data.generated, data.sources)
     }
 }
