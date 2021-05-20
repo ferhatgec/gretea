@@ -78,7 +78,7 @@ impl GreteaParser {
         let mut set_data = String::new();
 
         for mut token in tokens {
-            if token.is_empty() { continue; }
+            if token.is_empty() || token == " " { continue; }
 
             if is_alias_replace {
                 let get_alias_data = alias_list.get(token);
