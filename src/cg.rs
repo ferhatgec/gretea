@@ -69,7 +69,7 @@ impl GreteaCodegen {
     pub fn variable_definition(&mut self, data: &String, var_type: &String, name: &String, is_mut: bool) {
         let __data = format!("= {};", data).clone();
 
-        self.generated.push_str(&*format!("{} {} {} {}", if !is_mut {
+        self.generated.push_str(&*format!("{} {} {} {}\n", if !is_mut {
             "const"
         } else { "" }, if var_type.is_empty() {
             "auto"
@@ -78,6 +78,12 @@ impl GreteaCodegen {
         } else {
             __data.as_str()
         }));
+    }
+
+    pub fn preprocess_set(&mut self, data: &String, name: &String) {
+        self.generated.push_str(&*format!("#define {} {}\n", name, if !data.is_empty() {
+            data
+        } else { "0" }));
     }
 
     pub fn character(&mut self, character: &String) {

@@ -71,6 +71,12 @@ impl GreteaParser {
         let mut function_name       = String::new();
         let mut function_args: Vec<String> = Vec   ::new();
 
+        let mut is_preprocessor   = false;
+        let mut is_set            = false;
+
+        let mut set_name = String::new();
+        let mut set_data = String::new();
+
         for mut token in tokens {
             if token.is_empty() { continue; }
 
@@ -140,7 +146,30 @@ impl GreteaParser {
                     } continue;
                 },
 
+                GreteaKeywords::Preprocessor => {
+                    is_preprocessor = true; continue;
+                },
+                GreteaKeywords::Set          => {
+                    if is_preprocessor {
+                        is_set = true;
+                    } continue;
+                },
+
                 _ => {
+                    if is_set {
+                        if !set_name.is_empty() {
+                            set_data = token.clone();
+
+                            codegen.preprocess_set(&set_data, &set_name);
+
+                            is_preprocessor = false;
+                            is_set          = false;
+                            set_name.clear(); set_data.clear(); continue;
+                        }
+
+                        set_name = token.clone(); continue;
+                    }
+
                     if is_fn_call {
                         if token == "(" || token == ")" || token == "," {
                             if token == ")" {
@@ -278,7 +307,10 @@ impl GreteaParser {
 
                             alias_data    = to(token.clone().trim_end());
 
-                            alias_list.insert(alias_name.clone(), alias_data.clone());
+                            if is_preprocessor {
+                                codegen.preprocess_set(&alias_data, &alias_name);
+                            }
+                            else { alias_list.insert(alias_name.clone(), alias_data.clone()); }
 
                             is_alias      = false; alias_name.clear();
                             is_alias_name = false; alias_data.clear();

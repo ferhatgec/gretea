@@ -2,6 +2,9 @@ alias linker = cpp
 
 #linker {  #include <iostream> }
 
+`set   linux    __linux__ // '`' character is signal for preprocessor
+`alias _linux = __linux__
+
 fn test(pi: double) = void {
     cpp { std::cout << "Green tea\n" << pi << '\n' ; }
 }

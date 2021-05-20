@@ -27,6 +27,9 @@ pub enum GreteaKeywords {
     LeftCurlyBracket,
     RightCurlyBracket,
 
+    Preprocessor,
+    Set,
+
     Undefined
 }
 
@@ -48,6 +51,9 @@ pub struct GreteaSyntax {
 
     pub ast_curly_left_bracket  : String,
     pub ast_curly_right_bracket : String,
+
+    pub ast_preprocessor        : String,
+    pub ast_set                 : String,
 
     pub syntax_list             : HashMap<String, GreteaKeywords>
 }
@@ -83,6 +89,9 @@ impl Default for GreteaSyntax {
             ast_curly_left_bracket  : ast_helpers::to("{"),
             ast_curly_right_bracket : ast_helpers::to("}"),
 
+            ast_preprocessor        : ast_helpers::to("`"  ),
+            ast_set                 : ast_helpers::to("set"),
+
             syntax_list             : Default::default()
         };
 
@@ -103,6 +112,9 @@ impl Default for GreteaSyntax {
 
         init.add(init.ast_curly_left_bracket  .clone(), GreteaKeywords::LeftCurlyBracket );
         init.add(init.ast_curly_right_bracket .clone(), GreteaKeywords::RightCurlyBracket);
+
+        init.add(init.ast_preprocessor        .clone(), GreteaKeywords::Preprocessor     );
+        init.add(init.ast_set                 .clone(), GreteaKeywords::Set              );
 
         init
     }
