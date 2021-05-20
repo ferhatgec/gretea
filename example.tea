@@ -1,13 +1,19 @@
 alias linker = cpp
 
-#linker { #include <iostream> }
+#linker {  #include <iostream> }
 
-fn test() = void {
-    #linker {
-        std::cout << "Green tea\n" ;
-    }
+fn test(pi: double) = void {
+    cpp { std::cout << "Green tea\n" << pi << '\n' ; }
 }
 
 fn main() = int {
-    test()
+    var pi: double = 3.14        // immutable
+    var three = 3                // immutable, without type declaration
+    var mut green_tea = "gretea" // mutable, without type declaration
+
+    test(pi)
+
+    cpp {
+        std::cout << green_tea << '\n' ;
+    }
 }

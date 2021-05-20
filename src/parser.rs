@@ -23,6 +23,7 @@ use {
     },
     std::collections::{HashMap}
 };
+use std::env::var;
 
 pub struct GreteaParser {
     pub init_ast : GreteaSyntax,
@@ -46,6 +47,11 @@ impl GreteaParser {
                                                                        = HashMap::new();
         let mut is_fn_return_value= false; let mut fn_val  = String ::new();
         let mut is_void           = false;
+
+        let mut is_var            = false;
+        let mut is_mutable        = false; let mut var_name = String::new();
+        let mut is_var_data       = false; let mut var_data = String::new();
+        let mut is_var_type       = false; let mut variable_type    = String::new();
 
         let mut is_cpp_linker     = false; let mut cpp_block= String::new();
 
@@ -94,9 +100,16 @@ impl GreteaParser {
                 GreteaKeywords::Fn => {
                     is_fn = true; continue;
                 },
+
                 GreteaKeywords::Var => {
-                    println!("found : var");
+                    is_var = true; continue;
                 },
+                GreteaKeywords::Mut => {
+                    if is_var {
+                        is_mutable = true;
+                    } continue;
+                },
+
                 GreteaKeywords::Cpp => {
                     is_cpp_linker = true; continue;
                 },
@@ -221,6 +234,42 @@ impl GreteaParser {
                         if !is_cpp_linker { codegen.character(&self.init_ast.ast_curly_left_bracket); }
 
                         continue;
+                    }
+
+                    if is_var {
+                        if !var_name.is_empty() {
+                            if is_var_type {
+                                is_var_type = false;
+                                variable_type = token.clone(); continue;
+                            }
+
+                            if !is_var_type {
+                                if is_var_data {
+                                    var_data = token.clone();
+
+                                    codegen.variable_definition(&var_data, &variable_type, &var_name, is_mutable);
+
+                                    is_var     = false;
+                                    is_var_type= false;
+                                    is_var_data= false;
+                                    is_mutable = false;
+
+                                    var_data     .clear();
+                                    variable_type.clear();
+                                    var_name     .clear(); continue;
+                                }
+
+                                if token == "=" {
+                                    is_var_data = true; continue;
+                                }
+                            }
+
+                            if token == ":" {
+                                is_var_type = true; continue;
+                            }
+                        }
+
+                        var_name = token.clone(); continue;
                     }
 
                     if is_alias {

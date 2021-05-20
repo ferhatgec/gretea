@@ -11,7 +11,10 @@ use std::collections::{HashMap};
 pub enum GreteaKeywords {
     Import,
     Fn,
+
     Var,
+    Mut,
+
     Cpp,
     Alias,
 
@@ -30,7 +33,10 @@ pub enum GreteaKeywords {
 pub struct GreteaSyntax {
     pub ast_import              : String,
     pub ast_fn                  : String,
+
     pub ast_var                 : String,
+    pub ast_mut                 : String,
+
     pub ast_cpp                 : String,
     pub ast_alias               : String,
 
@@ -61,7 +67,10 @@ impl Default for GreteaSyntax {
         let mut init = GreteaSyntax {
             ast_import              : ast_helpers::to("import"),
             ast_fn                  : ast_helpers::to("fn"    ),
+
             ast_var                 : ast_helpers::to("var"   ),
+            ast_mut                 : ast_helpers::to("mut"   ),
+
             ast_cpp                 : ast_helpers::to("cpp"   ),
             ast_alias               : ast_helpers::to("alias" ),
 
@@ -79,7 +88,10 @@ impl Default for GreteaSyntax {
 
         init.add(init.ast_import.clone(), GreteaKeywords::Import         );
         init.add(init.ast_fn    .clone(), GreteaKeywords::Fn             );
+
         init.add(init.ast_var   .clone(), GreteaKeywords::Var            );
+        init.add(init.ast_mut   .clone(), GreteaKeywords::Mut            );
+
         init.add(init.ast_cpp   .clone(), GreteaKeywords::Cpp            );
         init.add(init.ast_alias .clone(), GreteaKeywords::Alias          );
 
