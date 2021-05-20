@@ -18,6 +18,9 @@ pub enum GreteaKeywords {
     Cpp,
     Alias,
 
+    If,
+    Else,
+
     LeftParenthese,
     RightParenthese,
 
@@ -42,6 +45,9 @@ pub struct GreteaSyntax {
 
     pub ast_cpp                 : String,
     pub ast_alias               : String,
+
+    pub ast_if                  : String,
+    pub ast_else                : String,
 
     pub ast_left_parenthese     : String,
     pub ast_right_parenthese    : String,
@@ -80,6 +86,9 @@ impl Default for GreteaSyntax {
             ast_cpp                 : ast_helpers::to("cpp"   ),
             ast_alias               : ast_helpers::to("alias" ),
 
+            ast_if                  : ast_helpers::to("if"    ),
+            ast_else                : ast_helpers::to("else"  ),
+
             ast_left_parenthese     : ast_helpers::to("("),
             ast_right_parenthese    : ast_helpers::to(")"),
 
@@ -103,6 +112,9 @@ impl Default for GreteaSyntax {
 
         init.add(init.ast_cpp   .clone(), GreteaKeywords::Cpp            );
         init.add(init.ast_alias .clone(), GreteaKeywords::Alias          );
+
+        init.add(init.ast_if    .clone(), GreteaKeywords::If             );
+        init.add(init.ast_else  .clone(), GreteaKeywords::Else           );
 
         init.add(init.ast_left_parenthese .clone(), GreteaKeywords::LeftParenthese );
         init.add(init.ast_right_parenthese.clone(), GreteaKeywords::RightParenthese);

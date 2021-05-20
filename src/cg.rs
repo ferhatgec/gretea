@@ -86,6 +86,26 @@ impl GreteaCodegen {
         } else { "0" }));
     }
 
+    pub fn statement(&mut self, tokens: &Vec<String>) {
+        if tokens.last().unwrap() == "else" {
+            self.generated.push_str(format!("{} {{\n", "else").as_str());
+        } else {
+            let mut is_else_if = false;
+
+            let mut statement = String::from(
+                format!("{} {}", tokens.get(0).unwrap(), if tokens.get(1).unwrap() == "if" {
+                    is_else_if = true;
+                    "if("
+                } else { "(" }));
+
+            for token in tokens.iter().skip( if is_else_if { 2 } else { 1 }) {
+                statement.push_str(format!("{}", token).as_str());
+            }
+
+            self.generated.push_str(format!("{}) {{\n", statement).as_str());
+        }
+    }
+
     pub fn character(&mut self, character: &String) {
         self.generated.push_str(&*format!("{}\n", character));
     }

@@ -16,6 +16,14 @@ fn main() = int {
 
     test(pi)
 
+    if green_tea == "gretea" {
+        cpp { std::cout << "Greentea\n" ; }
+    } else if green_tea == "green tea" {
+        cpp { std::cout << "Green tea\n" ; }
+    } else {
+        cpp { std::cout << "Black tea\n" ; }
+    }
+
     cpp {
         std::cout << green_tea << '\n' ;
     }

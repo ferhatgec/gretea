@@ -74,6 +74,8 @@ impl GreteaParser {
         let mut is_preprocessor   = false;
         let mut is_set            = false;
 
+        let mut is_statement      = false; let mut statement_data: Vec<String> = Vec::new();
+
         let mut set_name = String::new();
         let mut set_data = String::new();
 
@@ -122,6 +124,11 @@ impl GreteaParser {
                 GreteaKeywords::Alias=> {
                     is_alias = true; continue;
                 },
+                GreteaKeywords::If |
+                GreteaKeywords::Else => {
+                    is_statement = true;
+                    statement_data.push(token.clone()); continue;
+                },
 
                 //GreteaKeywords::LeftParenthese => {
                 //    println!("found : (");
@@ -156,6 +163,16 @@ impl GreteaParser {
                 },
 
                 _ => {
+                    if is_statement {
+                        if token == "{" {
+                            codegen.statement(&statement_data);
+                            is_statement = false;
+                            statement_data.clear(); continue;
+                        }
+
+                        statement_data.push(token.clone()); continue;
+                    }
+
                     if is_set {
                         if !set_name.is_empty() {
                             set_data = token.clone();
