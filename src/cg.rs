@@ -48,7 +48,12 @@ impl GreteaCodegen {
                       if is_stl { '<' } else { '"' }, dir.replace('\n', ""), if is_stl { '>' } else { '"' }));
     }
 
-    pub fn function(&mut self, args: &HashMap<String, String>, name: &String, return_val: &String) {
+    pub fn function(&mut self,
+                    args      : &HashMap<String, String>,
+                    name      : &String,
+                    return_val: &String,
+
+                    is_void   : bool) {
         let mut arguments = String::new();
 
         for    map in args.iter() {
@@ -56,7 +61,10 @@ impl GreteaCodegen {
             arguments.push_str(&*format!("{} {},", map.1.clone(), map.0.clone()));
         } arguments.pop();
 
-        self.generated.push_str(&*format!("{} {}({})\n", return_val, name, arguments));
+        self.generated.push_str(&*format!("{} {}({}) {}\n",
+                                          return_val, name, arguments, if is_void {
+                "{"
+            } else { "" }));
     }
 
     pub fn function_call(&mut self, args: &Vec<String>, name: &String) {
@@ -109,6 +117,12 @@ impl GreteaCodegen {
 
             self.generated.push_str(format!("{}) {{\n", statement).as_str());
         }
+    }
+
+    pub fn return_variable(&mut self, return_variable: &String) {
+        self.generated.push_str(format!("return {};", if return_variable.is_empty() {
+            ""
+        } else { return_variable.as_str() }).as_str())
     }
 
     pub fn character(&mut self, character: &String) {

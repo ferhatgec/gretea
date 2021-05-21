@@ -41,6 +41,7 @@ impl GreteaParser {
 
         let mut is_import = false;
 
+        let mut is_fn_data        = false;
         let mut is_fn             = false;
         let mut is_fn_name        = false; let mut fn_name = String ::new();
         let mut is_fn_argument    = false; let mut fn_args: HashMap<String, String>
@@ -75,6 +76,8 @@ impl GreteaParser {
         let mut is_set            = false;
 
         let mut is_statement      = false; let mut statement_data: Vec<String> = Vec::new();
+
+        let mut is_return         = false;
 
         let mut set_name = String::new();
         let mut set_data = String::new();
@@ -231,10 +234,11 @@ impl GreteaParser {
                                 if is_fn_return_value || is_void {
                                     fn_val = if is_fn_return_value { token.clone() } else { to("void") };
 
-                                    codegen.function(&fn_args, &fn_name.clone(), &fn_val.clone());
+                                    codegen.function(&fn_args, &fn_name.clone(), &fn_val.clone(), is_void);
 
                                     fn_args.clear(); fn_val.clear();
 
+                                    is_fn_data        = true ;
                                     is_fn             = false;
                                     is_fn_name        = false;
                                     is_fn_argument    = false;
@@ -295,6 +299,12 @@ impl GreteaParser {
 
                                     codegen.variable_definition(&var_data, &variable_type, &var_name, is_mutable);
 
+                                    self.data_list.variable_list.push(GreteaVariableData {
+                                        __keyword_type: GreteaKeywords::Var,
+                                        __name        : var_name.clone(),
+                                        __data        : variable_type.clone()
+                                    });
+
                                     is_var     = false;
                                     is_var_type= false;
                                     is_var_data= false;
@@ -352,6 +362,28 @@ impl GreteaParser {
 
                             break;
                         }
+                    }
+
+                    if is_fn_data {
+                        if token == "." || token == "return" {
+                            is_return = true; continue;
+                        }
+
+                        if is_return {
+                            is_return = false;
+
+                            for variable in &self.data_list.variable_list {
+                                if token == &variable.__name {
+                                    codegen.return_variable(&variable.__data); break;
+                                }
+                            }
+
+                            if token.trim_end() == "_" {
+                                codegen.return_variable(&to(""));
+                            } else { codegen.return_variable(&token.clone()); }
+                        }
+
+                        continue;
                     }
                 }
             }

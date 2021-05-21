@@ -1,8 +1,22 @@
 import header
 alias linker = cpp
 
-fn test(pi: double) = void {
+var today: int = 21
+
+fn test(pi: double) {
     cpp { std::cout << "Green tea\n" << pi << '\n' ; }
+
+    . _ // return _
+}
+
+fn hmm() = int {
+       . today
+    // ^ ^^^^^
+    // return today
+    // -----------
+    // return and .<ws> are same thing, however
+    // return can be used by general,
+    // .<ws> can be used by declared variables.
 }
 
 fn main() = int {
@@ -25,4 +39,6 @@ fn main() = int {
     }
 
     hello_world("ferhatgec")
+
+    . 0
 }
