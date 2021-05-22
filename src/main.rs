@@ -48,6 +48,13 @@ fn create_and_write(path: &std::path::Path, generated: String) {
     }
 }
 
+fn remove_and_check(filename: &str) {
+    match std::fs::remove_file(filename) {
+        Err(err) => panic!("gretea: failed to remove {}", filename),
+        _ => {}
+    }
+}
+
 fn main() {
     let commandline_arguments: Vec<_> = std::env::args().collect();
 
@@ -74,7 +81,7 @@ fn main() {
 
     create_and_write(path, generated);
 
-    for file in files {
+    for file in files.clone() {
         if !file.1 {
             gretea_read.read_raw_file(&to_gretea(file.0.clone()));
             let (generated_data, _) = lexer::gretea_lexer::init_lexer(&gretea_read);
@@ -87,13 +94,14 @@ fn main() {
 
     let build_output = std::process::Command::new("c++")
         .arg("-std=c++17")
-        .arg(generated_filename)
+        .arg(generated_filename.clone())
         .arg("-o")
         .arg(object_name)
         .status();
 
-    //match build_output {
-    //    Err(err) => panic!("gretea: build error: output:\n{}", err),
-    //    _ => {}
-    //}
+    remove_and_check(generated_filename.as_str());
+
+    for file in files.to_owned() {
+        remove_and_check(header(normalize(file.0)).as_str());
+    }
 }
