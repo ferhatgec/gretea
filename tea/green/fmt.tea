@@ -19,7 +19,7 @@ module fmt {
     }
 
     fn fmt#println<'Args>(arguments: Args) {
-        fmt#basic_print(arguments, +_)
+        fmt#print(arguments, +_)
         fmt#basic_print("\n")
     }
 } // fmt
