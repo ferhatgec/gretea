@@ -3,16 +3,18 @@ alias linker = cpp
 
 var today: int = 21
 
-fn __print<T>(argument: T) {
-    cpp {
-        std::cout << argument ;
+module fmt {
+    fn fmt#__print<T>(argument: T) {
+        cpp {
+            std::cout << argument ;
+        }
     }
-}
 
-fn println<'lol>(args: lol) {
-    // +_ is unpack operator for variadic variables.
-    __print(args, +_)
-    __print("\n"    )
+    fn fmt#println<'lol>(args: lol) {
+        // +_ is unpack operator for variadic variables.
+        __print(args, +_)
+        __print("\n"    )
+    }
 }
 
 fn test(pi: double) {
@@ -39,14 +41,14 @@ fn main() = int {
     test(pi)
 
     if green_tea == "gretea" {
-        println("Greentea")
+        fmt#println("Greentea")
     } else if green_tea == "green tea" {
-        println("Green tea")
+        fmt#println("Green tea")
     } else {
-        println("Black tea")
+        fmt#println("Black tea")
     }
 
-    println(green_tea)
+    fmt#println(green_tea)
 
     . 0
 }

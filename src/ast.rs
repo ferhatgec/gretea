@@ -21,6 +21,8 @@ pub enum GreteaKeywords {
     If,
     Else,
 
+    Module,
+
     LeftParenthese,
     RightParenthese,
 
@@ -50,6 +52,8 @@ pub struct GreteaSyntax {
 
     pub ast_if                  : String,
     pub ast_else                : String,
+
+    pub ast_module              : String,
 
     pub ast_left_parenthese     : String,
     pub ast_right_parenthese    : String,
@@ -91,6 +95,8 @@ impl Default for GreteaSyntax {
             ast_if                  : ast_helpers::to("if"    ),
             ast_else                : ast_helpers::to("else"  ),
 
+            ast_module              : ast_helpers::to("module"),
+
             ast_left_parenthese     : ast_helpers::to("("),
             ast_right_parenthese    : ast_helpers::to(")"),
 
@@ -117,6 +123,8 @@ impl Default for GreteaSyntax {
 
         init.add(init.ast_if    .clone(), GreteaKeywords::If             );
         init.add(init.ast_else  .clone(), GreteaKeywords::Else           );
+
+        init.add(init.ast_module.clone(), GreteaKeywords::Module         );
 
         init.add(init.ast_left_parenthese .clone(), GreteaKeywords::LeftParenthese );
         init.add(init.ast_right_parenthese.clone(), GreteaKeywords::RightParenthese);
@@ -169,5 +177,18 @@ impl GreteaSyntax {
 pub mod ast_helpers {
     pub fn to(data: &str) -> String {
         data.to_string()
+    }
+    pub fn from_module(data: &String) -> String {
+        let mut temporary = String::new();
+
+        for character in data.chars() {
+            if character == '#' {
+                temporary.push_str("::"); continue;
+            }
+
+            temporary.push(character);
+        }
+
+        temporary
     }
 }

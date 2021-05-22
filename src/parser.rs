@@ -24,6 +24,7 @@ use {
     std::collections::{HashMap}
 };
 use std::env::var;
+use crate::ast::ast_helpers::from_module;
 
 pub struct GreteaParser {
     pub init_ast : GreteaSyntax,
@@ -78,6 +79,8 @@ impl GreteaParser {
         let mut is_set            = false;
 
         let mut is_statement      = false; let mut statement_data: Vec<String> = Vec::new();
+
+        let mut is_module         = false; let mut module_name = String::new();
 
         let mut is_return         = false;
 
@@ -135,6 +138,10 @@ impl GreteaParser {
                     statement_data.push(token.clone()); continue;
                 },
 
+                GreteaKeywords::Module => {
+                    is_module = true; continue;
+                },
+
                 GreteaKeywords::LeftSqBracket => {
                     println!("found : [");
                 },
@@ -171,6 +178,16 @@ impl GreteaParser {
                         statement_data.push(token.clone()); continue;
                     }
 
+                    if is_module {
+                        // if token == "{" { }
+                        module_name = token.clone();
+
+                        codegen.module(&module_name);
+
+                        is_module = false;
+                        module_name.clear(); continue;
+                    }
+
                     if is_set {
                         if !set_name.is_empty() {
                             set_data = token.clone();
@@ -200,11 +217,14 @@ impl GreteaParser {
                             continue;
                         }
 
-                        if token == "+_" {
-                            is_expandable = true; continue;
+                        match token.as_str() {
+                            "+_" => {
+                                is_expandable = true; continue;
+                            },
+                            _ => {
+                                function_args.push(token.clone());
+                            }
                         }
-
-                        function_args.push(token.clone());
                     }
 
                     if is_import {
@@ -275,7 +295,9 @@ impl GreteaParser {
                                 }
 
                                 if argument_name.is_empty() {
-                                    argument_name = token.clone(); continue;
+                                    argument_name = token.clone();
+
+                                    continue;
                                 }
 
                                 if argument_value.is_empty() {
@@ -306,7 +328,7 @@ impl GreteaParser {
                             is_fn = false; is_fn_name = false; continue;
                         }
 
-                        fn_name    = token.clone();
+                        fn_name    = token.split('#').last().unwrap().to_string();
                         is_fn_name = true;
 
                         function_list.push(fn_name.clone()); continue;
@@ -386,13 +408,13 @@ impl GreteaParser {
                         cpp_block.push_str(&*token); continue;
                     }
 
+                    let function_token = token.clone().split('#').last().unwrap().to_string();
+
                     for name in function_list.clone() {
-                        if &name == token {
+                        if name.split('#').last().unwrap() == function_token {
                             is_fn_call = true;
 
-                            function_name = name;
-
-                            break;
+                            function_name = from_module(&token); break;
                         }
                     }
 

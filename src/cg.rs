@@ -131,6 +131,10 @@ impl GreteaCodegen {
         }
     }
 
+    pub fn module(&mut self, module_name: &String) {
+        self.generated.push_str(format!("namespace {}", module_name).as_str());
+    }
+
     pub fn return_variable(&mut self, return_variable: &String) {
         self.generated.push_str(format!("return {};", if return_variable.is_empty() {
             ""
