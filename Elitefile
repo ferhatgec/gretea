@@ -1,0 +1,24 @@
+required_version    is 0.1
+
+set package_manager as "cargo"
+set argument        as "install --path ."
+
+set sudo            as "sudo"
+set cp              as "cp"
+set cp_args         as "-rf"
+set from            as "./tea"
+
+set stl_path        as "/usr/include/gretea/"
+
+for signal "start" [
+    for argument "install" [
+        println "elite: Installing Gretea STL."
+        use exec "{sudo} {cp} {cp_args} {from} {stl_path}"
+    ]
+
+    use exec "{package_manager} {argument}"
+
+    for exists "{stl_path}" [
+        println "elite: STL installed."
+    ]
+]
