@@ -19,15 +19,16 @@ pub mod gretea_lexer {
         std::collections::{HashMap}
     };
 
-    pub fn init_lexer(init: &GreteaFileData) -> (String, HashMap<String, bool>) {
+    pub fn init_lexer(init: &GreteaFileData) -> (String, HashMap<String, bool>, Vec<String>) {
         let tokens = tokenize(init);
         let ast   = GreteaSyntax::default();
         let mut parser = GreteaParser {
             init_ast : ast,
-            data_list: GreteaVariableList::default()
+            data_list: GreteaVariableList::default(),
+            func_list: init.func_list.clone()
         };
         let data = parser.parse(&tokens);
 
-        (data.generated, data.sources)
+        (data.generated, data.sources, parser.func_list)
     }
 }

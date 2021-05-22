@@ -45,7 +45,7 @@ impl GreteaCodegen {
         self.sources  .insert(dir.clone(), is_stl);
         self.generated.push_str(
             &*format!("#{}{}{}.hpp{}\n", "include",
-                      if is_stl { '<' } else { '"' }, dir.replace('\n', ""), if is_stl { '>' } else { '"' }));
+                      if is_stl { '"' } else { '"' }, dir.replace('\n', "").split('/').last().unwrap(), if is_stl { '"' } else { '"' }));
     }
 
     pub fn function(&mut self,

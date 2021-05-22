@@ -1,0 +1,25 @@
+// fmt.tea
+//
+// MIT License
+//
+// Copyright (c) 2021 Ferhat Geçdoğan All Rights Reserved.
+// Distributed under the terms of the MIT License.
+//
+//
+
+cpp { #include <iostream> }
+
+module fmt {
+    fn fmt#basic_print<Arg>(argument: Arg) {
+        cpp { std::cout << argument ; }
+    }
+
+    fn fmt#print<'Args>(arguments: Args) {
+        fmt#basic_print(arguments, +_)
+    }
+
+    fn fmt#println<'Args>(arguments: Args) {
+        fmt#basic_print(arguments, +_)
+        fmt#basic_print("\n")
+    }
+} // fmt

@@ -14,8 +14,9 @@ use {
 };
 
 pub struct GreteaFileData {
-    pub raw_data: String,
-    pub unparsed: Vec<String>
+    pub raw_data : String,
+    pub unparsed : Vec<String>,
+    pub func_list: Vec<String>
 }
 
 impl GreteaFileData {

@@ -1,21 +1,9 @@
 import header
+import tea.green.fmt
+
 alias linker = cpp
 
 var today: int = 21
-
-module fmt {
-    fn fmt#__print<T>(argument: T) {
-        cpp {
-            std::cout << argument ;
-        }
-    }
-
-    fn fmt#println<'lol>(args: lol) {
-        // +_ is unpack operator for variadic variables.
-        __print(args, +_)
-        __print("\n"    )
-    }
-}
 
 fn test(pi: double) {
     cpp { std::cout << "Green tea\n" << pi << '\n' ; }

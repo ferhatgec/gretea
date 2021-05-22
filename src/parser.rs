@@ -27,8 +27,9 @@ use std::env::var;
 use crate::ast::ast_helpers::from_module;
 
 pub struct GreteaParser {
-    pub init_ast : GreteaSyntax,
-    pub data_list: GreteaVariableList
+    pub init_ast : GreteaSyntax      ,
+    pub data_list: GreteaVariableList,
+    pub func_list: Vec<String>
 }
 
 impl GreteaParser {
@@ -71,7 +72,6 @@ impl GreteaParser {
         let (mut argument_name,
              mut argument_value) = (String::new(), String::new());
 
-        let mut function_list: Vec<String> = Vec   ::new();
         let mut function_name       = String::new();
         let mut function_args: Vec<String> = Vec   ::new();
 
@@ -331,7 +331,7 @@ impl GreteaParser {
                         fn_name    = token.split('#').last().unwrap().to_string();
                         is_fn_name = true;
 
-                        function_list.push(fn_name.clone()); continue;
+                        self.func_list.push(fn_name.clone()); continue;
                     }
 
                     if token == "{" {
@@ -410,10 +410,9 @@ impl GreteaParser {
 
                     let function_token = token.clone().split('#').last().unwrap().to_string();
 
-                    for name in function_list.clone() {
-                        if name.split('#').last().unwrap() == function_token {
+                    for name in self.func_list.clone() {
+                        if name.split('#').last().unwrap().trim() == function_token.trim() {
                             is_fn_call = true;
-
                             function_name = from_module(&token); break;
                         }
                     }

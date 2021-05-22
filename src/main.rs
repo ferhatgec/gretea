@@ -56,6 +56,8 @@ fn remove_and_check(filename: &str) {
 }
 
 fn main() {
+    //#[cfg(target_os = "windows")] std::process::exit(1);
+
     let commandline_arguments: Vec<_> = std::env::args().collect();
 
     if commandline_arguments.len() < 2 {
@@ -64,33 +66,50 @@ fn main() {
         std::process::exit(1);
     }
 
-    let mut filename = commandline_arguments.last().unwrap();
+    let mut filename       = commandline_arguments.last().unwrap();
+    let mut func_list: Vec<String> = Vec::new();
 
     let mut gretea_read = read::GreteaFileData {
-        raw_data: "".to_string(),
-        unparsed: vec![]
+        raw_data : "".to_string(),
+        unparsed : vec![],
+        func_list
     };
 
     gretea_read.read_raw_file(filename);
 
-    let (generated, files) = lexer::gretea_lexer::init_lexer(&gretea_read);
+    let (generated, files, func) = lexer::gretea_lexer::init_lexer(&gretea_read);
     let mut object_name        = normalize(filename   .clone());
     let mut generated_filename = add      (object_name.clone());
 
     let mut path           = std::path::Path::new(&generated_filename);
 
-    create_and_write(path, generated);
-
     for file in files.clone() {
         if !file.1 {
             gretea_read.read_raw_file(&to_gretea(file.0.clone()));
-            let (generated_data, _) = lexer::gretea_lexer::init_lexer(&gretea_read);
+            let (generated_data, _, mut func) = lexer::gretea_lexer::init_lexer(&gretea_read);
             let object_name         = header(normalize(file.0));
-            path                           = std::path::Path::new(&object_name);
 
-            create_and_write(path, generated_data);
+            gretea_read.func_list.append(&mut func);
+
+            create_and_write(std::path::Path::new(&object_name), generated_data);
+        }
+        else {
+            gretea_read.read_raw_file(&to_gretea(
+                format!("/usr/include/gretea/{}", file.0.clone())));
+            let (generated_data, _, mut func) = lexer::gretea_lexer::init_lexer(&gretea_read);
+            let object_name         = header(normalize(file.0.split('/').last().unwrap().parse().unwrap()));
+
+            gretea_read.func_list.append(&mut func);
+
+            create_and_write(std::path::Path::new(&object_name), generated_data);
         }
     }
+
+    gretea_read.read_raw_file(filename);
+
+    let (generated, files, func) = lexer::gretea_lexer::init_lexer(&gretea_read);
+
+    create_and_write(path, generated);
 
     let build_output = std::process::Command::new("c++")
         .arg("-std=c++17")
@@ -102,6 +121,6 @@ fn main() {
     remove_and_check(generated_filename.as_str());
 
     for file in files.to_owned() {
-        remove_and_check(header(normalize(file.0)).as_str());
+        remove_and_check(header(normalize(file.0.split('/').last().unwrap().parse().unwrap())).as_str());
     }
 }
