@@ -52,8 +52,16 @@ impl GreteaCodegen {
                     args      : &HashMap<String, String>,
                     name      : &String,
                     return_val: &String,
+                    generic   : &String,
+                    is_expand : bool,
 
                     is_void   : bool) {
+        if !generic.is_empty() {
+            self.generated.push_str(format!("template<typename{} {}>\n", if is_expand {
+                "..."
+            } else { "" }, generic).as_str())
+        }
+
         let mut arguments = String::new();
 
         for    map in args.iter() {
@@ -67,7 +75,7 @@ impl GreteaCodegen {
             } else { "" }));
     }
 
-    pub fn function_call(&mut self, args: &Vec<String>, name: &String) {
+    pub fn function_call(&mut self, args: &Vec<String>, name: &String, is_unpack: bool) {
         let mut arguments = String::new();
 
         if name != &"main" {
@@ -76,7 +84,11 @@ impl GreteaCodegen {
             } arguments.pop();
         }
 
-        self.generated.push_str(&*format!("{}({});\n", name, arguments));
+        self.generated.push_str(&*format!("{}{}({}){};\n", if is_unpack {
+            "("
+        } else { "" }, name, arguments, if is_unpack {
+            ", ...)"
+        } else { "" }));
     }
 
     pub fn variable_definition(&mut self, data: &String, var_type: &String, name: &String, is_mut: bool) {

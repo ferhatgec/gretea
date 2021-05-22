@@ -43,7 +43,9 @@ impl GreteaParser {
 
         let mut is_fn_data        = false;
         let mut is_fn             = false;
-        let mut is_fn_name        = false; let mut fn_name = String ::new();
+        let mut is_fn_name        = false; let mut fn_name   = String ::new();
+        let mut is_generic        = false; let mut fn_generic= String::new();
+        let mut is_expandable     = false;
         let mut is_fn_argument    = false; let mut fn_args: HashMap<String, String>
                                                                        = HashMap::new();
         let mut is_fn_return_value= false; let mut fn_val  = String ::new();
@@ -133,13 +135,6 @@ impl GreteaParser {
                     statement_data.push(token.clone()); continue;
                 },
 
-                //GreteaKeywords::LeftParenthese => {
-                //    println!("found : (");
-                //},
-                //GreteaKeywords::RightParenthese => {
-                //    println!("found : )");
-                //},
-
                 GreteaKeywords::LeftSqBracket => {
                     println!("found : [");
                 },
@@ -193,14 +188,20 @@ impl GreteaParser {
                     if is_fn_call {
                         if token == "(" || token == ")" || token == "," {
                             if token == ")" {
-                                is_fn_call = false;
+                                codegen.function_call(&function_args,
+                                                      &function_name, is_expandable);
 
-                                codegen.function_call(&function_args, &function_name);
+                                is_fn_call    = false;
+                                is_expandable = false;
 
                                 function_name.clear(); function_args.clear();
                             }
 
                             continue;
+                        }
+
+                        if token == "+_" {
+                            is_expandable = true; continue;
                         }
 
                         function_args.push(token.clone());
@@ -214,6 +215,20 @@ impl GreteaParser {
 
                     if is_fn {
                         if is_fn_name {
+                            if token == "<" {
+                                is_generic = true; continue;
+                            }
+
+                            if is_generic {
+                                if token == ">" { is_generic = false; continue; }
+
+                                if token == "'" {
+                                    is_expandable = true; continue;
+                                }
+
+                                fn_generic = token.clone(); continue;
+                            }
+
                             if token == "(" {
                                 is_fn_argument = true; continue;
                             }
@@ -234,16 +249,25 @@ impl GreteaParser {
                                 if is_fn_return_value || is_void {
                                     fn_val = if is_fn_return_value { token.clone() } else { to("void") };
 
-                                    codegen.function(&fn_args, &fn_name.clone(), &fn_val.clone(), is_void);
+                                    codegen.function(&fn_args,
+                                                     &fn_name.clone(),
+                                                     &fn_val.clone(),
+                                                     &fn_generic.clone(),
+                                                     is_expandable,
+                                                     is_void);
 
                                     fn_args.clear(); fn_val.clear();
 
                                     is_fn_data        = true ;
                                     is_fn             = false;
                                     is_fn_name        = false;
+                                    is_generic        = false;
+                                    is_expandable     = false;
                                     is_fn_argument    = false;
                                     is_fn_return_value= false;
-                                    is_void           = false; continue;
+                                    is_void           = false;
+
+                                    fn_generic.clear(); continue;
                                 }
 
                                 if token == "=" {
@@ -256,6 +280,14 @@ impl GreteaParser {
 
                                 if argument_value.is_empty() {
                                     argument_value = token.clone();
+
+                                    if is_expandable {
+                                        if argument_value == fn_generic {
+                                            argument_value.push_str("...");
+                                        }
+                                    }
+
+                                    continue;
                                 }
 
                                 if argument_value == ")" {

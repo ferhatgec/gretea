@@ -33,6 +33,8 @@ pub enum GreteaKeywords {
     Preprocessor,
     Set,
 
+    Unpack,
+
     Undefined
 }
 
