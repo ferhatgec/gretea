@@ -21,7 +21,8 @@ pub mod gretea_tokenizer {
         '<' ,
         '>' ,
         '\'',
-        ','
+        ',' ,
+        '@'
     ];
 
     pub fn tokenize(raw_data: &GreteaFileData) -> Vec<String> {

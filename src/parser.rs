@@ -76,6 +76,7 @@ impl GreteaParser {
         let mut function_args: Vec<String> = Vec   ::new();
 
         let mut is_preprocessor   = false;
+        let mut is_directive      = false;
         let mut is_set            = false;
 
         let mut is_statement      = false; let mut statement_data: Vec<String> = Vec::new();
@@ -112,7 +113,7 @@ impl GreteaParser {
                 is_alias_replace = true; continue;
             }
 
-            matched_type = *self.init_ast.match_keyword(token);
+            matched_type = *self.init_ast.match_keyword(&to(token));
 
             match matched_type {
                 GreteaKeywords::Import => {
@@ -159,6 +160,8 @@ impl GreteaParser {
                 },
 
                 GreteaKeywords::RightCurlyBracket=> {
+                    if is_directive { continue; }
+
                     if !is_cpp_linker {
                         codegen.character(&self.init_ast.ast_curly_right_bracket);
                     } else {
@@ -176,11 +179,24 @@ impl GreteaParser {
                     } continue;
                 },
 
+                GreteaKeywords::DirectiveEnd => {
+                    if is_directive {
+                        codegen.directive_end();
+                        is_directive = false; continue;
+                    }
+                },
+
                 _ => {
                     if is_statement {
                         if token == "{" {
-                            codegen.statement(&statement_data);
-                            is_statement = false;
+                            if is_preprocessor {
+                                codegen.statement_directive(&statement_data);
+
+                                is_directive = true;
+                            } else { codegen.statement(&statement_data); }
+
+                            is_statement    = false;
+                            is_preprocessor = false;
                             statement_data.clear(); continue;
                         }
 
@@ -198,6 +214,8 @@ impl GreteaParser {
                     }
 
                     if is_set {
+                        if token == "=" { continue; }
+
                         if !set_name.is_empty() {
                             set_data = token.clone();
 
@@ -424,13 +442,12 @@ impl GreteaParser {
 
                             if is_preprocessor {
                                 codegen.preprocess_set(&alias_data, &alias_name);
+                                is_preprocessor = false;
                             }
                             else { alias_list.insert(alias_name.clone(), alias_data.clone()); }
 
-                            is_alias      = false; alias_name.clear();
-                            is_alias_name = false; alias_data.clear();
-
-                            continue;
+                            is_alias        = false; alias_name.clear();
+                            is_alias_name   = false; alias_data.clear(); continue;
                         }
 
                         alias_name = token.clone(); is_alias_name = true;

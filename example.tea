@@ -44,7 +44,13 @@ fn main() = int {
         fmt#println(character)
     }
 
-
+    `if defined(gnu_linux) {
+        fmt#println("GNU/Linux")
+    } `else if defined(freebsd) {
+        fmt#println("FreeBSD")
+    } `else {
+        fmt#println("Undetected OS")
+    } @
 
     . 0
 }

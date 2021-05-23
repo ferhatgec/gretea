@@ -37,6 +37,8 @@ pub enum GreteaKeywords {
     Preprocessor,
     Set,
 
+    DirectiveEnd,
+
     Unpack,
 
     Undefined
@@ -70,6 +72,8 @@ pub struct GreteaSyntax {
 
     pub ast_preprocessor        : String,
     pub ast_set                 : String,
+
+    pub ast_directive_end       : String,
 
     pub syntax_list             : HashMap<String, GreteaKeywords>
 }
@@ -115,6 +119,8 @@ impl Default for GreteaSyntax {
             ast_preprocessor        : ast_helpers::to("`"  ),
             ast_set                 : ast_helpers::to("set"),
 
+            ast_directive_end       : ast_helpers::to("@"  ),
+
             syntax_list             : Default::default()
         };
 
@@ -145,6 +151,8 @@ impl Default for GreteaSyntax {
 
         init.add(init.ast_preprocessor        .clone(), GreteaKeywords::Preprocessor     );
         init.add(init.ast_set                 .clone(), GreteaKeywords::Set              );
+
+        init.add(init.ast_directive_end       .clone(), GreteaKeywords::DirectiveEnd     );
 
         init
     }

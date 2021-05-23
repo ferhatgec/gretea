@@ -131,6 +131,30 @@ impl GreteaCodegen {
         }
     }
 
+    pub fn statement_directive(&mut self, tokens: &Vec<String>) {
+        if tokens.last().unwrap() == "else" {
+            self.generated.push_str(format!("#{}\n", "else").as_str());
+        } else {
+            let mut is_else_if = false;
+
+            let mut statement = String::from(
+                format!("#{} ", if tokens.get(1).unwrap() == "if" {
+                    is_else_if = true;
+                    "elif"
+                } else { "if" }));
+
+            for token in tokens.iter().skip( if is_else_if { 2 } else { 1 }) {
+                statement.push_str(format!("{}", token).as_str());
+            }
+
+            self.generated.push_str(format!("{}\n", statement).as_str());
+        }
+    }
+
+    pub fn directive_end(&mut self) {
+        self.generated.push_str(format!("#{}\n", "endif").as_str());
+    }
+
     pub fn module(&mut self, module_name: &String) {
         self.generated.push_str(format!("namespace {}", module_name).as_str());
     }
