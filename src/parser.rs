@@ -82,6 +82,11 @@ impl GreteaParser {
 
         let mut is_module         = false; let mut module_name = String::new();
 
+        let mut is_for            = false;
+        let mut is_for_variable   = false;
+        let mut is_for_in         = false; let mut for_var  = String::new();
+        let mut is_for_iter       = false; let mut for_iter = String::new();
+
         let mut is_return         = false;
 
         let mut set_name = String::new();
@@ -140,6 +145,10 @@ impl GreteaParser {
 
                 GreteaKeywords::Module => {
                     is_module = true; continue;
+                },
+
+                GreteaKeywords::For => {
+                    is_for = true; continue;
                 },
 
                 GreteaKeywords::LeftSqBracket => {
@@ -382,11 +391,36 @@ impl GreteaParser {
                         var_name = token.clone(); continue;
                     }
 
+                    if is_for {
+                        if is_for_variable {
+                            if is_for_in {
+                                for_iter    = token.clone();
+                                is_for_iter = true;
+
+                                codegen.for_iter(&for_var, &for_iter);
+
+                                for_var.clear(); for_iter.clear();
+
+                                is_for          = false;
+                                is_for_variable = false;
+                                is_for_in       = false;
+                                is_for_iter     = false; continue;
+                            }
+
+                            if token == "in" {
+                                is_for_in = true; continue;
+                            }
+                        }
+
+                        for_var         = token.clone();
+                        is_for_variable = true; continue;
+                    }
+
                     if is_alias {
                         if is_alias_name {
                             if token == "=" { continue; }
 
-                            alias_data    = to(token.clone().trim_end());
+                            alias_data    = from_module(&to(token.clone().trim_end()));
 
                             if is_preprocessor {
                                 codegen.preprocess_set(&alias_data, &alias_name);
