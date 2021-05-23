@@ -6,108 +6,136 @@
 // Distributed under the terms of the MIT License.
 //
 
+cpp { #include <string> } `alias string = std#string
+
 `if defined(AMIGA) {
     `set amiga = AMIGA
+    `set os    = "amiga"
 }@
 
 `if defined(aegis) {
     `set aegis = aegis
+    `set os    = "aegis"
 }@
 
 `if defined(apollo) {
     `set apollo = apollo
+    `set os     = "apollo"
 }@
 
 `if defined(__BEOS__) {
     `set beos   = __BEOS__
+    `set os     = "beos"
 }@
 
 `if defined(__bg__) {
     `set blue_gene  = __bg__
+    `set os         = "bluegene"
 }@
 
 `if defined(__FreeBSD__) {
     `set freebsd  = __FreeBSD__
+    `set os       = "freebsd"
 }@
 
 `if defined(__NetBSD__) {
     `set netbsd  = __NetBSD__
+    `set os      = "netbsd"
 }@
 
 `if defined(__OpenBSD__) {
     `set openbsd  = __OpenBSD__
+    `set os       = "openbsd"
 }@
 
 `if defined(__DragonFly__) {
     `set dragonfly  = __DragonFly__
+    `set os         = "dragonfly"
 }@
 
 `if defined(__gnu_hurd__) {
     `set hurd  = __gnu_hurd__
+    `set os    = "hurd"
 }@
 
 `if defined(__gnu_linux__) {
     `set gnu_linux  = __gnu_linux__
+    `set os         = "gnu/linux"
 }@
 
 `if defined(macintosh) {
     `set macos_9  = macintosh
+    `set os       = "macos9"
 }@
 
 `if defined(__minix) {
     `set minix  = __minix
+    `set os     = "minix"
 }@
 
 `if defined(__MORPHOS__) {
     `set morphos  = __MORPHOS__
+    `set os       = "morphos"
 }@
 
 `if defined(__MSDOS__) {
     `set msdos  = __MSDOS__
+    `set os     = "msdos"
 }@
 
 `if defined(__nucleus__) {
     `set nucleus  = __nucleus__
+    `set os       = "nucleus"
 }@
 
 `if defined(__OS2__) {
     `set os2  = __OS2__
+    `set os   = "os/2"
 }@
 
 `if defined(EPLAN9) {
     `set plan9  = EPLAN9
+    `set os     = "plan9"
 }@
 
 `if defined(__SYMBIAN32__) {
     `set symbian  = __SYMBIAN32__
+    `set os       = "symbian"
 }@
 
 `if defined(__unix__) {
     `set unix  = __unix__
+    `set type  = "unix"
 }@
 
 `if defined(_WIN16) {
     `set windows_16  = _WIN16
+    `set os          = "windows16bit"
 }@
 
 `if defined(_WIN32) {
     `set windows_32  = _WIN32
+    `set os          = "windows32bit"
 }@
 
 `if defined(_WIN64) {
     `set windows_64  = _WIN64
+    `set os          = "windows64bit"
 }@
 
 `if defined(__ANDROID__) {
     `set android  = __ANDROID__
+    `set os       = "android"
 }@
 
 `if defined(__linux__) {
     `set linux  = __linux__
+    `set kernel = "linux"
 }@
 
 `if defined(__APPLE__) {
     `set darwin  = __APPLE__
+    `set os      = "darwin"
 }@
 
 `if defined(__amd64__) {
