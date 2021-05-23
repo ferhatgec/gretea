@@ -6,8 +6,6 @@
 // Distributed under the terms of the MIT License.
 //
 
-cpp { #include <string> } `alias string = std#string
-
 `if defined(AMIGA) {
     `set amiga = AMIGA
     `set os    = "amiga"
@@ -140,28 +138,35 @@ cpp { #include <string> } `alias string = std#string
 
 `if defined(__amd64__) {
     `set amd64  = __amd64__
+    `set arch   = "amd64"
 }@
 
 `if defined(__arm__) {
     `set arm  = __arm__
+    `set arch = "arm"
 }@
 
 `if defined(__aarch64__) {
     `set arm64  = __aarch64__
+    `set arch   = "arm64"
 }@
 
 `if defined(__i386__) {
     `set i386  = __i386__
+    `set arch  = "i386"
 }@
 
 `if defined(__ia64__) {
     `set ia64  = __ia64__
+    `set arch  = "ia64"
 }@
 
 `if defined(__mips__) {
     `set mips  = __mips__
+    `set arch  = "mips"
 }@
 
 `if defined(__powerpc__) {
     `set powerpc  = __powerpc__
+    `set arch     = "powerpc"
 }@
