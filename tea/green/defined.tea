@@ -5,40 +5,135 @@
 // Copyright (c) 2021 Ferhat Geçdoğan All Rights Reserved.
 // Distributed under the terms of the MIT License.
 //
-// ! : Directives are not stl-specific yet.
-//
 
-`set amiga      = AMIGA
-`set aegis      = aegis
-`set apollo     = apollo
-`set beos       = __BEOS__
-`set blue_gene  = __bg__
-`set freebsd    = __FreeBSD__
-`set netbsd     = __NetBSD__
-`set openbsd    = __OpenBSD__
-`set dragonfly  = __DragonFly__
-`set hurd       = __gnu_hurd__
-`set gnu_linux  = __gnu_linux__
-`set macos_9    = macintosh
-`set minix      = __minix
-`set morphos    = __MORPHOS__
-`set msdos      = __MSDOS__
-`set nucleus    = __nucleus__
-`set os2        = __OS2__
-`set plan9      = EPLAN9
-`set symbian    = __SYMBIAN32__
-`set unix       = __unix__
-`set windows_16 = _WIN16
-`set windows_32 = _WIN32
-`set windows_64 = _WIN64
-`set android    = __ANDROID__
-`set linux      = __linux__
-`set darwin     = __APPLE__
+`if defined(AMIGA) {
+    `set amiga = AMIGA
+}@
 
-`set amd64      = __amd64__
-`set arm        = __arm__
-`set arm64      = __aarch64__
-`set i386       = __i386__
-`set ia64       = __ia64__
-`set mips       = __mips__
-`set powerpc    = __powerpc__
+`if defined(aegis) {
+    `set aegis = aegis
+}@
+
+`if defined(apollo) {
+    `set apollo = apollo
+}@
+
+`if defined(__BEOS__) {
+    `set beos   = __BEOS__
+}@
+
+`if defined(__bg__) {
+    `set blue_gene  = __bg__
+}@
+
+`if defined(__FreeBSD__) {
+    `set freebsd  = __FreeBSD__
+}@
+
+`if defined(__NetBSD__) {
+    `set netbsd  = __NetBSD__
+}@
+
+`if defined(__OpenBSD__) {
+    `set openbsd  = __OpenBSD__
+}@
+
+`if defined(__DragonFly__) {
+    `set dragonfly  = __DragonFly__
+}@
+
+`if defined(__gnu_hurd__) {
+    `set hurd  = __gnu_hurd__
+}@
+
+`if defined(__gnu_linux__) {
+    `set gnu_linux  = __gnu_linux__
+}@
+
+`if defined(macintosh) {
+    `set macos_9  = macintosh
+}@
+
+`if defined(__minix) {
+    `set minix  = __minix
+}@
+
+`if defined(__MORPHOS__) {
+    `set morphos  = __MORPHOS__
+}@
+
+`if defined(__MSDOS__) {
+    `set msdos  = __MSDOS__
+}@
+
+`if defined(__nucleus__) {
+    `set nucleus  = __nucleus__
+}@
+
+`if defined(__OS2__) {
+    `set os2  = __OS2__
+}@
+
+`if defined(EPLAN9) {
+    `set plan9  = EPLAN9
+}@
+
+`if defined(__SYMBIAN32__) {
+    `set symbian  = __SYMBIAN32__
+}@
+
+`if defined(__unix__) {
+    `set unix  = __unix__
+}@
+
+`if defined(_WIN16) {
+    `set windows_16  = _WIN16
+}@
+
+`if defined(_WIN32) {
+    `set windows_32  = _WIN32
+}@
+
+`if defined(_WIN64) {
+    `set windows_64  = _WIN64
+}@
+
+`if defined(__ANDROID__) {
+    `set android  = __ANDROID__
+}@
+
+`if defined(__linux__) {
+    `set linux  = __linux__
+}@
+
+`if defined(__APPLE__) {
+    `set darwin  = __APPLE__
+}@
+
+`if defined(__amd64__) {
+    `set amd64  = __amd64__
+}@
+
+`if defined(__arm__) {
+    `set arm  = __arm__
+}@
+
+`if defined(__aarch64__) {
+    `set arm64  = __aarch64__
+}@
+
+`if defined(__i386__) {
+    `set i386  = __i386__
+}@
+
+`if defined(__ia64__) {
+    `set ia64  = __ia64__
+}@
+
+`if defined(__mips__) {
+    `set mips  = __mips__
+}@
+
+`if defined(__powerpc__) {
+    `set powerpc  = __powerpc__
+}@
