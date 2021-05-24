@@ -1,11 +1,12 @@
 import header
+
 import tea.green.fmt
 import tea.green.defined
+import tea.green.type
 
 alias linker = cpp
-`alias string = std#string
 
-var today: int = 21
+var today: int8 = 21
 
 fn test(pi: double) {
     cpp { std::cout << "Green tea\n" << pi << '\n' ; }
@@ -13,7 +14,7 @@ fn test(pi: double) {
     . _ // return _
 }
 
-fn hmm() = int {
+fn hmm() = int8 {
        . today
     // ^ ^^^^^
     // return today
