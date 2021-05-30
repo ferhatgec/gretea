@@ -75,6 +75,9 @@ impl GreteaParser {
         let mut function_name       = String::new();
         let mut function_args: Vec<String> = Vec   ::new();
 
+        let mut is_pretty_arg     = false;
+        let mut pretty_arg       = String::new();
+
         let mut is_preprocessor   = false;
         let mut is_directive      = false;
         let mut is_set            = false;
@@ -92,6 +95,8 @@ impl GreteaParser {
 
         let mut set_name = String::new();
         let mut set_data = String::new();
+
+        let mut count_parentheses: u64 = 0;
 
         for mut token in tokens {
             if token.is_empty() || token == " " || token == "\n" { continue; }
@@ -230,15 +235,52 @@ impl GreteaParser {
                     }
 
                     if is_fn_call {
+                        if token == "(" {
+                            if is_pretty_arg {
+                                pretty_arg.push_str(token.clone().as_str());
+                            }
+                            else {
+                                if count_parentheses >= 1 {
+                                    function_args.push(token.clone());
+                                }
+                            }
+
+                            count_parentheses += 1; continue;
+                        }
+
+                        if token == ")" {
+                            if count_parentheses > 1 {
+                                if is_pretty_arg {
+                                    pretty_arg.push_str(token.clone().as_str());
+
+                                    if count_parentheses == 2 {
+                                        is_pretty_arg = false;
+                                        function_args
+                                            .push(pretty_arg.clone()); pretty_arg.clear();
+                                    }
+                                }
+                                else {
+                                    function_args.push(token.clone());
+                                }
+                            }
+
+                            count_parentheses -= 1;
+                        }
+
                         if token == "(" || token == ")" || token == "," {
-                            if token == ")" {
-                                codegen.function_call(&function_args,
-                                                      &function_name, is_expandable);
+                            if count_parentheses == 0 {
+                                if token == ")" {
+                                    codegen.function_call(&function_args,
+                                                          &function_name, is_expandable);
 
-                                is_fn_call    = false;
-                                is_expandable = false;
+                                    is_fn_call       = false;
+                                    is_expandable    = false;
 
-                                function_name.clear(); function_args.clear();
+                                    count_parentheses = 0;
+
+                                    function_name.clear();
+                                    function_args.clear();
+                                }
                             }
 
                             continue;
@@ -249,9 +291,25 @@ impl GreteaParser {
                                 is_expandable = true; continue;
                             },
                             _ => {
+                                if is_pretty_arg {
+                                    pretty_arg.push_str(token.clone().as_str());
+                                    continue;
+                                }
+
+                                for name in self.func_list.clone() {
+                                    if name == token.clone() {
+                                        pretty_arg    = token.clone();
+                                        is_pretty_arg = true; break;
+                                    }
+                                }
+
+                                if is_pretty_arg { continue; }
+
                                 function_args.push(token.clone());
                             }
                         }
+
+                        continue;
                     }
 
                     if is_import {

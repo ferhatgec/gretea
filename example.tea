@@ -24,6 +24,14 @@ fn hmm() = int8 {
     // .<ws> can be used by declared variables.
 }
 
+fn is_this_linux() = string {
+    if os == "gnu/linux" {
+        . "yes"
+    }
+
+    . "no"
+}
+
 fn main() = int {
     var pi: double    = 3.14        // immutable
     var three         = 3           // immutable, without type declaration
@@ -31,7 +39,7 @@ fn main() = int {
 
     var tea: string   = "tea"
 
-    test(pi)
+    fmt#println(is_this_linux())
 
     if green_tea == "gretea" {
         fmt#println("Greentea")
