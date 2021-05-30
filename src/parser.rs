@@ -514,6 +514,10 @@ impl GreteaParser {
                     }
 
                     if is_cpp_linker {
+                        if token.trim_end() == "\\" {
+                            cpp_block.push('\n'); continue;
+                        }
+
                         cpp_block.push_str(&*token); continue;
                     }
 
