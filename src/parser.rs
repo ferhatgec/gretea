@@ -428,8 +428,9 @@ impl GreteaParser {
                     if is_var {
                         if !var_name.is_empty() {
                             if is_var_type {
-                                is_var_type = false;
-                                variable_type = token.clone(); continue;
+                                if token == "=" {
+                                    is_var_type = false;
+                                } else { variable_type.push_str(format!("{} ", token.clone()).as_str()); continue; }
                             }
 
                             if !is_var_type {

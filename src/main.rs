@@ -36,6 +36,7 @@ fn header(filename: String) -> String {
     format!("{}.hpp", filename)
 }
 
+
 fn create_and_write(path: &std::path::Path, generated: String) {
     let mut file = match std::fs::File::create(path) {
         Err(why) => panic!("gretea: couldn't create {}: {}", path.display(), why),
@@ -121,6 +122,10 @@ fn main() {
     remove_and_check(generated_filename.as_str());
 
     for file in files.to_owned() {
-        remove_and_check(header(normalize(file.0.split('/').last().unwrap().parse().unwrap())).as_str());
+        remove_and_check(header(normalize(file.0.split('/')
+            .last  ()
+            .unwrap()
+            .parse ()
+            .unwrap())).as_str());
     }
 }
