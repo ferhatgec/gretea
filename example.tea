@@ -33,6 +33,12 @@ fn is_this_linux() = string {
 }
 
 fn main() = int {
+    runtime {
+        set HOME as env "HOME" \
+
+        println "Your home path: {HOME}"
+    }
+
     term#clear()
     var pi: double    = 3.14        // immutable
     var three         = 3           // immutable, without type declaration

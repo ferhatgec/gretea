@@ -16,6 +16,8 @@ pub enum GreteaKeywords {
     Mut,
 
     Cpp,
+    Runtime,
+
     Alias,
 
     If,
@@ -52,6 +54,8 @@ pub struct GreteaSyntax {
     pub ast_mut                 : String,
 
     pub ast_cpp                 : String,
+    pub ast_runtime             : String,
+
     pub ast_alias               : String,
 
     pub ast_if                  : String,
@@ -91,54 +95,58 @@ pub struct GreteaVariableList {
 impl Default for GreteaSyntax {
     fn default() -> Self {
         let mut init = GreteaSyntax {
-            ast_import              : ast_helpers::to("import"),
-            ast_fn                  : ast_helpers::to("fn"    ),
+            ast_import              : ast_helpers::to("import" ),
+            ast_fn                  : ast_helpers::to("fn"     ),
 
-            ast_var                 : ast_helpers::to("var"   ),
-            ast_mut                 : ast_helpers::to("mut"   ),
+            ast_var                 : ast_helpers::to("var"    ),
+            ast_mut                 : ast_helpers::to("mut"    ),
 
-            ast_cpp                 : ast_helpers::to("cpp"   ),
-            ast_alias               : ast_helpers::to("alias" ),
+            ast_cpp                 : ast_helpers::to("cpp"    ),
+            ast_runtime             : ast_helpers::to("runtime"),
 
-            ast_if                  : ast_helpers::to("if"    ),
-            ast_else                : ast_helpers::to("else"  ),
+            ast_alias               : ast_helpers::to("alias"  ),
 
-            ast_module              : ast_helpers::to("module"),
+            ast_if                  : ast_helpers::to("if"     ),
+            ast_else                : ast_helpers::to("else"   ),
 
-            ast_for                 : ast_helpers::to("for"   ),
+            ast_module              : ast_helpers::to("module" ),
 
-            ast_left_parenthese     : ast_helpers::to("("),
-            ast_right_parenthese    : ast_helpers::to(")"),
+            ast_for                 : ast_helpers::to("for"    ),
 
-            ast_square_left_bracket : ast_helpers::to("["),
-            ast_square_right_bracket: ast_helpers::to("]"),
+            ast_left_parenthese     : ast_helpers::to("("      ),
+            ast_right_parenthese    : ast_helpers::to(")"      ),
 
-            ast_curly_left_bracket  : ast_helpers::to("{"),
-            ast_curly_right_bracket : ast_helpers::to("}"),
+            ast_square_left_bracket : ast_helpers::to("["      ),
+            ast_square_right_bracket: ast_helpers::to("]"      ),
 
-            ast_preprocessor        : ast_helpers::to("`"  ),
-            ast_set                 : ast_helpers::to("set"),
+            ast_curly_left_bracket  : ast_helpers::to("{"      ),
+            ast_curly_right_bracket : ast_helpers::to("}"      ),
 
-            ast_directive_end       : ast_helpers::to("@"  ),
+            ast_preprocessor        : ast_helpers::to("`"      ),
+            ast_set                 : ast_helpers::to("set"    ),
+
+            ast_directive_end       : ast_helpers::to("@"      ),
 
             syntax_list             : Default::default()
         };
 
-        init.add(init.ast_import.clone(), GreteaKeywords::Import         );
-        init.add(init.ast_fn    .clone(), GreteaKeywords::Fn             );
+        init.add(init.ast_import .clone(), GreteaKeywords::Import         );
+        init.add(init.ast_fn     .clone(), GreteaKeywords::Fn             );
 
-        init.add(init.ast_var   .clone(), GreteaKeywords::Var            );
-        init.add(init.ast_mut   .clone(), GreteaKeywords::Mut            );
+        init.add(init.ast_var    .clone(), GreteaKeywords::Var            );
+        init.add(init.ast_mut    .clone(), GreteaKeywords::Mut            );
 
-        init.add(init.ast_cpp   .clone(), GreteaKeywords::Cpp            );
-        init.add(init.ast_alias .clone(), GreteaKeywords::Alias          );
+        init.add(init.ast_cpp    .clone(), GreteaKeywords::Cpp            );
+        init.add(init.ast_runtime.clone(), GreteaKeywords::Runtime        );
 
-        init.add(init.ast_if    .clone(), GreteaKeywords::If             );
-        init.add(init.ast_else  .clone(), GreteaKeywords::Else           );
+        init.add(init.ast_alias  .clone(), GreteaKeywords::Alias          );
 
-        init.add(init.ast_module.clone(), GreteaKeywords::Module         );
+        init.add(init.ast_if     .clone(), GreteaKeywords::If             );
+        init.add(init.ast_else   .clone(), GreteaKeywords::Else           );
 
-        init.add(init.ast_for   .clone(), GreteaKeywords::For            );
+        init.add(init.ast_module .clone(), GreteaKeywords::Module         );
+
+        init.add(init.ast_for    .clone(), GreteaKeywords::For            );
 
         init.add(init.ast_left_parenthese .clone(), GreteaKeywords::LeftParenthese );
         init.add(init.ast_right_parenthese.clone(), GreteaKeywords::RightParenthese);

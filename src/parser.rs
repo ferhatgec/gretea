@@ -58,7 +58,8 @@ impl GreteaParser {
         let mut is_var_data       = false; let mut var_data = String::new();
         let mut is_var_type       = false; let mut variable_type    = String::new();
 
-        let mut is_cpp_linker     = false; let mut cpp_block= String::new();
+        let mut is_cpp_linker     = false; let mut cpp_block     = String::new();
+        let mut is_runtime        = false; let mut runtime_block = String::new();
 
         let mut is_fn_call        = false;
 
@@ -142,9 +143,14 @@ impl GreteaParser {
                 GreteaKeywords::Cpp => {
                     is_cpp_linker = true; continue;
                 },
+                GreteaKeywords::Runtime => {
+                    is_runtime = true; continue;
+                },
+
                 GreteaKeywords::Alias=> {
                     is_alias = true; continue;
                 },
+
                 GreteaKeywords::If |
                 GreteaKeywords::Else => {
                     is_statement = true;
@@ -156,7 +162,14 @@ impl GreteaParser {
                 },
 
                 GreteaKeywords::For => {
-                    is_for = true; continue;
+                    if !is_runtime || !is_cpp_linker { is_for = true; continue; }
+
+                    if is_runtime {
+                        runtime_block.push_str("for ");
+                    }
+                    else if is_cpp_linker {
+                        cpp_block.push_str("for ");
+                    }
                 },
 
                 GreteaKeywords::LeftSqBracket => {
@@ -174,21 +187,35 @@ impl GreteaParser {
                 GreteaKeywords::RightCurlyBracket=> {
                     if is_directive { continue; }
 
-                    if !is_cpp_linker {
+                    if !is_cpp_linker && !is_runtime {
                         codegen.character(&self.init_ast.ast_curly_right_bracket);
-                    } else {
+                    } else if is_cpp_linker {
                         codegen.character(&cpp_block);
                         is_cpp_linker = false; cpp_block.clear();
-                    } continue;
+                    } else if is_runtime {
+                        let mut elite_read = elite::read::EliteFileData {
+                            raw_data: runtime_block.clone(),
+                            unparsed: vec![]
+                        };
+
+                        elite::lexer::elite_lexer::init_lexer(&elite_read);
+                        is_runtime = false; runtime_block.clear();
+                    }
                 },
 
                 GreteaKeywords::Preprocessor => {
                     is_preprocessor = true; continue;
                 },
                 GreteaKeywords::Set          => {
-                    if is_preprocessor {
-                        is_set = true;
-                    } continue;
+                    if !is_runtime || !is_cpp_linker {
+                        if is_preprocessor {
+                            is_set = true; continue;
+                        }
+                    }
+
+                    if is_runtime {
+                        runtime_block.push_str("set ");
+                    }
                 },
 
                 GreteaKeywords::DirectiveEnd => {
@@ -433,7 +460,7 @@ impl GreteaParser {
                     }
 
                     if token == "{" {
-                        if !is_cpp_linker { codegen.character(&self.init_ast.ast_curly_left_bracket); }
+                        if !is_cpp_linker && !is_runtime { codegen.character(&self.init_ast.ast_curly_left_bracket); }
 
                         continue;
                     }
@@ -532,7 +559,15 @@ impl GreteaParser {
                             cpp_block.push('\n'); continue;
                         }
 
-                        cpp_block.push_str(&*token); continue;
+                        cpp_block.push_str(token.as_str()); continue;
+                    }
+
+                    if is_runtime {
+                        if token.trim_end() == "\\" {
+                            runtime_block.push('\n'); continue;
+                        }
+
+                        runtime_block.push_str(format!("{} ", token).as_str()); continue;
                     }
 
                     let function_token = token.clone().split('#').last().unwrap().to_string();

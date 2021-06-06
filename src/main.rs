@@ -5,6 +5,8 @@
 //
 //
 
+extern crate elite;
+
 use std::{
     io::{
         Write,
@@ -119,13 +121,13 @@ fn main() {
         .arg(object_name)
         .status();
 
-    remove_and_check(generated_filename.as_str());
+    //remove_and_check(generated_filename.as_str());
 
-    for file in files.to_owned() {
+    /*for file in files.to_owned() {
         remove_and_check(header(normalize(file.0.split('/')
             .last  ()
             .unwrap()
             .parse ()
             .unwrap())).as_str());
-    }
+    }*/
 }
