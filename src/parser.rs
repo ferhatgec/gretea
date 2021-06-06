@@ -92,6 +92,8 @@ impl GreteaParser {
         let mut is_for_iter       = false; let mut for_iter = String::new();
 
         let mut is_return         = false;
+        let mut is_library        = false;
+        let mut is_library_setter = false;
 
         let mut set_name = String::new();
         let mut set_data = String::new();
@@ -158,10 +160,15 @@ impl GreteaParser {
                 },
 
                 GreteaKeywords::LeftSqBracket => {
-                    println!("found : [");
+                    if is_library { is_library_setter = true; continue; }
+
+                    is_library = true; continue;
                 },
                 GreteaKeywords::RightSqBracket => {
-                    println!("found : ]");
+                    if is_library || is_library_setter {
+                        is_library        = false;
+                        is_library_setter = false;
+                    } continue;
                 },
 
                 GreteaKeywords::RightCurlyBracket=> {
@@ -192,6 +199,12 @@ impl GreteaParser {
                 },
 
                 _ => {
+                    if is_library_setter {
+                        if token == "library" || token == "stl" {
+                            codegen.header_guards(); continue;
+                        }
+                    }
+
                     if is_statement {
                         if token == "{" {
                             if is_preprocessor {

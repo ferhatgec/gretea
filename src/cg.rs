@@ -169,6 +169,10 @@ impl GreteaCodegen {
         } else { return_variable.as_str() }).as_str())
     }
 
+    pub fn header_guards(&mut self) {
+        self.generated.push_str(format!("#{} {}\n", "pragma", "once").as_str());
+    }
+
     pub fn character(&mut self, character: &String) {
         self.generated.push_str(&*format!("{}\n", character));
     }
