@@ -18,4 +18,12 @@ fn main() = int {
 }
 ```
 
+### Features:
+ * Variables are immutable by default.
+ * [Runtime scripting support](https://github.com/ferhatgec/elite)
+ * Aliases
+ * Compile-time statements.
+ * Variadics.
+ * C++ codegen backend support.
+
 ### Gretea licensed under the terms of MIT License.
