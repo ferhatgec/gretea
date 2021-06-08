@@ -12,7 +12,7 @@
 import tea.green.type
 
 module str {
-    fn string#first(data: string) = char {
+    fn str#first(data: string) = char {
         var mut __first: int64 = 0
 
         for &ch in data {
@@ -22,7 +22,7 @@ module str {
         . (char)__first
     }
 
-    fn string#last(data: string) = char {
+    fn str#last(data: string) = char {
         var mut __last: int64 = 0
 
         for &ch in data {
