@@ -1,0 +1,32 @@
+[[ stl ]]
+
+// string.tea
+//
+// MIT License
+//
+// Copyright (c) 2021 Ferhat Geçdoğan All Rights Reserved.
+// Distributed under the terms of the MIT License.
+//
+//
+
+import tea.green.type
+
+module str {
+    fn string#first(data: string) = char {
+        var mut __first: int64 = 0
+
+        for &ch in data {
+            . ch
+        }
+
+        . (char)__first
+    }
+
+    fn string#last(data: string) = char {
+        var mut __last: int64 = 0
+
+        for &ch in data {
+            __last = ch
+        } . (char)__last
+    }
+} // str
