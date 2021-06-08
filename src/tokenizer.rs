@@ -44,11 +44,7 @@ pub mod gretea_tokenizer {
                     tokenized_data.push(variable_data.clone());
 
                     variable_data.clear();
-                }
-
-                i += 1;
-
-                continue;
+                } i += 1; continue;
             }
 
             if is_start_of_data(&temporary_tokens[i]) {
@@ -84,9 +80,7 @@ pub mod gretea_tokenizer {
         let mut i        : usize = 0;
 
         for (index, token) in tokens.iter().enumerate().skip(n) {
-            i = index;
-
-            if token.is_empty() { continue; }
+            i = index; if token.is_empty() { continue; }
 
             temporary.push_str(
                 format!("{} ", token).as_str());

@@ -25,6 +25,7 @@ use {
 };
 use std::env::var;
 use crate::ast::ast_helpers::from_module;
+use crate::tokenizer::gretea_tokenizer::is_data;
 
 pub struct GreteaParser {
     pub init_ast : GreteaSyntax      ,
@@ -92,7 +93,7 @@ impl GreteaParser {
         let mut is_for_in         = false; let mut for_var  = String::new();
         let mut is_for_iter       = false; let mut for_iter = String::new();
 
-        let mut is_return         = false;
+        let mut is_return         = false; let mut return_val = String::new();
         let mut is_library        = false;
         let mut is_library_setter = false;
 
@@ -585,17 +586,28 @@ impl GreteaParser {
                         }
 
                         if is_return {
-                            is_return = false;
-
-                            for variable in &self.data_list.variable_list {
-                                if token == &variable.__name {
-                                    codegen.return_variable(&variable.__data); break;
-                                }
+                            if is_data(&token.as_str()) {
+                                codegen.return_variable(&token.clone());
+                                is_return = false; continue;
                             }
 
-                            if token.trim_end() == "_" {
-                                codegen.return_variable(&to(""));
-                            } else { codegen.return_variable(&token.clone()); }
+                            return_val.push_str(format!("{} ", token.clone()).as_str());
+
+                            if token.ends_with('\n') {
+                                is_return = false;
+
+                                for variable in &self.data_list.variable_list {
+                                    if token == &variable.__name {
+                                        codegen.return_variable(&variable.__data);
+                                        break;
+                                    }
+                                }
+
+                                if token.trim_end() == "_" {
+                                    codegen.return_variable(&to(""));
+                                } else { codegen.return_variable(&return_val.clone());
+                                } return_val.clear();
+                            }
                         }
 
                         continue;

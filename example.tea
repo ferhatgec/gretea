@@ -15,7 +15,7 @@ fn test(pi: double) {
 }
 
 fn hmm() = int8 {
-       . today
+       . today + 12
     // ^ ^^^^^
     // return today
     // -----------
@@ -26,10 +26,11 @@ fn hmm() = int8 {
 
 fn is_this_linux() = string {
     if os == "gnu/linux" {
-        . "yes"
+        . "hmm yes"
+
     }
 
-    . "no"
+    . "hmm no"
 }
 
 fn main() = int {
@@ -46,7 +47,7 @@ fn main() = int {
 
     var tea: string   = "tea"
 
-    fmt#println(is_this_linux())
+    fmt#println(is_this_linux(), hmm())
 
     if green_tea == "gretea" {
         fmt#println("Greentea")
