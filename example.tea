@@ -3,6 +3,7 @@ import header
 import tea.green.fmt
 import tea.green.defined
 import tea.green.type
+import tea.green.string
 
 alias linker = cpp
 
@@ -48,6 +49,9 @@ fn main() = int {
     var tea: string   = "tea"
 
     fmt#println(is_this_linux(), hmm())
+
+    fmt#println(str#first(tea))
+    fmt#println(str#last(tea))
 
     if green_tea == "gretea" {
         fmt#println("Greentea")

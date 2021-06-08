@@ -100,6 +100,8 @@ impl GreteaParser {
         let mut set_name = String::new();
         let mut set_data = String::new();
 
+        let mut is_line = false; let mut line     = String::new();
+
         let mut count_parentheses: u64 = 0;
 
         for mut token in tokens {
@@ -337,9 +339,11 @@ impl GreteaParser {
                                     continue;
                                 }
 
+                                let __token = token.split('#').last().unwrap().trim().to_string();
+
                                 for name in self.func_list.clone() {
-                                    if name == token.clone() {
-                                        pretty_arg    = token.clone();
+                                    if name == __token.clone() {
+                                        pretty_arg    = from_module(token);
                                         is_pretty_arg = true; break;
                                     }
                                 }
@@ -607,6 +611,20 @@ impl GreteaParser {
                                     codegen.return_variable(&to(""));
                                 } else { codegen.return_variable(&return_val.clone());
                                 } return_val.clear();
+                            }
+                        } else {
+                            if is_line {
+                                is_line = true; line.push_str(format!("{} ", token.clone()).as_str());
+                                if token.ends_with('\n') {
+                                    codegen.character(&format!("{};", line)); line.clear(); is_line = false; continue;
+                                }
+                            }
+
+                            for variable in &self.data_list.variable_list {
+                                if token == &variable.__name {
+                                    is_line = true; line.push_str(format!("{} ", token.clone()).as_str());
+                                    break;
+                                }
                             }
                         }
 
