@@ -335,7 +335,7 @@ impl GreteaParser {
                             },
                             _ => {
                                 if is_pretty_arg {
-                                    pretty_arg.push_str(token.clone().as_str());
+                                    pretty_arg.push_str(from_module(token).as_str());
                                     continue;
                                 }
 

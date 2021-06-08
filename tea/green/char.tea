@@ -1,0 +1,25 @@
+[[ stl ]]
+
+// char.tea
+//
+// MIT License
+//
+// Copyright (c) 2021 Ferhat Geçdoğan All Rights Reserved.
+// Distributed under the terms of the MIT License.
+//
+//
+
+import tea.green.type
+import tea.green.string
+
+`set character_ascii = 32
+
+module ch {
+    fn ch#upper(data: char) = char {
+        . data - character_ascii
+    }
+
+    fn ch#lower(data: char) = char {
+        . data + character_ascii
+    }
+} // ch

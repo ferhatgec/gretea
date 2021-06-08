@@ -4,6 +4,7 @@ import tea.green.fmt
 import tea.green.defined
 import tea.green.type
 import tea.green.string
+import tea.green.char
 
 alias linker = cpp
 
@@ -50,8 +51,8 @@ fn main() = int {
 
     fmt#println(is_this_linux(), hmm())
 
-    fmt#println(str#first(tea))
-    fmt#println(str#last(tea))
+    fmt#println(ch#upper(str#first(tea)))
+    fmt#println(ch#upper(str#last(tea)))
 
     if green_tea == "gretea" {
         fmt#println("Greentea")
