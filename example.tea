@@ -10,6 +10,12 @@ alias linker = cpp
 
 var today: int8 = 21
 
+struct Test {
+    name   : string [[ default = "Foo" ]],
+    surname: string [[ default = "Foo" ]],
+    age    : int64  [[ default = 16    ]]
+}
+
 fn test(pi: double) {
     cpp { std::cout << "Green tea\n" << pi << '\n' ; }
 
@@ -43,11 +49,19 @@ fn main() = int {
     }
 
     term#clear()
+
     var pi: double    = 3.14        // immutable
     var three         = 3           // immutable, without type declaration
     var mut green_tea = ProjectName // mutable, without type declaration
 
     var tea: string   = "tea"
+
+    var mut __Test = Test {
+        name   : "Ferhat"  ,
+        surname: "Geçdoğan",
+    }
+
+    fmt#println(__Test.name, "\n", __Test.surname, "\n", __Test.age)
 
     fmt#println(is_this_linux(), hmm())
 

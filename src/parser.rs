@@ -26,6 +26,7 @@ use {
 use std::env::var;
 use crate::ast::ast_helpers::from_module;
 use crate::tokenizer::gretea_tokenizer::is_data;
+use elite::ast::ast_helpers::extract_argument;
 
 pub struct GreteaParser {
     pub init_ast : GreteaSyntax      ,
@@ -59,6 +60,10 @@ impl GreteaParser {
         let mut is_var_data       = false; let mut var_data = String::new();
         let mut is_var_type       = false; let mut variable_type    = String::new();
 
+        let mut is_var_struct         = false;
+        let mut var_struct_init_name = String::new();
+        let mut var_struct_init_data = String::new();
+
         let mut is_cpp_linker     = false; let mut cpp_block     = String::new();
         let mut is_runtime        = false; let mut runtime_block = String::new();
 
@@ -87,6 +92,14 @@ impl GreteaParser {
         let mut is_statement      = false; let mut statement_data: Vec<String> = Vec::new();
 
         let mut is_module         = false; let mut module_name = String::new();
+
+        let mut is_struct         = false; let mut struct_name = String::new();
+        let mut is_struct_member  = false;
+        let mut struct_list: Vec<String>= Vec::new();
+
+        let mut struct_member_name    = String::new();
+        let mut struct_member_type    = String::new();
+        let mut struct_member_default = String::new(); let mut is_default = false;
 
         let mut is_for            = false;
         let mut is_for_variable   = false;
@@ -163,6 +176,9 @@ impl GreteaParser {
                 GreteaKeywords::Module => {
                     is_module = true; continue;
                 },
+                GreteaKeywords::Struct => {
+                    is_struct = true; continue;
+                },
 
                 GreteaKeywords::For => {
                     if !is_runtime || !is_cpp_linker { is_for = true; continue; }
@@ -190,7 +206,41 @@ impl GreteaParser {
                 GreteaKeywords::RightCurlyBracket=> {
                     if is_directive { continue; }
 
-                    if !is_cpp_linker && !is_runtime {
+                    if is_struct && is_struct_member {
+                        if !struct_member_name.is_empty() {
+                            is_struct = false;
+                            is_struct_member = false;
+
+                            codegen.variable_definition(&struct_member_default, &struct_member_type,
+                                                        &struct_member_name, true);
+
+                            struct_member_name.clear();
+                            struct_member_type.clear();
+                            struct_member_default.clear();
+                            is_default = false;
+                        } codegen.character(&to("};"));
+                    }
+                    else if is_var_struct {
+                        codegen.variable_definition(&format!("{}}}", var_data),
+                                                    &variable_type, &var_name, is_mutable);
+
+                        self.data_list.variable_list.push(GreteaVariableData {
+                            __keyword_type: GreteaKeywords::Var,
+                            __name        : var_name.clone(),
+                            __data        : variable_type.clone()
+                        });
+
+                        is_var     = false;
+                        is_var_type= false;
+                        is_var_data= false;
+                        is_mutable = false;
+
+                        var_data     .clear();
+                        variable_type.clear();
+                        var_name     .clear();
+
+                        is_var_struct = false;
+                    } else if !is_cpp_linker && !is_runtime {
                         codegen.character(&self.init_ast.ast_curly_right_bracket);
                     } else if is_cpp_linker {
                         codegen.character(&cpp_block);
@@ -230,8 +280,18 @@ impl GreteaParser {
 
                 _ => {
                     if is_library_setter {
+                        if is_default {
+                            if token == "=" { continue; }
+
+                            struct_member_default = token.clone(); continue;
+                        }
+
                         if token == "library" || token == "stl" {
                             codegen.header_guards(); continue;
+                        }
+
+                        if token == "default" {
+                            is_default = true; continue;
                         }
                     }
 
@@ -249,6 +309,39 @@ impl GreteaParser {
                         }
 
                         statement_data.push(token.clone()); continue;
+                    }
+
+                    if is_struct {
+                        if is_struct_member {
+                            if token == "{" {
+                                codegen.character(&to("{\npublic:")); continue;
+                            }
+
+                            if !struct_member_name.is_empty() {
+                                if token == ":" { continue; }
+
+                                if !struct_member_type.is_empty() {
+                                    if token.ends_with('\n') || token.ends_with(',') {
+                                        codegen.variable_definition(&struct_member_default, &struct_member_type,
+                                                                    &struct_member_name, true);
+
+                                        struct_member_name.clear();
+                                        struct_member_type.clear();
+                                        struct_member_default.clear();
+                                        is_default = false; continue;
+                                    }
+                                }
+
+                                struct_member_type = token.clone(); continue;
+                            }
+
+
+                            struct_member_name = token.clone(); continue;
+                        }
+
+                        struct_name = token.clone(); is_struct_member = true;
+                        codegen.structure(&struct_name);
+                        struct_list.push(struct_name); continue;
                     }
 
                     if is_module {
@@ -465,7 +558,7 @@ impl GreteaParser {
                     }
 
                     if token == "{" {
-                        if !is_cpp_linker && !is_runtime { codegen.character(&self.init_ast.ast_curly_left_bracket); }
+                        if !is_cpp_linker && !is_runtime && !is_var_struct { codegen.character(&self.init_ast.ast_curly_left_bracket); }
 
                         continue;
                     }
@@ -480,7 +573,34 @@ impl GreteaParser {
 
                             if !is_var_type {
                                 if is_var_data {
-                                    var_data = token.clone();
+                                    if is_var_struct {
+                                        if token == "{" {
+                                            var_data.push_str("{\n"); continue;
+                                        }
+
+                                        if !var_struct_init_name.is_empty() {
+                                            if token == ":" { continue; }
+                                            if !var_struct_init_data.is_empty() {
+                                                if token == "," || token.ends_with('\n') {
+                                                    var_data.push_str(format!(".{}={},", var_struct_init_name,
+                                                                               var_struct_init_data).as_str());
+                                                    var_struct_init_name.clear(); var_struct_init_data.clear(); continue;
+                                                }
+                                            }
+
+                                            var_struct_init_data = token.clone(); continue;
+                                        }
+
+                                        var_struct_init_name = token.clone(); continue;
+                                    }
+
+                                    var_data = to(token.clone().trim());
+
+                                    for structure in struct_list.clone() {
+                                        if structure == var_data {
+                                            is_var_struct = true; break;
+                                        }
+                                    } if is_var_struct { var_data.push_str("{\n"); continue; }
 
                                     codegen.variable_definition(&var_data, &variable_type, &var_name, is_mutable);
 

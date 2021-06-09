@@ -7,6 +7,7 @@
 
 pub mod gretea_tokenizer {
     use crate::read::{GreteaFileData};
+    use crate::ast::ast_helpers::to;
 
     pub static TOKEN_LIST: &'static [char] = &[
         '`' ,
@@ -28,9 +29,8 @@ pub mod gretea_tokenizer {
     pub fn tokenize(raw_data: &GreteaFileData) -> Vec<String> {
         let temporary_tokens  : Vec<_> = raw_data.raw_data.split(' ').collect();
         let mut tokenized_data: Vec<String>  = Vec   ::new();
-
-        let mut variable_data : String       = String::new();
-
+        let mut variable_data         = String::new();
+        let mut optional              = String::new();
         let mut found_data    : bool         = false;
 
         let mut i             : usize        = 0    ;
@@ -39,22 +39,32 @@ pub mod gretea_tokenizer {
             if found_data {
                 variable_data.push_str(format!("{} ", temporary_tokens[i]).as_str());
 
+                if variable_data.ends_with(',') {
+                    optional = to(","); variable_data.pop(); }
+
                 if is_end_of_data(&temporary_tokens[i]) {
                     found_data = false;
                     tokenized_data.push(variable_data.clone());
+                    tokenized_data.push(optional.clone());
 
-                    variable_data.clear();
+                    variable_data.clear(); optional.clear();
                 } i += 1; continue;
             }
 
             if is_start_of_data(&temporary_tokens[i]) {
                 if !is_end_of_data(&temporary_tokens[i]) {
                     found_data = true;
-
                     variable_data.push_str(format!("{} ", temporary_tokens[i]).as_str());
                 }
                 else {
-                    tokenized_data.push(temporary_tokens[i].to_string());
+                    let mut data = to(temporary_tokens[i].trim());
+                    let mut ends_with = false;
+                    if data.ends_with(',') {
+                         data.pop();
+                        ends_with = true; }
+
+                    tokenized_data.push(data);
+                    if ends_with {  tokenized_data.push(to(",")); }
                 }
 
                 i += 1;
@@ -116,7 +126,11 @@ pub mod gretea_tokenizer {
     }
 
     pub fn is_end_of_data(token: &&str) -> bool {
-        return if token.trim_end().ends_with('"') {
+        let mut token = to(token.trim_end());
+
+        if token.ends_with(',') { token.pop(); }
+
+        return if token.ends_with('"') {
             true
         } else { false };
     }

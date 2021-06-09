@@ -24,6 +24,7 @@ pub enum GreteaKeywords {
     Else,
 
     Module,
+    Struct,
 
     For,
 
@@ -62,6 +63,7 @@ pub struct GreteaSyntax {
     pub ast_else                : String,
 
     pub ast_module              : String,
+    pub ast_struct              : String,
 
     pub ast_for                 : String,
 
@@ -110,7 +112,7 @@ impl Default for GreteaSyntax {
             ast_else                : ast_helpers::to("else"   ),
 
             ast_module              : ast_helpers::to("module" ),
-
+            ast_struct              : ast_helpers::to("struct" ),
             ast_for                 : ast_helpers::to("for"    ),
 
             ast_left_parenthese     : ast_helpers::to("("      ),
@@ -145,6 +147,7 @@ impl Default for GreteaSyntax {
         init.add(init.ast_else   .clone(), GreteaKeywords::Else           );
 
         init.add(init.ast_module .clone(), GreteaKeywords::Module         );
+        init.add(init.ast_struct .clone(), GreteaKeywords::Struct         );
 
         init.add(init.ast_for    .clone(), GreteaKeywords::For            );
 
