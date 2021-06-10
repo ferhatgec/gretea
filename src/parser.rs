@@ -100,6 +100,7 @@ impl GreteaParser {
         let mut struct_member_name    = String::new();
         let mut struct_member_type    = String::new();
         let mut struct_member_default = String::new(); let mut is_default = false;
+        let mut struct_member_immutable= true;
 
         let mut is_for            = false;
         let mut is_for_variable   = false;
@@ -153,6 +154,9 @@ impl GreteaParser {
                 GreteaKeywords::Mut => {
                     if is_var {
                         is_mutable = true;
+                    }
+                    else if is_struct_member {
+                        struct_member_immutable = false;
                     } continue;
                 },
 
@@ -323,18 +327,18 @@ impl GreteaParser {
                                 if !struct_member_type.is_empty() {
                                     if token.ends_with('\n') || token.ends_with(',') {
                                         codegen.variable_definition(&struct_member_default, &struct_member_type,
-                                                                    &struct_member_name, true);
+                                                                    &struct_member_name, struct_member_immutable);
 
                                         struct_member_name.clear();
                                         struct_member_type.clear();
                                         struct_member_default.clear();
-                                        is_default = false; continue;
+                                        is_default = false;
+                                        struct_member_immutable = true;  continue;
                                     }
                                 }
 
                                 struct_member_type = token.clone(); continue;
                             }
-
 
                             struct_member_name = token.clone(); continue;
                         }

@@ -11,9 +11,9 @@ alias linker = cpp
 var today: int8 = 21
 
 struct Test {
-    name   : string [[ default = "Foo" ]],
-    surname: string [[ default = "Foo" ]],
-    age    : int64  [[ default = 16    ]]
+    mut name   : string [[ default = "Foo" ]],
+    mut surname: string [[ default = "Foo" ]],
+    mut age    : int64  [[ default = 16    ]]
 }
 
 fn test(pi: double) {
@@ -35,14 +35,13 @@ fn hmm() = int8 {
 fn is_this_linux() = string {
     if os == "gnu/linux" {
         . "hmm yes"
-
     }
 
     . "hmm no"
 }
 
 fn main() = int {
-    runtime {
+    [[ runtime ]] {
         set HOME as env "HOME" \
 
         println "Your home path: {HOME}"
@@ -56,7 +55,7 @@ fn main() = int {
 
     var tea: string   = "tea"
 
-    var mut __Test = Test {
+    var mut __Test    = Test {
         name   : "Ferhat"  ,
         surname: "Geçdoğan",
     }
