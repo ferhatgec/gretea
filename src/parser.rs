@@ -761,7 +761,7 @@ impl GreteaParser {
 
                                 if token.trim_end() == "_" {
                                     codegen.return_variable(&to(""));
-                                } else { codegen.return_variable(&return_val.clone());
+                                } else { codegen.return_variable(&from_module(&return_val));
                                 } return_val.clear();
                             }
                         } else {
