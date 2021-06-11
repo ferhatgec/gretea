@@ -52,6 +52,7 @@ impl GreteaParser {
         let mut is_expandable     = false;
         let mut is_fn_argument    = false; let mut fn_args: HashMap<String, String>
                                                                        = HashMap::new();
+
         let mut is_fn_return_value= false; let mut fn_val  = String ::new();
         let mut is_void           = false;
 
@@ -492,10 +493,13 @@ impl GreteaParser {
                                 is_fn_argument = true; continue;
                             }
 
-
                             if is_fn_argument {
                                 if token == ":" || token == "," {
                                     continue;
+                                }
+
+                                if token == "=" {
+                                    is_fn_return_value = true; is_void = false; continue;
                                 }
 
                                 if token == "{"  {
@@ -529,33 +533,29 @@ impl GreteaParser {
                                     fn_generic.clear(); continue;
                                 }
 
-                                if token == "=" {
-                                    is_fn_return_value = true; is_void = false; continue;
-                                }
-
                                 if argument_name.is_empty() {
-                                    argument_name = token.clone();
-
-                                    continue;
+                                    if token != ")" {
+                                        argument_name = token.clone();
+                                    } else {
+                                        argument_name.clear(); argument_value.clear();
+                                    } continue;
                                 }
 
                                 if argument_value.is_empty() {
-                                    argument_value = token.clone();
+                                    if token != ")" {
+                                        argument_value = token.clone();
 
-                                    if is_expandable {
-                                        if argument_value == fn_generic {
-                                            argument_value.push_str("...");
+                                        if is_expandable {
+                                            if argument_value == fn_generic {
+                                                argument_value.push_str("...");
+                                            }
                                         }
-                                    }
 
-                                    continue;
+                                        fn_args.insert(argument_name.clone(), argument_value.clone());
+                                        argument_name.clear(); argument_value.clear();
+                                    } continue;
                                 }
 
-                                if argument_value == ")" {
-                                    argument_name.clear(); argument_value.clear(); continue;
-                                }
-
-                                fn_args.insert(argument_name.clone(), argument_value.clone());
 
                                 argument_name.clear(); argument_value.clear(); continue;
                             }
