@@ -434,6 +434,8 @@ impl GreteaParser {
                                     function_name.clear();
                                     function_args.clear();
                                 }
+                            } else if is_pretty_arg && token == "," {
+                                pretty_arg.push_str(token.as_str());
                             }
 
                             continue;

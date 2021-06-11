@@ -10,6 +10,27 @@
 //
 
 import tea.green.type
+import tea.green.char
+
+module cpp_str {
+    fn cpp_str#append(&data: string, what: string) {
+        [[ unsafe ]] {
+            data.append(what)
+        }
+    }
+
+    fn cpp_str#append(&data: string, pos: int64, len: uint64) {
+        [[ unsafe ]] {
+            data.append(data, pos, len)
+        }
+    }
+
+    fn cpp_str#append(&data: string, n: int64, ch: char) {
+        [[ unsafe ]] {
+            data.append(n, ch)
+        }
+    }
+}
 
 module str {
     fn str#first(data: string) = char {
@@ -30,5 +51,11 @@ module str {
                 __last = ch
             }
         } . (char)__last
+    }
+
+    fn str#append(data: string, what: string) = string {
+        cpp_str#append(data, what)
+
+        . data
     }
 } // str

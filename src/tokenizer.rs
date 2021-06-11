@@ -39,8 +39,11 @@ pub mod gretea_tokenizer {
             if found_data {
                 variable_data.push_str(format!("{} ", temporary_tokens[i]).as_str());
 
-                if variable_data.ends_with(',') {
-                    optional = to(","); variable_data.pop(); }
+                if variable_data.ends_with(',') ||
+                    variable_data.ends_with('(') ||
+                    variable_data.ends_with(')') {
+                    optional = variable_data.chars().last().unwrap().to_string(); variable_data.pop();
+                }
 
                 if is_end_of_data(&temporary_tokens[i]) {
                     found_data = false;
@@ -54,17 +57,21 @@ pub mod gretea_tokenizer {
             if is_start_of_data(&temporary_tokens[i]) {
                 if !is_end_of_data(&temporary_tokens[i]) {
                     found_data = true;
+
                     variable_data.push_str(format!("{} ", temporary_tokens[i]).as_str());
                 }
                 else {
                     let mut data = to(temporary_tokens[i].trim());
                     let mut ends_with = false;
-                    if data.ends_with(',') {
-                         data.pop();
-                        ends_with = true; }
+                    if data.ends_with(',') ||
+                        data.ends_with('(') ||
+                        data.ends_with(')') {
+                        optional = data.chars().last().unwrap().to_string(); data.pop(); ends_with = true;
+                    }
 
                     tokenized_data.push(data);
-                    if ends_with {  tokenized_data.push(to(",")); }
+                    if ends_with { tokenized_data.push(optional.clone());
+                    } optional.clear();
                 }
 
                 i += 1;
