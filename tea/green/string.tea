@@ -108,6 +108,24 @@ module cpp_str {
             }
         }
     }
+
+    fn cpp_str#find(data: string, &what: string, pos: uint64) = int64 {
+        [[ unsafe ]] {
+            [[ cpp ]] {
+                return \
+                    data.find(what, pos);
+            }
+        }
+    }
+
+    fn cpp_str#find(data: string, ch: char, pos: uint64) = int64 {
+        [[ unsafe ]] {
+            [[ cpp ]] {
+                return \
+                    data.find(ch, pos);
+            }
+        }
+    }
 }
 
 module str {
