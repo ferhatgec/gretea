@@ -13,13 +13,13 @@ use {
         },
         tokenizer::gretea_tokenizer::{TOKEN_LIST}
     },
-    std::collections::{HashMap}
+    std::collections::{BTreeMap}
 };
 
 pub struct GreteaCodegen {
     pub generated: String,
 
-    pub sources  : HashMap<String, bool>
+    pub sources  : BTreeMap<String, bool>
 }
 
 pub struct CodegenData {
@@ -49,7 +49,7 @@ impl GreteaCodegen {
     }
 
     pub fn function(&mut self,
-                    args      : &HashMap<String, String>,
+                    args      : &BTreeMap<String, String>,
                     name      : &String,
                     return_val: &String,
                     generic   : &String,

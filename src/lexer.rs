@@ -16,10 +16,10 @@ pub mod gretea_lexer {
             read::{GreteaFileData},
             tokenizer::gretea_tokenizer::{tokenize}
         },
-        std::collections::{HashMap}
+        std::collections::{BTreeMap}
     };
 
-    pub fn init_lexer(init: &GreteaFileData) -> (String, HashMap<String, bool>, Vec<String>) {
+    pub fn init_lexer(init: &GreteaFileData) -> (String, BTreeMap<String, bool>, Vec<String>) {
         let tokens = tokenize(init);
         let ast   = GreteaSyntax::default();
         let mut parser = GreteaParser {

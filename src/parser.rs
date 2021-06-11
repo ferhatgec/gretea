@@ -21,7 +21,7 @@ use {
             GreteaCodegen
         }
     },
-    std::collections::{HashMap}
+    std::collections::{HashMap, BTreeMap}
 };
 use std::env::var;
 use crate::ast::ast_helpers::from_module;
@@ -50,8 +50,8 @@ impl GreteaParser {
         let mut is_fn_name        = false; let mut fn_name   = String ::new();
         let mut is_generic        = false; let mut fn_generic= String::new();
         let mut is_expandable     = false;
-        let mut is_fn_argument    = false; let mut fn_args: HashMap<String, String>
-                                                                       = HashMap::new();
+        let mut is_fn_argument    = false; let mut fn_args: BTreeMap<String, String>
+                                                                       = BTreeMap::new();
 
         let mut is_fn_return_value= false; let mut fn_val  = String ::new();
         let mut is_void           = false;
@@ -556,7 +556,6 @@ impl GreteaParser {
                                     } continue;
                                 }
 
-
                                 argument_name.clear(); argument_value.clear(); continue;
                             }
 
@@ -713,10 +712,22 @@ impl GreteaParser {
 
                     let function_token = token.clone().split('#').last().unwrap().to_string();
 
-                    for name in self.func_list.clone() {
-                        if name.split('#').last().unwrap().trim() == function_token.trim() {
-                            is_fn_call = true;
-                            function_name = from_module(&token); break;
+                    if is_unsafe {
+                        if function_token.contains('.') {
+                            let function_token = token.clone().split('.').last().unwrap().to_string();
+                            if !function_token.is_empty() {
+                                is_fn_call = true;
+                                function_name = token.clone();
+                            } continue;
+                        }
+                    }
+                    else {
+                        for name in self.func_list.clone() {
+                            if name.split('#').last().unwrap().trim() == function_token.trim() {
+                                is_fn_call = true;
+                                function_name = from_module(&token);
+                                break;
+                            }
                         }
                     }
 
