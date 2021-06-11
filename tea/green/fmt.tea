@@ -13,7 +13,7 @@ cpp { #include <iostream> }
 
 module fmt {
     fn fmt#basic_print<Arg>(argument: Arg) {
-        cpp { std::cout << argument ; }
+        [[ cpp ]] { std::cout << argument ; }
     }
 
     fn fmt#print<'Args>(arguments: Args) {
