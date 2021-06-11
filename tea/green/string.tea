@@ -162,6 +162,24 @@ module cpp_str {
             }
         }
     }
+
+    fn cpp_str#find_last_not_of(data: string, &what: string, pos: uint64) = int64 {
+        [[ unsafe ]] {
+            [[ cpp ]] {
+                return \
+                    data.find_last_not_of(what, pos);
+            }
+        }
+    }
+
+    fn cpp_str#find_last_not_of(data: string, ch: char, pos: uint64) = int64 {
+        [[ unsafe ]] {
+            [[ cpp ]] {
+                return \
+                    data.find_last_not_of(ch, pos);
+            }
+        }
+    }
 }
 
 module str {
