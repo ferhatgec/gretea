@@ -66,6 +66,15 @@ module cpp_str {
             }
         }
     }
+
+    fn cpp_str#capacity(data: string) = uint64 {
+        [[ unsafe ]] {
+            [[ cpp ]] {
+                return \
+                    data.capacity();
+            }
+        }
+    }
 }
 
 module str {
