@@ -111,6 +111,8 @@ impl GreteaParser {
         let mut is_library        = false;
         let mut is_library_setter = false;
 
+        let mut is_unsafe         = false;
+
         let mut set_name = String::new();
         let mut set_data = String::new();
 
@@ -165,6 +167,9 @@ impl GreteaParser {
                 },
                 GreteaKeywords::Runtime => {
                     is_runtime = true; continue;
+                },
+                GreteaKeywords::Unsafe => {
+                    is_unsafe = true; continue;
                 },
 
                 GreteaKeywords::Alias=> {
@@ -223,6 +228,9 @@ impl GreteaParser {
                             struct_member_default.clear();
                             is_default = false;
                         } codegen.character(&to("};"));
+                    }
+                    else if is_unsafe {
+                        is_unsafe = false;
                     }
                     else if is_var_struct {
                         codegen.variable_definition(&format!("{}}}", var_data),
@@ -297,6 +305,10 @@ impl GreteaParser {
                         if token == "default" {
                             is_default = true; continue;
                         }
+                    }
+
+                    if is_unsafe {
+                        if token == "{" { continue; }
                     }
 
                     if is_statement {
@@ -724,10 +736,15 @@ impl GreteaParser {
                             if token.ends_with('\n') {
                                 is_return = false;
 
-                                for variable in &self.data_list.variable_list {
-                                    if token == &variable.__name {
-                                        codegen.return_variable(&variable.__data);
-                                        break;
+                                if is_unsafe {
+                                    codegen.return_variable(&token.clone()); continue;
+                                }
+                                else {
+                                    for variable in &self.data_list.variable_list {
+                                        if token == &variable.__name {
+                                            codegen.return_variable(&variable.__data);
+                                            break;
+                                        }
                                     }
                                 }
 
@@ -738,16 +755,17 @@ impl GreteaParser {
                             }
                         } else {
                             if is_line {
-                                is_line = true; line.push_str(format!("{} ", token.clone()).as_str());
+                                line.push_str(format!("{} ", token.clone()).as_str());
                                 if token.ends_with('\n') {
                                     codegen.character(&format!("{};", line)); line.clear(); is_line = false; continue;
                                 }
                             }
 
+
                             for variable in &self.data_list.variable_list {
                                 if token == &variable.__name {
-                                    is_line = true; line.push_str(format!("{} ", token.clone()).as_str());
-                                    break;
+                                    is_line = true;
+                                    line.push_str(format!("{}", token.clone()).as_str()); break;
                                 }
                             }
                         }

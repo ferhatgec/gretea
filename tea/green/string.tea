@@ -26,7 +26,9 @@ module str {
         var mut __last: int64 = 0
 
         for &ch in data {
-            __last = ch
+            [[ unsafe ]] {
+                __last = ch
+            }
         } . (char)__last
     }
 } // str

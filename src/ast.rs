@@ -17,6 +17,7 @@ pub enum GreteaKeywords {
 
     Cpp,
     Runtime,
+    Unsafe,
 
     Alias,
 
@@ -56,6 +57,7 @@ pub struct GreteaSyntax {
 
     pub ast_cpp                 : String,
     pub ast_runtime             : String,
+    pub ast_unsafe              : String,
 
     pub ast_alias               : String,
 
@@ -105,6 +107,7 @@ impl Default for GreteaSyntax {
 
             ast_cpp                 : ast_helpers::to("cpp"    ),
             ast_runtime             : ast_helpers::to("runtime"),
+            ast_unsafe              : ast_helpers::to("unsafe" ),
 
             ast_alias               : ast_helpers::to("alias"  ),
 
@@ -140,6 +143,7 @@ impl Default for GreteaSyntax {
 
         init.add(init.ast_cpp    .clone(), GreteaKeywords::Cpp            );
         init.add(init.ast_runtime.clone(), GreteaKeywords::Runtime        );
+        init.add(init.ast_unsafe .clone(), GreteaKeywords::Unsafe         );
 
         init.add(init.ast_alias  .clone(), GreteaKeywords::Alias          );
 
