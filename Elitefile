@@ -8,6 +8,8 @@ set cp              as "cp"
 set cp_args         as "-rf"
 set from            as "./tea"
 
+set username        as env "USER"
+
 set stl_path        as "/usr/include/gretea/"
 
 for signal "start" [
@@ -20,5 +22,9 @@ for signal "start" [
 
     for exists "{stl_path}" [
         println "elite: STL installed."
+
+        if eq "{username}" "ferhatgec" [
+            use exec "gretea example.tea"
+        ]
     ]
 ]
