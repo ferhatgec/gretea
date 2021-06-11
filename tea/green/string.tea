@@ -50,9 +50,11 @@ module cpp_str {
     }
 
     fn cpp_str#at(data: string, n: uint64) = char {
-        [[ cpp ]] {
-            return \
-             data.at(n);
+        [[ unsafe ]] {
+            [[ cpp ]] {
+                return \
+                    data.at(n);
+            }
         }
     }
 }
