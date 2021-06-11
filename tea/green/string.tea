@@ -81,6 +81,15 @@ module cpp_str {
             data.erase()
         }
     }
+
+    fn cpp_str#compare(data: string, &compare: string) = int8 {
+        [[ unsafe ]] {
+            [[ cpp ] {
+                return \
+                    data.compare(compare);
+            }
+        }
+    }
 }
 
 module str {
