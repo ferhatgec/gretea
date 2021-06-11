@@ -75,6 +75,12 @@ module cpp_str {
             }
         }
     }
+
+    fn cpp_str#erase(data: string) {
+        [[ unsafe ]] {
+            data.erase()
+        }
+    }
 }
 
 module str {
