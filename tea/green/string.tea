@@ -19,9 +19,9 @@ module cpp_str {
         }
     }
 
-    fn cpp_str#append(&data: string, pos: int64, len: uint64) {
+    fn cpp_str#append(&data: string, what: string, pos: int64, len: uint64) {
         [[ unsafe ]] {
-            data.append(data, pos, len)
+            data.append(what, pos, len)
         }
     }
 
@@ -29,6 +29,25 @@ module cpp_str {
         [[ unsafe ]] {
             data.append(n, ch)
         }
+    }
+
+    fn cpp_str#assign(&data: string, what: string) {
+        [[ unsafe ]] {
+            data.assign(what)
+        }
+    }
+
+    fn cpp_str#assign(&data: string, what: string, pos: int64, len: uint64) {
+        [[ unsafe ]] {
+            data.assign(what, pos, len)
+        }
+    }
+
+    fn cpp_str#assign(&data: string, n: int64, ch: char) {
+        [[ unsafe ]] {
+            data.assign(n, ch)
+        }
+
     }
 }
 
