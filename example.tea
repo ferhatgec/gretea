@@ -17,7 +17,7 @@ struct Test {
 }
 
 fn test(pi: double) {
-    cpp { std::cout << "Green tea\n" << pi << '\n' ; }
+    [[ cpp ]] { std::cout << "Green tea\n" << pi << '\n' ; }
 
     . _ // return _
 }

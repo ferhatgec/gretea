@@ -42,6 +42,8 @@ impl GreteaCodegen {
 
         dir = to(dir.trim());
 
+        println!("dira {}", dir.clone());
+
         self.sources  .insert(dir.clone(), is_stl);
         self.generated.push_str(
             &*format!("#{}{}{}.hpp{}\n", "include",
