@@ -90,6 +90,15 @@ module cpp_str {
             }
         }
     }
+
+    fn cpp_str#empty(data: string) = bool {
+        [[ unsafe ]] {
+            [[ cpp ]] {
+                return \
+                    data.empty();
+            }
+        }
+    }
 }
 
 module str {
