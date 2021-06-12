@@ -300,6 +300,15 @@ module cpp_str {
             }
         }
     }
+
+    fn cpp_str#substr(data: string, pos: int64, len: int64) = string {
+        [[ unsafe ]] {
+            [[ cpp ]] {
+                return \
+                    data.substr(pos, len);
+            }
+        }
+    }
 }
 
 module str {
