@@ -267,6 +267,24 @@ module cpp_str {
             data.resize(n, ch)
         }
     }
+
+    fn cpp_str#rfind(data: string, &what: string, pos: uint64) = int64 {
+        [[ unsafe ]] {
+            [[ cpp ]] {
+                return \
+                    data.rfind(what, pos);
+            }
+        }
+    }
+
+    fn cpp_str#rfind(data: string, ch: char, pos: uint64) = int64 {
+        [[ unsafe ]] {
+            [[ cpp ]] {
+                return \
+                    data.rfind(ch, pos);
+            }
+        }
+    }
 }
 
 module str {
