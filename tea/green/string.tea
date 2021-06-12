@@ -234,6 +234,12 @@ module cpp_str {
             }
         }
     }
+
+    fn cpp_str#pop_back(&data: string) {
+        [[ unsafe ]] {
+            data.pop_back()
+        }
+    }
 }
 
 module str {
