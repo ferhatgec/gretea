@@ -249,6 +249,12 @@ module cpp_str {
             }
         }
     }
+
+    fn cpp_str#reserve(&data: string, n: int64) {
+        [[ unsafe ]] {
+            data.reserve(n)
+        }
+    }
 }
 
 module str {
