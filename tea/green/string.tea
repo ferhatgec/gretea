@@ -285,6 +285,12 @@ module cpp_str {
             }
         }
     }
+
+    fn cpp_str#shrink_to_fit(&data: string) {
+        [[ unsafe ]] {
+            data.shrink_to_fit()
+        }
+    }
 }
 
 module str {
