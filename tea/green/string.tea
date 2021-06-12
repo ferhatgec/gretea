@@ -255,6 +255,18 @@ module cpp_str {
             data.reserve(n)
         }
     }
+
+    fn cpp_str#resize(&data: string, n: int64) {
+        [[ unsafe ]] {
+            data.resize(n)
+        }
+    }
+
+    fn cpp_str#resize(&data: string, n: int64, ch: char) {
+        [[ unsafe ]] {
+            data.resize(n, ch)
+        }
+    }
 }
 
 module str {
