@@ -309,6 +309,12 @@ module cpp_str {
             }
         }
     }
+
+    fn cpp_str#swap(&data: string, what: string) {
+        [[ unsafe ]] {
+            data.swap(what)
+        }
+    }
 }
 
 module str {
