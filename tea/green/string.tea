@@ -291,6 +291,15 @@ module cpp_str {
             data.shrink_to_fit()
         }
     }
+
+    fn cpp_str#size(&data: string) = int64 {
+        [[ unsafe ]] {
+            [[ cpp ]] {
+                return \
+                    data.size();
+            }
+        }
+    }
 }
 
 module str {
