@@ -240,6 +240,15 @@ module cpp_str {
             data.pop_back()
         }
     }
+
+    fn cpp_str#replace(data: string, &what: string, pos: int64, len: uint64) = string {
+        [[ unsafe ]] {
+            [[ cpp ]] {
+                return \
+                    data.replace(pos, len, what);
+            }
+        }
+    }
 }
 
 module str {
