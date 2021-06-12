@@ -198,6 +198,33 @@ module cpp_str {
             }
         }
     }
+
+    fn cpp_str#front(data: string) = char {
+        [[ unsafe ]] {
+            [[ cpp ]] {
+                return \
+                    data.front();
+            }
+        }
+    }
+
+    fn cpp_str#insert(data: string, pos: int64, &what: string) = string {
+        [[ unsafe ]] {
+            [[ cpp ]] {
+                return \
+                    data.insert(pos, what);
+            }
+        }
+    }
+
+    fn cpp_str#length(data: string) = uint64 {
+        [[ unsafe ]] {
+            [[ cpp ]] {
+                return \
+                    data.length();
+            }
+        }
+    }
 }
 
 module str {
