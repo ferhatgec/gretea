@@ -225,6 +225,15 @@ module cpp_str {
             }
         }
     }
+
+    fn cpp_str#max_size(data: string) = uint64 {
+        [[ unsafe ]] {
+            [[ cpp ]] {
+                return \
+                    data.max_size();
+            }
+        }
+    }
 }
 
 module str {
