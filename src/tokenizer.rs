@@ -6,8 +6,10 @@
 //
 
 pub mod gretea_tokenizer {
-    use crate::read::{GreteaFileData};
-    use crate::ast::ast_helpers::to;
+    use crate::{
+        ast::ast_helpers::{to},
+        read::{GreteaFileData}
+    };
 
     pub static TOKEN_LIST: &'static [char] = &[
         '`' ,

@@ -14,19 +14,26 @@ use {
             GreteaVariableData,
             GreteaVariableList,
 
-            ast_helpers::{to}
+            ast_helpers::{
+                to,
+                from_module,
+            }
         },
         cg::{
             CodegenData,
             GreteaCodegen
-        }
+        },
+        tokenizer::gretea_tokenizer::{is_data}
     },
-    std::collections::{HashMap, BTreeMap}
+    std::{
+        collections::{
+            HashMap,
+            BTreeMap
+        },
+        env::{var}
+    },
+    elite::ast::ast_helpers::{extract_argument}
 };
-use std::env::var;
-use crate::ast::ast_helpers::from_module;
-use crate::tokenizer::gretea_tokenizer::is_data;
-use elite::ast::ast_helpers::extract_argument;
 
 pub struct GreteaParser {
     pub init_ast : GreteaSyntax      ,
