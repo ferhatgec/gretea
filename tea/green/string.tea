@@ -347,4 +347,22 @@ module str {
 
         . data
     }
+
+    fn str#capitalize(data: string) = string {
+        var mut __data: string = ""
+        var mut first : bool   = false
+
+        for &ch in data {
+            if first {
+                cpp_str#push_back(__data, ch#lower(ch))
+            }
+            else {
+                cpp_str#push_back(__data, ch#upper(ch))
+
+                [[ unsafe ]] {
+                    first = true
+                }
+            }
+        } . __data
+    }
 } // str
