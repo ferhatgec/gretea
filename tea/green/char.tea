@@ -16,10 +16,14 @@ import tea.green.string
 
 module ch {
     fn ch#upper(data: char) = char {
-        . data - character_ascii
+        if data >= 'a' && data <= 'z' {
+            . data - character_ascii
+        } . data
     }
 
     fn ch#lower(data: char) = char {
-        . data + character_ascii
+        if data >= 'A' && data <= 'Z' {
+            . data + character_ascii
+        } . data
     }
 } // ch
