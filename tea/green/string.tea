@@ -241,6 +241,12 @@ module cpp_str {
         }
     }
 
+    fn cpp_str#push_back(&data: string, ch: char) {
+        [[ unsafe ]] {
+            data.push_back(ch)
+        }
+    }
+
     fn cpp_str#replace(data: string, &what: string, pos: int64, len: uint64) = string {
         [[ unsafe ]] {
             [[ cpp ]] {
@@ -323,9 +329,7 @@ module str {
 
         for &ch in data {
             . ch
-        }
-
-        . (char)__first
+        } . (char)__first
     }
 
     fn str#last(data: string) = char {
