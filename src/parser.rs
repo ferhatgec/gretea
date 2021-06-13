@@ -104,7 +104,9 @@ impl GreteaParser {
         let mut struct_member_immutable= true;
 
         let mut is_enum           = false;
+        let mut is_enum_type      = false;
         let mut enum_name        = String::new();
+        let mut enum_type        = String::new();
         let mut enum_data        = String::new();
 
         let mut is_for            = false;
@@ -243,9 +245,9 @@ impl GreteaParser {
                         is_unsafe = false;
                     }
                     else if is_enum {
-                        codegen.enumeration(&enum_name, &enum_data);
+                        codegen.enumeration(&enum_name, &enum_type, &enum_data);
                         is_enum = false;
-                        enum_name.clear(); enum_data.clear();
+                        enum_name.clear(); enum_type.clear(); enum_data.clear();
                     }
                     else if is_var_struct {
                         codegen.variable_definition(&format!("{}}}", var_data),
@@ -328,7 +330,15 @@ impl GreteaParser {
 
                     if is_enum {
                         if token == "{" { continue; }
-                        if enum_name.is_empty() { enum_name = token.clone(); }
+                        if enum_name.is_empty() { enum_name = token.clone(); continue;
+                        } else {
+                            if is_enum_type {
+                                enum_type = token.clone(); is_enum_type = false; continue;
+                            }
+                            if token == "=" {
+                                is_enum_type = true; continue;
+                            }
+                        }
 
                         enum_data.push_str(token.clone().as_str());
                         if token == "," { enum_data.push('\n'); } continue;

@@ -167,8 +167,11 @@ impl GreteaCodegen {
         self.generated.push_str(format!(".{} = {}", name, data).as_str());
     }
 
-    pub fn enumeration(&mut self, name: &String, data: &String) {
-        self.generated.push_str(format!("enum {} {{\n{}\n}};", name, data).as_str());
+    pub fn enumeration(&mut self, name: &String, _type: &String, data: &String) {
+        self.generated.push_str(format!("enum {} {} {{\n{}\n}};", name,
+                                        if !_type.is_empty() {
+                                            format!(": {}", _type.clone())
+                                        } else { to("") }, data).as_str());
     }
 
     pub fn for_iter(&mut self, var_name: &String, var_iter: &String) {
