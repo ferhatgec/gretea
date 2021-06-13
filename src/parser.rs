@@ -103,6 +103,10 @@ impl GreteaParser {
         let mut struct_member_default = String::new(); let mut is_default = false;
         let mut struct_member_immutable= true;
 
+        let mut is_enum           = false;
+        let mut enum_name        = String::new();
+        let mut enum_data        = String::new();
+
         let mut is_for            = false;
         let mut is_for_variable   = false;
         let mut is_for_in         = false; let mut for_var  = String::new();
@@ -189,6 +193,11 @@ impl GreteaParser {
                 GreteaKeywords::Struct => {
                     is_struct = true; continue;
                 },
+                GreteaKeywords::Enum => {
+                    if !is_fn_data {
+                        is_enum = true;
+                    }
+                },
 
                 GreteaKeywords::For => {
                     if !is_runtime || !is_cpp_linker { is_for = true; continue; }
@@ -232,6 +241,11 @@ impl GreteaParser {
                     }
                     else if is_unsafe {
                         is_unsafe = false;
+                    }
+                    else if is_enum {
+                        codegen.enumeration(&enum_name, &enum_data);
+                        is_enum = false;
+                        enum_name.clear(); enum_data.clear();
                     }
                     else if is_var_struct {
                         codegen.variable_definition(&format!("{}}}", var_data),
@@ -310,6 +324,14 @@ impl GreteaParser {
 
                     if is_unsafe {
                         if token == "{" { continue; }
+                    }
+
+                    if is_enum {
+                        if token == "{" { continue; }
+                        if enum_name.is_empty() { enum_name = token.clone(); }
+
+                        enum_data.push_str(token.clone().as_str());
+                        if token == "," { enum_data.push('\n'); } continue;
                     }
 
                     if is_statement {
