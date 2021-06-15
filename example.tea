@@ -5,6 +5,7 @@ import tea.green.defined
 import tea.green.type
 import tea.green.string
 import tea.green.char
+import tea.green.term
 
 enum ProgrammingLanguages = int8 {
     Gretea,
@@ -54,6 +55,9 @@ fn main() = int {
 
         println "Your home path: {HOME}"
     }
+
+    term#clear()
+    term#disable_cursor()
 
     var pi: double    = 3.14        // immutable
     var three         = 3           // immutable, without type declaration
@@ -107,6 +111,7 @@ fn main() = int {
 
     fmt#println("\x1b[0;93mhmm...\x1b[0m")
 
+    term#enable_cursor()
 
     . 0
 }

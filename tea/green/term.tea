@@ -1,0 +1,36 @@
+[[ stl ]]
+
+// term.tea
+//
+// MIT License
+//
+// Copyright (c) 2021 Ferhat Geçdoğan All Rights Reserved.
+// Distributed under the terms of the MIT License.
+//
+//
+
+import tea.green.fmt
+import tea.green.type
+
+module term {
+    fn term#refresh() {
+        fmt#print("\x1b[2J")
+    }
+
+    fn term#clear() {
+        term#refresh()
+        fmt#print("\x1b[H")
+    }
+
+    fn term#to_up() {
+        fmt#print("\x1b[0A")
+    }
+
+    fn term#enable_cursor() {
+        fmt#print("\x1b[?25h")
+    }
+
+    fn term#disable_cursor() {
+        fmt#print("\x1b[?25l")
+    }
+} // term
