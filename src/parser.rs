@@ -134,17 +134,33 @@ impl GreteaParser {
 
         let mut count_parentheses: u64 = 0;
 
-        for mut token in tokens {
+        let mut is_get_data = false;
+        let mut get_data = String::new();
+
+        for mut token in tokens.clone() {
             if token.is_empty() || token == " " || token == "\n" { continue; }
 
-            if is_alias_replace {
-                let get_alias_data = alias_list.get(token);
+            if is_get_data {
+                get_data.push_str(token.clone().as_str());
 
-                if !get_alias_data.is_none() {
-                    token = get_alias_data.unwrap();
-                } is_alias_replace = false;
+                if token.trim_end().ends_with('"') {
+                    is_get_data = false;
+                    token = get_data.clone(); get_data.clear();
+                } else { continue; }
+            }
+            else if token.starts_with('"') {
+                if !token.trim_end().ends_with('"') {
+                    is_get_data = true; get_data.push_str(token.clone().as_str()); continue;
+                }
             }
 
+            if is_alias_replace {
+                let get_alias_data = alias_list.get(token.as_str());
+
+                if !get_alias_data.is_none() {
+                    token = get_alias_data.unwrap().clone();
+                } is_alias_replace = false;
+            }
 
             if token == "#"
                 && !is_cpp_linker
@@ -154,7 +170,7 @@ impl GreteaParser {
                 is_alias_replace = true; continue;
             }
 
-            matched_type = *self.init_ast.match_keyword(&to(token));
+            matched_type = *self.init_ast.match_keyword(&token);
 
             match matched_type {
                 GreteaKeywords::Import => {
@@ -486,7 +502,7 @@ impl GreteaParser {
                             },
                             _ => {
                                 if is_pretty_arg {
-                                    pretty_arg.push_str(from_module(token).as_str());
+                                    pretty_arg.push_str(from_module(&token).as_str());
                                     continue;
                                 }
 
@@ -494,7 +510,7 @@ impl GreteaParser {
 
                                 for name in self.func_list.clone() {
                                     if name == __token.clone() {
-                                        pretty_arg    = from_module(token);
+                                        pretty_arg    = from_module(&token);
                                         is_pretty_arg = true; break;
                                     }
                                 }
@@ -793,7 +809,7 @@ impl GreteaParser {
                                 }
                                 else {
                                     for variable in &self.data_list.variable_list {
-                                        if token == &variable.__name {
+                                        if token == variable.__name {
                                             codegen.return_variable(&variable.__data);
                                             break;
                                         }
@@ -815,7 +831,7 @@ impl GreteaParser {
 
 
                             for variable in &self.data_list.variable_list {
-                                if token == &variable.__name {
+                                if token == variable.__name {
                                     is_line = true;
                                     line.push_str(format!("{}", token.clone()).as_str()); break;
                                 }
