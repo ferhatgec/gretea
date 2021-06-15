@@ -12,7 +12,12 @@ use std::{
         Write,
         Error
     },
-    process::{Output}
+    process::{
+        Command,
+        Output,
+        ExitStatus,
+        exit
+    }
 };
 
 mod read;
@@ -66,10 +71,10 @@ fn main() {
     if commandline_arguments.len() < 2 {
         println!("Gretea compiler");
 
-        std::process::exit(1);
+        exit(1);
     }
 
-    let mut filename       = commandline_arguments.last().unwrap();
+    let mut filename       = commandline_arguments.get(1).unwrap();
     let mut func_list: Vec<String> = Vec::new();
 
     let mut gretea_read = read::GreteaFileData {
@@ -114,20 +119,25 @@ fn main() {
 
     create_and_write(path, generated);
 
-    let build_output = std::process::Command::new("c++")
-        .arg("-std=c++17")
-        .arg(generated_filename.clone())
-        .arg("-o")
-        .arg(object_name)
-        .status();
+    let mut build_output = Command::new("c++");
 
-    //remove_and_check(generated_filename.as_str());
+    build_output.arg("-std=c++17")
+        .arg(generated_filename.clone()).arg("-o").arg(object_name);
 
-    /*for file in files.to_owned() {
-        remove_and_check(header(normalize(file.0.split('/')
-            .last  ()
-            .unwrap()
-            .parse ()
-            .unwrap())).as_str());
-    }*/
+    if commandline_arguments.len() > 2 {
+        for arg in commandline_arguments.iter().skip(2) {
+            build_output.arg(arg);
+        }
+    }
+    if build_output.status().unwrap().success() {
+        remove_and_check(generated_filename.as_str());
+
+        for file in files.to_owned() {
+            remove_and_check(header(normalize(file.0.split('/')
+                .last()
+                .unwrap()
+                .parse()
+                .unwrap())).as_str());
+        }
+    }
 }
