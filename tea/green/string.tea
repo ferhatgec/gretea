@@ -321,6 +321,15 @@ module cpp_str {
             data.swap(what)
         }
     }
+
+    fn cpp_str#to_string<Arg>(data: Arg) = string {
+        [[ unsafe ]] {
+            [[ cpp ]] {
+                return \
+                    std::to_string(data);
+            }
+        }
+    }
 }
 
 module str {
