@@ -11,10 +11,12 @@ use {
             ast_helpers::{to},
             GreteaKeywords
         },
-        tokenizer::gretea_tokenizer::{TOKEN_LIST}
+        tokenizer::gretea_tokenizer::{TOKEN_LIST},
+        optimize::{optimizer}
     },
     std::collections::{BTreeMap}
 };
+use crate::optimize::OptimizeBlocks;
 
 pub struct GreteaCodegen {
     pub generated: String,
@@ -123,7 +125,7 @@ impl GreteaCodegen {
                     "if("
                 } else { "(" }));
 
-            for token in tokens.iter().skip( if is_else_if { 2 } else { 1 }) {
+            for token in optimizer::optimize(tokens, OptimizeBlocks::StatementBool).iter().skip( if is_else_if { 2 } else { 1 }) {
                 statement.push_str(format!("{}", token).as_str());
             }
 

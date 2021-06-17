@@ -66,6 +66,19 @@ fn main() = int {
     var mut tea: string   = "green"
     var gt     : string   = "gREEnTeA"
 
+    var __true            = true
+    var __false           = false
+
+    // optimize statements
+    if __true == true {
+        fmt#println("ok")
+    }
+
+    // optimize statements
+    if __false != false {
+        fmt#println("ok.")
+    }
+
     fmt#println(cpp_str#at(tea, 1), str#append( tea, "tea" ))
 
     var mut __Test    = Test {

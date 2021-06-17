@@ -26,6 +26,7 @@ mod lexer;
 mod ast;
 mod parser;
 mod cg;
+mod optimize;
 
 fn to_gretea(filename: String) -> String {
     format!("{}.tea", filename)
