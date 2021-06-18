@@ -70,10 +70,13 @@ fn main() = int {
 
     var __true            = true
     var __false           = false
+    var mut x      : int8 = 0
 
     for _ {
+        if x == 4 { break }
+
         fmt#println("LLLLLLooooooooooooooopppp......")
-        break
+        x += 1
     }
 
     // optimize statements
