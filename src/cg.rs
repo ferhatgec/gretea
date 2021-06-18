@@ -21,7 +21,9 @@ use crate::optimize::OptimizeBlocks;
 pub struct GreteaCodegen {
     pub generated: String,
 
-    pub sources  : BTreeMap<String, bool>
+    pub sources  : BTreeMap<String, bool>,
+
+    pub optimize : bool
 }
 
 pub struct CodegenData {
@@ -125,7 +127,10 @@ impl GreteaCodegen {
                     "if("
                 } else { "(" }));
 
-            for token in optimizer::optimize(tokens, OptimizeBlocks::StatementBool).iter().skip( if is_else_if { 2 } else { 1 }) {
+            for token in
+                if self.optimize {
+                    optimizer::optimize(tokens, OptimizeBlocks::StatementBool)
+                } else { tokens.clone() }.iter().skip( if is_else_if { 2 } else { 1 })  {
                 statement.push_str(format!("{}", token).as_str());
             }
 

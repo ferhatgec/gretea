@@ -45,7 +45,8 @@ impl GreteaParser {
     pub fn parse(&mut self, tokens: &Vec<String>) -> GreteaCodegen {
         let mut codegen = GreteaCodegen {
             generated: to(""),
-            sources  : Default::default()
+            sources  : Default::default(),
+            optimize : true
         };
 
         let mut matched_type = GreteaKeywords::Undefined;
@@ -338,13 +339,21 @@ impl GreteaParser {
                             struct_member_default = token.clone(); continue;
                         }
 
-                        if token == "library" || token == "stl" {
-                            codegen.header_guards(); continue;
-                        }
-
-                        if token == "default" {
-                            is_default = true; continue;
-                        }
+                        match token.as_str() {
+                            "library" | "stl" => {
+                                codegen.header_guards();
+                            },
+                            "no_optimize" => {
+                                codegen.optimize = false;
+                            },
+                            "optimize" => {
+                                codegen.optimize = true;
+                            },
+                            "default" => {
+                                is_default = true;
+                            },
+                            _ => {}
+                        } continue;
                     }
 
                     if is_unsafe {
