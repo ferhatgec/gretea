@@ -235,6 +235,12 @@ impl GreteaParser {
                         cpp_block.push_str("for ");
                     }
                 },
+                GreteaKeywords::Continue => {
+                    codegen.for_continue();
+                },
+                GreteaKeywords::Break => {
+                    codegen.for_break();
+                },
 
                 GreteaKeywords::LeftSqBracket => {
                     if is_library { is_library_setter = true; continue; }
@@ -744,6 +750,14 @@ impl GreteaParser {
                         is_for_variable = true; continue;
                     }
 
+                    if is_cpp_linker {
+                        if token.trim_end() == "\\" {
+                            cpp_block.push('\n'); continue;
+                        }
+
+                        cpp_block.push_str(token.as_str()); continue;
+                    }
+
                     if is_alias {
                         if is_alias_name {
                             if token == "=" { continue; }
@@ -763,14 +777,6 @@ impl GreteaParser {
                         alias_name = token.clone(); is_alias_name = true;
 
                         continue;
-                    }
-
-                    if is_cpp_linker {
-                        if token.trim_end() == "\\" {
-                            cpp_block.push('\n'); continue;
-                        }
-
-                        cpp_block.push_str(token.as_str()); continue;
                     }
 
                     if is_runtime {

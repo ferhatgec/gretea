@@ -189,6 +189,14 @@ impl GreteaCodegen {
         self.generated.push_str(format!("for(auto {} : {})", var_name, var_iter).as_str());
     }
 
+    pub fn for_continue(&mut self) {
+        self.generated.push_str("continue;\n");
+    }
+
+    pub fn for_break(&mut self) {
+        self.generated.push_str("break;\n");
+    }
+
     pub fn return_variable(&mut self, return_variable: &String) {
         self.generated.push_str(format!("return {};", if return_variable.is_empty() {
             ""

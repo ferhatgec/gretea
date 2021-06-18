@@ -29,6 +29,8 @@ pub enum GreteaKeywords {
     Enum,
 
     For,
+    Continue,
+    Break,
 
     LeftParenthese,
     RightParenthese,
@@ -70,6 +72,8 @@ pub struct GreteaSyntax {
     pub ast_enum                : String,
 
     pub ast_for                 : String,
+    pub ast_continue            : String,
+    pub ast_break               : String,
 
     pub ast_left_parenthese     : String,
     pub ast_right_parenthese    : String,
@@ -101,64 +105,68 @@ pub struct GreteaVariableList {
 impl Default for GreteaSyntax {
     fn default() -> Self {
         let mut init = GreteaSyntax {
-            ast_import              : ast_helpers::to("import" ),
-            ast_fn                  : ast_helpers::to("fn"     ),
+            ast_import              : ast_helpers::to("import"  ),
+            ast_fn                  : ast_helpers::to("fn"      ),
 
-            ast_var                 : ast_helpers::to("var"    ),
-            ast_mut                 : ast_helpers::to("mut"    ),
+            ast_var                 : ast_helpers::to("var"     ),
+            ast_mut                 : ast_helpers::to("mut"     ),
 
-            ast_cpp                 : ast_helpers::to("cpp"    ),
-            ast_runtime             : ast_helpers::to("runtime"),
-            ast_unsafe              : ast_helpers::to("unsafe" ),
+            ast_cpp                 : ast_helpers::to("cpp"     ),
+            ast_runtime             : ast_helpers::to("runtime" ),
+            ast_unsafe              : ast_helpers::to("unsafe"  ),
 
-            ast_alias               : ast_helpers::to("alias"  ),
+            ast_alias               : ast_helpers::to("alias"   ),
 
-            ast_if                  : ast_helpers::to("if"     ),
-            ast_else                : ast_helpers::to("else"   ),
+            ast_if                  : ast_helpers::to("if"      ),
+            ast_else                : ast_helpers::to("else"    ),
 
-            ast_module              : ast_helpers::to("module" ),
-            ast_struct              : ast_helpers::to("struct" ),
-            ast_enum                : ast_helpers::to("enum"   ),
+            ast_module              : ast_helpers::to("module"  ),
+            ast_struct              : ast_helpers::to("struct"  ),
+            ast_enum                : ast_helpers::to("enum"    ),
 
-            ast_for                 : ast_helpers::to("for"    ),
+            ast_for                 : ast_helpers::to("for"     ),
+            ast_continue            : ast_helpers::to("continue"),
+            ast_break               : ast_helpers::to("break"   ),
 
-            ast_left_parenthese     : ast_helpers::to("("      ),
-            ast_right_parenthese    : ast_helpers::to(")"      ),
+            ast_left_parenthese     : ast_helpers::to("("       ),
+            ast_right_parenthese    : ast_helpers::to(")"       ),
 
-            ast_square_left_bracket : ast_helpers::to("["      ),
-            ast_square_right_bracket: ast_helpers::to("]"      ),
+            ast_square_left_bracket : ast_helpers::to("["       ),
+            ast_square_right_bracket: ast_helpers::to("]"       ),
 
-            ast_curly_left_bracket  : ast_helpers::to("{"      ),
-            ast_curly_right_bracket : ast_helpers::to("}"      ),
+            ast_curly_left_bracket  : ast_helpers::to("{"       ),
+            ast_curly_right_bracket : ast_helpers::to("}"       ),
 
-            ast_preprocessor        : ast_helpers::to("`"      ),
-            ast_set                 : ast_helpers::to("set"    ),
+            ast_preprocessor        : ast_helpers::to("`"       ),
+            ast_set                 : ast_helpers::to("set"     ),
 
-            ast_directive_end       : ast_helpers::to("@"      ),
+            ast_directive_end       : ast_helpers::to("@"       ),
 
             syntax_list             : Default::default()
         };
 
-        init.add(init.ast_import .clone(), GreteaKeywords::Import         );
-        init.add(init.ast_fn     .clone(), GreteaKeywords::Fn             );
+        init.add(init.ast_import  .clone(), GreteaKeywords::Import         );
+        init.add(init.ast_fn      .clone(), GreteaKeywords::Fn             );
 
-        init.add(init.ast_var    .clone(), GreteaKeywords::Var            );
-        init.add(init.ast_mut    .clone(), GreteaKeywords::Mut            );
+        init.add(init.ast_var     .clone(), GreteaKeywords::Var            );
+        init.add(init.ast_mut     .clone(), GreteaKeywords::Mut            );
 
-        init.add(init.ast_cpp    .clone(), GreteaKeywords::Cpp            );
-        init.add(init.ast_runtime.clone(), GreteaKeywords::Runtime        );
-        init.add(init.ast_unsafe .clone(), GreteaKeywords::Unsafe         );
+        init.add(init.ast_cpp     .clone(), GreteaKeywords::Cpp            );
+        init.add(init.ast_runtime .clone(), GreteaKeywords::Runtime        );
+        init.add(init.ast_unsafe  .clone(), GreteaKeywords::Unsafe         );
 
-        init.add(init.ast_alias  .clone(), GreteaKeywords::Alias          );
+        init.add(init.ast_alias   .clone(), GreteaKeywords::Alias          );
 
-        init.add(init.ast_if     .clone(), GreteaKeywords::If             );
-        init.add(init.ast_else   .clone(), GreteaKeywords::Else           );
+        init.add(init.ast_if      .clone(), GreteaKeywords::If             );
+        init.add(init.ast_else    .clone(), GreteaKeywords::Else           );
 
-        init.add(init.ast_module .clone(), GreteaKeywords::Module         );
-        init.add(init.ast_struct .clone(), GreteaKeywords::Struct         );
-        init.add(init.ast_enum   .clone(), GreteaKeywords::Enum           );
+        init.add(init.ast_module  .clone(), GreteaKeywords::Module         );
+        init.add(init.ast_struct  .clone(), GreteaKeywords::Struct         );
+        init.add(init.ast_enum    .clone(), GreteaKeywords::Enum           );
 
-        init.add(init.ast_for    .clone(), GreteaKeywords::For            );
+        init.add(init.ast_for     .clone(), GreteaKeywords::For            );
+        init.add(init.ast_continue.clone(), GreteaKeywords::Continue       );
+        init.add(init.ast_break   .clone(), GreteaKeywords::Break          );
 
         init.add(init.ast_left_parenthese .clone(), GreteaKeywords::LeftParenthese );
         init.add(init.ast_right_parenthese.clone(), GreteaKeywords::RightParenthese);
@@ -188,7 +196,12 @@ impl Default for GreteaVariableList {
 
 impl GreteaSyntax {
     pub fn match_keyword(&self, keyword: &String) -> &GreteaKeywords {
-        let keyword_type = self.syntax_list.get(keyword);
+        let keyword_type =
+            if keyword.ends_with('\n') {
+                let mut key  = keyword.clone(); key.pop();
+
+                self.syntax_list.get(&key)
+            } else { self.syntax_list.get(keyword) };
 
         if keyword_type.is_none() {
             return &GreteaKeywords::Undefined;
