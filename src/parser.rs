@@ -715,6 +715,11 @@ impl GreteaParser {
                     }
 
                     if is_for {
+                        if token == "_" {
+                            codegen.for_loop();
+                            is_for = false; continue;
+                        }
+
                         if is_for_variable {
                             if is_for_in {
                                 for_iter    = token.clone();

@@ -181,6 +181,10 @@ impl GreteaCodegen {
                                         } else { to("") }, data).as_str());
     }
 
+    pub fn for_loop(&mut self) {
+        self.generated.push_str("while(1)");
+    }
+
     pub fn for_iter(&mut self, var_name: &String, var_iter: &String) {
         self.generated.push_str(format!("for(auto {} : {})", var_name, var_iter).as_str());
     }
