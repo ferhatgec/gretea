@@ -15,6 +15,7 @@ pub enum GreteaKeywords {
     Var,
     Mut,
 
+    Assembly,
     Cpp,
     Runtime,
     Unsafe,
@@ -58,6 +59,7 @@ pub struct GreteaSyntax {
     pub ast_var                 : String,
     pub ast_mut                 : String,
 
+    pub ast_assembly            : String,
     pub ast_cpp                 : String,
     pub ast_runtime             : String,
     pub ast_unsafe              : String,
@@ -111,6 +113,7 @@ impl Default for GreteaSyntax {
             ast_var                 : ast_helpers::to("var"     ),
             ast_mut                 : ast_helpers::to("mut"     ),
 
+            ast_assembly            : ast_helpers::to("assembly"),
             ast_cpp                 : ast_helpers::to("cpp"     ),
             ast_runtime             : ast_helpers::to("runtime" ),
             ast_unsafe              : ast_helpers::to("unsafe"  ),
@@ -151,6 +154,7 @@ impl Default for GreteaSyntax {
         init.add(init.ast_var     .clone(), GreteaKeywords::Var            );
         init.add(init.ast_mut     .clone(), GreteaKeywords::Mut            );
 
+        init.add(init.ast_assembly.clone(), GreteaKeywords::Assembly       );
         init.add(init.ast_cpp     .clone(), GreteaKeywords::Cpp            );
         init.add(init.ast_runtime .clone(), GreteaKeywords::Runtime        );
         init.add(init.ast_unsafe  .clone(), GreteaKeywords::Unsafe         );

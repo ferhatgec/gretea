@@ -72,6 +72,20 @@ fn main() = int {
     var __false           = false
     var mut x      : int8 = 0
 
+    var mut foo           = 0
+
+    [[ unsafe ]] {
+        [[ assembly ]] {
+            add %1, %0 \
+
+            ?_ \
+                : "+r" (foo) : "g" (three) : "cc" \
+            _?
+        }
+    }
+
+    fmt#println(foo)
+
     for _ {
         if x == 4 { break }
 

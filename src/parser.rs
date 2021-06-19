@@ -73,6 +73,7 @@ impl GreteaParser {
         let mut var_struct_init_name = String::new();
         let mut var_struct_init_data = String::new();
 
+        let mut is_inline_asm     = false; let mut asm_block     = String::new();
         let mut is_cpp_linker     = false; let mut cpp_block     = String::new();
         let mut is_runtime        = false; let mut runtime_block = String::new();
 
@@ -193,6 +194,9 @@ impl GreteaParser {
                     } continue;
                 },
 
+                GreteaKeywords::Assembly => {
+                    is_inline_asm = true; continue;
+                },
                 GreteaKeywords::Cpp => {
                     is_cpp_linker = true; continue;
                 },
@@ -299,12 +303,19 @@ impl GreteaParser {
                         var_name     .clear();
 
                         is_var_struct = false;
-                    } else if !is_cpp_linker && !is_runtime {
+                    }
+                    else if !is_cpp_linker && !is_runtime && !is_inline_asm {
                         codegen.character(&self.init_ast.ast_curly_right_bracket);
-                    } else if is_cpp_linker {
+                    }
+                    else if is_cpp_linker {
                         codegen.character(&cpp_block);
                         is_cpp_linker = false; cpp_block.clear();
-                    } else if is_runtime {
+                    }
+                    else if is_inline_asm {
+                        codegen.assembly(&asm_block);
+                        is_inline_asm = false; asm_block.clear();
+                    }
+                    else if is_runtime {
                         let mut elite_read = elite::read::EliteFileData {
                             raw_data: runtime_block.clone(),
                             unparsed: vec![]
@@ -645,7 +656,10 @@ impl GreteaParser {
                     }
 
                     if token == "{" {
-                        if !is_cpp_linker && !is_runtime && !is_var_struct { codegen.character(&self.init_ast.ast_curly_left_bracket); }
+                        if  !is_inline_asm
+                            &&!is_cpp_linker
+                            && !is_runtime
+                            && !is_var_struct { codegen.character(&self.init_ast.ast_curly_left_bracket); }
 
                         continue;
                     }
@@ -756,6 +770,14 @@ impl GreteaParser {
                         }
 
                         cpp_block.push_str(token.as_str()); continue;
+                    }
+
+                    if is_inline_asm {
+                        if token.trim_end() == "\\" {
+                            asm_block.push('\n'); continue;
+                        }
+
+                        asm_block.push_str(format!("{} ", token).as_str()); continue;
                     }
 
                     if is_alias {

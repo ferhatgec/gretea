@@ -207,6 +207,31 @@ impl GreteaCodegen {
         self.generated.push_str(format!("#{} {}\n", "pragma", "once").as_str());
     }
 
+    pub fn assembly(&mut self, data: &String) {
+        let mut is_direct = false;
+
+        // No compiler-specific.
+        self.generated.push_str("asm(\n");
+
+        for line in data.split('\n') {
+            if is_direct {
+                if line.trim() == "_?" { is_direct = false; continue; }
+
+                self.generated.push_str(format!("{}\n", line).as_str()); continue;
+            }
+
+            if line.trim() == "?_" {
+                is_direct = true; continue;
+            }
+
+            if line.len() >= 2 {
+                self.generated.push_str(format!("\"{}\"\n", line).as_str());
+            }
+        }
+
+        self.generated.push_str(");\n");
+    }
+
     pub fn character(&mut self, character: &String) {
         self.generated.push_str(&*format!("{}\n", character));
     }
