@@ -845,13 +845,16 @@ impl GreteaParser {
                             if is_line {
                                 line.push_str(token.as_str());
 
-                                if !(token == "+" || token == "-") {
+                                if !(token == "+"
+                                    || token == "-"
+                                    || token == ">"
+                                    || token == "<") {
                                     line.push(' ');
                                 }
 
                                 if token.ends_with('\n') {
                                     codegen.character(&format!("{};", line)); line.clear(); is_line = false; continue;
-                                }
+                                } continue;
                             }
 
 
