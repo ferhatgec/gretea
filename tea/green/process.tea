@@ -42,4 +42,13 @@ module process {
             }
         }
     }
+
+    fn process#execute(data: string) = int {
+        [[ unsafe ]] {
+            [[ cpp ]] {
+                return \
+                    std::system(cpp_str::c_str(data));
+            }
+        }
+    }
 } // process
