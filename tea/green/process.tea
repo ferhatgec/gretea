@@ -10,6 +10,7 @@
 //
 
 import tea.green.type
+import tea.green.string
 
 [[ cpp ]] { #include <cstdlib> }
 
@@ -29,6 +30,15 @@ module process {
         [[ unsafe ]] {
             [[ cpp ]] {
                 std::exit(n);
+            }
+        }
+    }
+
+    fn process#env(data: string) = string {
+        [[ unsafe ]] {
+            [[ cpp ]] {
+                return \
+                    std::getenv(cpp_str::c_str(data));
             }
         }
     }

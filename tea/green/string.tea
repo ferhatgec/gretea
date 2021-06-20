@@ -330,6 +330,15 @@ module cpp_str {
             }
         }
     }
+
+    fn cpp_str#c_str(data: string) = char* {
+        [[ unsafe ]] {
+            [[ cpp ]] {
+                return \
+                    data.data();
+            }
+        }
+    }
 }
 
 module str {
