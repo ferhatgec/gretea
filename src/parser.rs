@@ -669,11 +669,7 @@ impl GreteaParser {
                             if is_var_type {
                                 if token == "=" {
                                     is_var_type = false;
-                                } else {
-                                    variable_type.push_str(token.clone().as_str());
-                                    if token != "<" && token != ">" && token != "#" {
-                                        variable_type.push(' ');
-                                    } continue; }
+                                } else { variable_type.push_str(format!("{} ", token.clone()).as_str()); continue; }
                             }
 
                             if !is_var_type {
