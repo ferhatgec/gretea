@@ -1,0 +1,35 @@
+[[ stl ]]
+
+// process.tea
+//
+// MIT License
+//
+// Copyright (c) 2021 Ferhat Geçdoğan All Rights Reserved.
+// Distributed under the terms of the MIT License.
+//
+//
+
+import tea.green.type
+
+[[ cpp ]] { #include <cstdlib> }
+
+`set process_success = 0
+`set process_failed  = 1
+
+module process {
+    fn process#abort() {
+        [[ unsafe ]] {
+            [[ cpp ]] {
+                std::abort();
+            }
+        }
+    }
+
+    fn process#exit(n: uint8) {
+        [[ unsafe ]] {
+            [[ cpp ]] {
+                std::exit(n);
+            }
+        }
+    }
+} // process

@@ -8,6 +8,7 @@ import tea.green.type
 import tea.green.string
 import tea.green.char
 import tea.green.term
+import tea.green.process
 
 enum ProgrammingLanguages = int8 {
     Gretea,
@@ -153,5 +154,5 @@ fn main() = int {
 
     term#enable_cursor()
 
-    . 0
+    process#exit(process_success)
 }
