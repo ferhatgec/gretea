@@ -166,8 +166,11 @@ impl GreteaCodegen {
         self.generated.push_str(format!("namespace {}", module_name).as_str());
     }
 
-    pub fn structure(&mut self, struct_name: &String) {
-        self.generated.push_str(format!("class {}\n", struct_name).as_str());
+    pub fn structure(&mut self, struct_name: &String, struct_generic: &String) {
+        self.generated.push_str(format!("{}class {}\n",
+                                        if !struct_generic.is_empty() {
+                                            format!("template<typename {}>\n", struct_generic)
+                                        } else { to("") }, struct_name).as_str());
     }
 
     pub fn structure_var(&mut self, name: &String, data: &String) {

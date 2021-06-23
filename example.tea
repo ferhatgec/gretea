@@ -28,6 +28,10 @@ struct Test {
     mut age    : int64  [[ default = 16    ]]
 }
 
+struct MyData<Data> {
+    mut data   : Data
+}
+
 fn test(pi: double) {
     [[ cpp ]] { std::cout << "Green tea\n" << pi << '\n' ; }
 

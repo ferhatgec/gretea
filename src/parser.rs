@@ -104,7 +104,10 @@ impl GreteaParser {
         let mut is_module         = false; let mut module_name = String::new();
 
         let mut is_struct         = false; let mut struct_name = String::new();
+        let mut is_struct_generic = false; let mut struct_generic = String::new();
+
         let mut is_struct_member  = false;
+
         let mut struct_list: Vec<String>= Vec::new();
 
         let mut struct_member_name    = String::new();
@@ -265,9 +268,12 @@ impl GreteaParser {
                         if !struct_member_name.is_empty() {
                             is_struct = false;
                             is_struct_member = false;
+                            is_struct_generic = false;
 
                             codegen.variable_definition(&struct_member_default, &struct_member_type,
                                                         &struct_member_name, true);
+
+                            struct_generic.clear();
 
                             struct_member_name.clear();
                             struct_member_type.clear();
@@ -411,7 +417,20 @@ impl GreteaParser {
 
                     if is_struct {
                         if is_struct_member {
+                            if token == ">" {  is_struct_generic = if is_struct_generic { false } else { false }; continue; }
+                            if is_struct_generic {
+                                struct_generic = token.clone(); continue;
+                            }
+
+                            if token == "<" {
+                                is_struct_generic = true; continue;
+                            }
+
+
                             if token == "{" {
+                                codegen.structure(&struct_name, &struct_generic);
+                                struct_list.push(struct_name.clone());
+
                                 codegen.character(&to("{\npublic:")); continue;
                             }
 
@@ -437,9 +456,7 @@ impl GreteaParser {
                             struct_member_name = token.clone(); continue;
                         }
 
-                        struct_name = token.clone(); is_struct_member = true;
-                        codegen.structure(&struct_name);
-                        struct_list.push(struct_name); continue;
+                        struct_name = token.clone(); is_struct_member = true; continue;
                     }
 
                     if is_module {
