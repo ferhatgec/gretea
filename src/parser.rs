@@ -677,8 +677,9 @@ impl GreteaParser {
                             &&!is_cpp_linker
                             && !is_runtime
                             && !is_var_struct { codegen.character(&self.init_ast.ast_curly_left_bracket); }
-
-                        continue;
+                        if is_var_struct {
+                            var_data.push_str("{\n");
+                        } continue;
                     }
 
                     if is_var {
@@ -718,7 +719,7 @@ impl GreteaParser {
                                         if structure == var_data {
                                             is_var_struct = true; break;
                                         }
-                                    } if is_var_struct { var_data.push_str("{\n"); continue; }
+                                    } if is_var_struct { /*var_data.push_str("{\n"); */ continue; }
 
                                     codegen.variable_definition(&var_data, &variable_type, &var_name, is_mutable);
 
