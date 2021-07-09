@@ -38,13 +38,15 @@ pub mod gretea_tokenizer {
         let mut i             : usize        = 0    ;
 
         while i < temporary_tokens.len() {
-            
             if temporary_tokens[i] == "[[" || temporary_tokens[i].trim_end() == "]]" {
                 tokenized_data.push(temporary_tokens[i].to_string());
                 
                 i += 1; continue;
             }
-
+            else if temporary_tokens[i].starts_with('\'') && temporary_tokens[i].trim_end().ends_with('\'') {
+                // ' x ' -> 'x'
+                tokenized_data.push(temporary_tokens[i].to_string()); i += 1; continue;   
+            }
 
             if found_data {
                 variable_data.push_str(format!("{} ", temporary_tokens[i]).as_str());
