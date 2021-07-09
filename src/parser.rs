@@ -250,15 +250,15 @@ impl GreteaParser {
                 },
 
                 GreteaKeywords::LeftSqBracket => {
-                    if is_library { is_library_setter = true; continue; }
+                    //if is_library { is_library_setter = true; continue; }
 
-                    is_library = true; continue;
+                    //is_library = true; continue;
                 },
                 GreteaKeywords::RightSqBracket => {
-                    if is_library || is_library_setter {
-                        is_library        = false;
-                        is_library_setter = false;
-                    } continue;
+                    //if is_library || is_library_setter {
+                    //    is_library        = false;
+                    //   is_library_setter = false;
+                    //} continue;
                 },
 
                 GreteaKeywords::RightCurlyBracket=> {
@@ -344,6 +344,14 @@ impl GreteaParser {
 
                     if is_runtime {
                         runtime_block.push_str("set ");
+                    }
+                },
+                GreteaKeywords::FlagLeft => {
+                    is_library_setter = true;
+                },
+                GreteaKeywords::FlagRight => {
+                    if is_library_setter {
+                        is_library_setter = false;
                     }
                 },
 
@@ -438,7 +446,7 @@ impl GreteaParser {
                                 if token == ":" { continue; }
 
                                 if !struct_member_type.is_empty() {
-                                    if token.ends_with('\n') || token.ends_with(',') {
+                                    if token.ends_with('\n') || token.ends_with(',') || token.ends_with('\\') {
                                         codegen.variable_definition(&struct_member_default, &struct_member_type,
                                                                     &struct_member_name, struct_member_immutable);
 
