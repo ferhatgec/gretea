@@ -80,7 +80,12 @@ fn main() = int {
     var mut foo           = 0
 
     var end: char = '\0'
-    
+    var empty_str: string = ""
+
+    if str#is_empty(empty_str) {
+        fmt#println("yes")
+    }
+
     [[ unsafe ]] {
         [[ assembly ]] {
             add %1, %0 \

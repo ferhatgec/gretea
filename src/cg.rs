@@ -8,7 +8,10 @@
 use {
     crate::{
         ast::{
-            ast_helpers::{to},
+            ast_helpers::{
+                to,
+                from_module
+            },
             GreteaKeywords
         },
         tokenizer::gretea_tokenizer::{TOKEN_LIST},
@@ -131,7 +134,7 @@ impl GreteaCodegen {
                 if self.optimize {
                     optimizer::optimize(tokens, OptimizeBlocks::StatementBool)
                 } else { tokens.clone() }.iter().skip( if is_else_if { 2 } else { 1 })  {
-                statement.push_str(format!("{}", token).as_str());
+                statement.push_str(format!("{}", from_module(token)).as_str());
             }
 
             self.generated.push_str(format!("{}) {{\n", statement).as_str());

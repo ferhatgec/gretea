@@ -12,6 +12,8 @@
 import tea.green.type
 import tea.green.char
 
+`set __empty__char__ = '\0'
+
 module cpp_str {
     fn cpp_str#append(&data: string, what: string) {
         [[ unsafe ]] {
@@ -382,5 +384,11 @@ module str {
                 }
             }
         } . __data
+    }
+
+    fn str#is_empty(data: string) = bool {
+        if cpp_str#length(data) == 0 {
+            . true
+        } . false
     }
 } // str
