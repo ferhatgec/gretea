@@ -37,7 +37,24 @@ pub mod gretea_tokenizer {
 
         let mut i             : usize        = 0    ;
 
+        let mut last_data: &str = "";
+
+        let mut is_vect = false;
+
         while i < temporary_tokens.len() {
+            if temporary_tokens[i].contains("[]") {
+                let data: Vec<_> = temporary_tokens[i].split("[]").collect();
+
+                if data.len() == 2 { // [] type or type []
+                    tokenized_data.push(to("[]"));
+                    tokenized_data.push(to(data.last().unwrap()));
+
+                    i += 1;
+
+                    continue;
+                }
+            }
+
             if temporary_tokens[i] == "[[" || temporary_tokens[i].trim_end() == "]]" {
                 tokenized_data.push(temporary_tokens[i].to_string());
                 

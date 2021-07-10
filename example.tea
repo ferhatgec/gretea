@@ -10,6 +10,8 @@ import tea.green.char
 import tea.green.term
 import tea.green.process
 
+import tea.black.vector
+
 enum ProgrammingLanguages = int8 {
     Gretea,
     Cpp,
@@ -36,6 +38,10 @@ fn test(pi: double) {
     [[ cpp ]] { std::cout << "Green tea\n" << pi << '\n' ; }
 
     . _ // return _
+}
+
+fn test() = []string {
+
 }
 
 fn hmm() = int8 {

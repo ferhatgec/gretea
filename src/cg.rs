@@ -238,6 +238,10 @@ impl GreteaCodegen {
         self.generated.push_str(");\n");
     }
 
+    pub fn cpp_vector(&mut self, __type: &String) {
+        self.generated.push_str(&*format!("std::vector<{}>", __type));
+    }
+
     pub fn character(&mut self, character: &String) {
         self.generated.push_str(&*format!("{}\n", character));
     }

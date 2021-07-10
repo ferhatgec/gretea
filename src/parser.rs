@@ -132,6 +132,11 @@ impl GreteaParser {
 
         let mut is_unsafe         = false;
 
+        let mut is_vector         = false;
+        let mut is_func_vector    = false;
+
+        let mut vector_type      = String::new();
+
         let mut set_name = String::new();
         let mut set_data = String::new();
 
@@ -355,6 +360,10 @@ impl GreteaParser {
                     }
                 },
 
+                GreteaKeywords::Vector => {
+                    is_vector = true;
+                },
+
                 GreteaKeywords::DirectiveEnd => {
                     if is_directive {
                         codegen.directive_end();
@@ -363,6 +372,22 @@ impl GreteaParser {
                 },
 
                 _ => {
+                    if is_vector {
+                        vector_type = token.clone();
+
+                        is_vector = false;
+
+                        if is_fn_argument {
+                            token = format!("std::vector<{}>", token.clone());
+                        } else {
+                            codegen.cpp_vector(&vector_type);
+
+                            vector_type.clear();
+
+                            continue;
+                        }
+                    }
+
                     if is_library_setter {
                         if is_default {
                             if token == "=" { continue; }

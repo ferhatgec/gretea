@@ -48,6 +48,8 @@ pub enum GreteaKeywords {
     FlagLeft,
     FlagRight,
 
+    Vector,
+
     DirectiveEnd,
 
     Unpack,
@@ -94,6 +96,8 @@ pub struct GreteaSyntax {
 
     pub ast_flag_left           : String,
     pub ast_flag_right          : String,
+
+    pub ast_vector              : String,
 
     pub ast_directive_end       : String,
 
@@ -152,6 +156,8 @@ impl Default for GreteaSyntax {
             ast_flag_left           : ast_helpers::to("[["      ),
             ast_flag_right          : ast_helpers::to("]]"      ),
 
+            ast_vector              : ast_helpers::to("[]"      ),
+
             ast_directive_end       : ast_helpers::to("@"       ),
 
             syntax_list             : Default::default()
@@ -195,7 +201,9 @@ impl Default for GreteaSyntax {
         
         init.add(init.ast_flag_left           .clone(), GreteaKeywords::FlagLeft         );
         init.add(init.ast_flag_right          .clone(), GreteaKeywords::FlagRight        );
-        
+
+        init.add(init.ast_vector              .clone(), GreteaKeywords::Vector           );
+
         init.add(init.ast_directive_end       .clone(), GreteaKeywords::DirectiveEnd     );
 
         init
