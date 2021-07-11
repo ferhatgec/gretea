@@ -30,6 +30,8 @@ pub enum GreteaKeywords {
     Enum,
 
     For,
+    While,
+
     Continue,
     Break,
 
@@ -80,6 +82,8 @@ pub struct GreteaSyntax {
     pub ast_enum                : String,
 
     pub ast_for                 : String,
+    pub ast_while               : String,
+
     pub ast_continue            : String,
     pub ast_break               : String,
 
@@ -140,6 +144,8 @@ impl Default for GreteaSyntax {
             ast_enum                : ast_helpers::to("enum"    ),
 
             ast_for                 : ast_helpers::to("for"     ),
+            ast_while               : ast_helpers::to("while"   ),
+
             ast_continue            : ast_helpers::to("continue"),
             ast_break               : ast_helpers::to("break"   ),
 
@@ -187,6 +193,8 @@ impl Default for GreteaSyntax {
         init.add(init.ast_enum    .clone(), GreteaKeywords::Enum           );
 
         init.add(init.ast_for     .clone(), GreteaKeywords::For            );
+        init.add(init.ast_while   .clone(), GreteaKeywords::While          );
+
         init.add(init.ast_continue.clone(), GreteaKeywords::Continue       );
         init.add(init.ast_break   .clone(), GreteaKeywords::Break          );
 

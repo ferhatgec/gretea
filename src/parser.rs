@@ -128,6 +128,8 @@ impl GreteaParser {
         let mut is_for_in         = false; let mut for_var  = String::new();
         let mut is_for_iter       = false; let mut for_iter = String::new();
 
+        let mut is_while          = false;
+
         let mut is_return         = false; let mut return_val = String::new();
         let mut is_library        = false;
         let mut is_library_setter = false;
@@ -222,8 +224,14 @@ impl GreteaParser {
                 },
 
                 GreteaKeywords::If |
-                GreteaKeywords::Else => {
+                GreteaKeywords::Else |
+                GreteaKeywords::While => {
                     is_statement = true;
+
+                    if matched_type == GreteaKeywords::While {
+                        is_while = true;
+                    }
+
                     statement_data.push(token.clone()); continue;
                 },
 
@@ -441,10 +449,12 @@ impl GreteaParser {
                                 codegen.statement_directive(&statement_data);
 
                                 is_directive = true;
-                            } else { codegen.statement(&statement_data); }
+                            } else { codegen.statement(&statement_data, is_while); }
 
                             is_statement    = false;
                             is_preprocessor = false;
+                            is_while        = false;
+
                             statement_data.clear(); continue;
                         }
 

@@ -118,14 +118,14 @@ impl GreteaCodegen {
         } else { "0" }));
     }
 
-    pub fn statement(&mut self, tokens: &Vec<String>) {
-        if tokens.last().unwrap() == "else" {
+    pub fn statement(&mut self, tokens: &Vec<String>, is_while: bool) {
+        if !is_while && tokens.last().unwrap() == "else" {
             self.generated.push_str(format!("{} {{\n", "else").as_str());
         } else {
             let mut is_else_if = false;
 
             let mut statement = String::from(
-                format!("{} {}", tokens.get(0).unwrap(), if tokens.get(1).unwrap() == "if" {
+                format!("{} {}", tokens.get(0).unwrap(), if !is_while && tokens.get(1).unwrap() == "if" {
                     is_else_if = true;
                     "if("
                 } else { "(" }));
