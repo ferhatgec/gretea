@@ -62,6 +62,7 @@ pub struct GreteaSyntax {
     pub ast_fn                  : String,
 
     pub ast_var                 : String,
+    pub ast_let                 : String,
     pub ast_mut                 : String,
 
     pub ast_assembly            : String,
@@ -121,6 +122,7 @@ impl Default for GreteaSyntax {
             ast_fn                  : ast_helpers::to("fn"      ),
 
             ast_var                 : ast_helpers::to("var"     ),
+            ast_let                 : ast_helpers::to("let"     ),
             ast_mut                 : ast_helpers::to("mut"     ),
 
             ast_assembly            : ast_helpers::to("assembly"),
@@ -167,6 +169,7 @@ impl Default for GreteaSyntax {
         init.add(init.ast_fn      .clone(), GreteaKeywords::Fn             );
 
         init.add(init.ast_var     .clone(), GreteaKeywords::Var            );
+        init.add(init.ast_let     .clone(), GreteaKeywords::Var            );
         init.add(init.ast_mut     .clone(), GreteaKeywords::Mut            );
 
         init.add(init.ast_assembly.clone(), GreteaKeywords::Assembly       );

@@ -12,6 +12,8 @@ import tea.green.process
 
 import tea.black.vector
 
+
+
 enum ProgrammingLanguages = int8 {
     Gretea,
     Cpp,
@@ -99,9 +101,11 @@ fn main() = int {
     var __false           = false
     var mut x      : int8 = 0
 
-    var mut foo           = 0
+    let mut foo           = 0
+ // ^^^
+ // 'let' and 'var' are same things (GreteaKeywords::Var)
 
-    var end: char = '\0'
+    let end: char = '\0'
     var empty_str: string = ""
 
     if str#is_empty(empty_str) {
