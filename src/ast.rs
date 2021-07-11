@@ -47,6 +47,8 @@ pub enum GreteaKeywords {
     Preprocessor,
     Set,
 
+    In,
+
     FlagLeft,
     FlagRight,
 
@@ -98,6 +100,8 @@ pub struct GreteaSyntax {
 
     pub ast_preprocessor        : String,
     pub ast_set                 : String,
+
+    pub ast_in                  : String,
 
     pub ast_flag_left           : String,
     pub ast_flag_right          : String,
@@ -160,7 +164,9 @@ impl Default for GreteaSyntax {
 
             ast_preprocessor        : ast_helpers::to("`"       ),
             ast_set                 : ast_helpers::to("set"     ),
-            
+
+            ast_in                  : ast_helpers::to("in"),
+
             ast_flag_left           : ast_helpers::to("[["      ),
             ast_flag_right          : ast_helpers::to("]]"      ),
 
@@ -209,7 +215,9 @@ impl Default for GreteaSyntax {
 
         init.add(init.ast_preprocessor        .clone(), GreteaKeywords::Preprocessor     );
         init.add(init.ast_set                 .clone(), GreteaKeywords::Set              );
-        
+
+        init.add(init.ast_in                  .clone(), GreteaKeywords::In               );
+
         init.add(init.ast_flag_left           .clone(), GreteaKeywords::FlagLeft         );
         init.add(init.ast_flag_right          .clone(), GreteaKeywords::FlagRight        );
 

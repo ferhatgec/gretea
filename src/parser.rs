@@ -362,6 +362,13 @@ impl GreteaParser {
                         runtime_block.push_str("set ");
                     }
                 },
+
+                GreteaKeywords::In => {
+                    if is_for {
+                        is_for_in = true;
+                    }
+                },
+
                 GreteaKeywords::FlagLeft => {
                     is_library_setter = true;
                 },
@@ -830,10 +837,6 @@ impl GreteaParser {
                                 is_for_variable = false;
                                 is_for_in       = false;
                                 is_for_iter     = false; continue;
-                            }
-
-                            if token == "in" {
-                                is_for_in = true; continue;
                             }
                         }
 
