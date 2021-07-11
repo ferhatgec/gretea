@@ -69,6 +69,8 @@ impl GreteaParser {
         let mut is_var_data       = false; let mut var_data = String::new();
         let mut is_var_type       = false; let mut variable_type    = String::new();
 
+        let mut is_var_data_vector = false;
+
         let mut is_var_struct         = false;
         let mut var_struct_init_name = String::new();
         let mut var_struct_init_data = String::new();
@@ -294,7 +296,7 @@ impl GreteaParser {
                         is_enum = false;
                         enum_name.clear(); enum_type.clear(); enum_data.clear();
                     }
-                    else if is_var_struct {
+                    else if is_var_struct || is_var_data_vector {
                         codegen.variable_definition(&format!("{}}}", var_data),
                                                     &variable_type, &var_name, is_mutable);
 
@@ -308,6 +310,7 @@ impl GreteaParser {
                         is_var_type= false;
                         is_var_data= false;
                         is_mutable = false;
+                        is_var_data_vector = false;
 
                         var_data     .clear();
                         variable_type.clear();
@@ -377,7 +380,7 @@ impl GreteaParser {
 
                         is_vector = false;
 
-                        if is_fn_argument {
+                        if is_fn_argument || is_var {
                             token = format!("std::vector<{}>", token.clone());
                         } else {
                             codegen.cpp_vector(&vector_type);
@@ -706,13 +709,19 @@ impl GreteaParser {
                     }
 
                     if token == "{" {
-                        if  !is_inline_asm
-                            &&!is_cpp_linker
-                            && !is_runtime
-                            && !is_var_struct { codegen.character(&self.init_ast.ast_curly_left_bracket); }
+
                         if is_var_struct {
                             var_data.push_str("{\n");
-                        } continue;
+                        } else if is_var {
+                            is_var_data_vector = true;
+                            var_data.push_str("{\n");
+                        } else if  !is_inline_asm
+                            &&!is_cpp_linker
+                            && !is_runtime
+                            && !is_var_struct { codegen.character(&self.init_ast.ast_curly_left_bracket);
+                        }
+
+                        continue;
                     }
 
                     if is_var {
@@ -744,6 +753,12 @@ impl GreteaParser {
                                         }
 
                                         var_struct_init_name = token.clone(); continue;
+                                    } else if is_var_data_vector {
+                                        if token.trim_end() == "\\" {
+                                            var_data.push_str(",\n"); continue;
+                                        }
+
+                                        var_data.push_str(&token.clone()); continue;
                                     }
 
                                     var_data = to(token.clone().trim());
@@ -752,7 +767,8 @@ impl GreteaParser {
                                         if structure == var_data {
                                             is_var_struct = true; break;
                                         }
-                                    } if is_var_struct { /*var_data.push_str("{\n"); */ continue; }
+                                    } if is_var_struct { /*var_data.push_str("
+                                        }{\n"); */ continue; }
 
                                     codegen.variable_definition(&var_data, &variable_type, &var_name, is_mutable);
 
@@ -894,7 +910,7 @@ impl GreteaParser {
 
                             return_val.push_str(format!("{} ", token.clone()).as_str());
 
-                            if token.ends_with('\n') {
+                            if token.ends_with('\n') || token.ends_with(';') {
                                 is_return = false;
 
                                 if is_unsafe {

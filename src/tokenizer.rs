@@ -42,7 +42,7 @@ pub mod gretea_tokenizer {
         let mut is_vect = false;
 
         while i < temporary_tokens.len() {
-            if temporary_tokens[i].contains("[]") {
+            if temporary_tokens[i].contains("[]") && temporary_tokens[i].starts_with('[') {
                 let data: Vec<_> = temporary_tokens[i].split("[]").collect();
 
                 if data.len() == 2 { // [] type or type []
