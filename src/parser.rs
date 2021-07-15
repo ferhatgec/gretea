@@ -51,6 +51,8 @@ impl GreteaParser {
 
         let mut matched_type = GreteaKeywords::Undefined;
 
+        let mut current_line = 0u32;
+
         let mut is_import = false;
 
         let mut is_fn_data        = false;
@@ -152,7 +154,11 @@ impl GreteaParser {
         let mut get_data = String::new();
 
         for mut token in tokens.clone() {
-            if token.is_empty() || token == " " || token == "\n" { continue; }
+            if token.is_empty() || token == " " || token == "\n" {
+                if token == "\n" {
+                    current_line += 1;
+                } continue;
+            } if token.ends_with('\n') { current_line += 1; }
 
             if is_get_data {
                 get_data.push_str(token.clone().as_str());
