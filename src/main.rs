@@ -78,12 +78,7 @@ fn main() {
     let mut filename       = commandline_arguments.get(1).unwrap();
     let mut func_list: Vec<String> = Vec::new();
 
-    let mut gretea_read = read::GreteaFileData {
-        raw_data : "".to_string(),
-        unparsed : vec![],
-        lines    : vec![],
-        func_list
-    };
+    let mut gretea_read = read::GreteaFileData::default();
 
     gretea_read.read_raw_file(filename);
 

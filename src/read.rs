@@ -9,15 +9,26 @@ use {
     std::io::BufRead,
 
     crate::{
+        ast::ast_helpers::{to},
         tokenizer::gretea_tokenizer::{is_comment}
     }
 };
-
 pub struct GreteaFileData {
     pub raw_data : String,
     pub unparsed : Vec<String>,
     pub lines    : Vec<String>,
     pub func_list: Vec<String>
+}
+
+impl Default for GreteaFileData {
+    fn default() -> Self {
+        GreteaFileData {
+            raw_data : to(""),
+            unparsed : vec![],
+            lines    : vec![],
+            func_list: vec![]
+        }
+    }
 }
 
 impl GreteaFileData {
