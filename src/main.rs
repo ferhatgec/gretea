@@ -81,6 +81,7 @@ fn main() {
     let mut gretea_read = read::GreteaFileData {
         raw_data : "".to_string(),
         unparsed : vec![],
+        lines    : vec![],
         func_list
     };
 

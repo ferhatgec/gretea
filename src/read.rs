@@ -16,6 +16,7 @@ use {
 pub struct GreteaFileData {
     pub raw_data : String,
     pub unparsed : Vec<String>,
+    pub lines    : Vec<String>,
     pub func_list: Vec<String>
 }
 
@@ -29,6 +30,7 @@ impl GreteaFileData {
                     if is_comment(&ip.as_str()) { continue; }
 
                     raw_data.push(' '); raw_data.push_str(&ip); raw_data.push('\n');
+                    self.lines.push(ip);
                 }
             }
         }
