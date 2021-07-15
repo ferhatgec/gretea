@@ -283,4 +283,7 @@ pub mod ast_helpers {
 
         temporary
     }
+    pub fn make_vector(__type: &String) -> String {
+        format!("std::vector<{}> ", __type)
+    }
 }

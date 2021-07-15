@@ -17,6 +17,7 @@ use {
             ast_helpers::{
                 to,
                 from_module,
+                make_vector
             }
         },
         cg::{
@@ -402,7 +403,7 @@ impl GreteaParser {
                         is_vector = false;
 
                         if is_fn_argument || is_var {
-                            token = format!("std::vector<{}>", token.clone());
+                            token = make_vector(&token);
                         } else {
                             codegen.cpp_vector(&vector_type);
 
