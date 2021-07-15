@@ -13,6 +13,8 @@ use {
         tokenizer::gretea_tokenizer::{is_comment}
     }
 };
+
+#[derive(Clone)]
 pub struct GreteaFileData {
     pub raw_data : String,
     pub unparsed : Vec<String>,

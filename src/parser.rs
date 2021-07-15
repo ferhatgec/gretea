@@ -24,7 +24,12 @@ use {
             CodegenData,
             GreteaCodegen
         },
-        tokenizer::gretea_tokenizer::{is_data}
+        log::{
+            LogTypes::{*},
+            log::{gen}
+        },
+        tokenizer::gretea_tokenizer::{is_data},
+        read::{GreteaFileData}
     },
     std::{
         collections::{
@@ -39,6 +44,7 @@ use {
 pub struct GreteaParser {
     pub init_ast : GreteaSyntax      ,
     pub data_list: GreteaVariableList,
+    pub raw_data : GreteaFileData,
     pub func_list: Vec<String>
 }
 
@@ -53,6 +59,7 @@ impl GreteaParser {
         let mut matched_type = GreteaKeywords::Undefined;
 
         let mut current_line = 0u32;
+        let mut current_column = 0u32;
 
         let mut is_import = false;
 
@@ -160,6 +167,8 @@ impl GreteaParser {
                     current_line += 1;
                 } continue;
             } if token.ends_with('\n') { current_line += 1; }
+
+            current_column += 1;
 
             if is_get_data {
                 get_data.push_str(token.clone().as_str());
@@ -663,8 +672,14 @@ impl GreteaParser {
                                 }
 
                                 if token == "{"  {
-                                    // if is_fn_return_value { }
-                                    // ^^^^^^^^^^^^^^^^^^^^^^^^ error ( fn ...(....) = (no return type) {....}
+                                    if is_fn_return_value {
+                                        gen(Error,
+                                            "no such return type found after type operator declaration",
+                                            &*token,
+                                            &self.raw_data,
+                                            &(current_line as usize),
+                                                &current_column);
+                                    }
 
                                     is_void = true;
                                 }
