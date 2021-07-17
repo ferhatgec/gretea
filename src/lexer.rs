@@ -10,6 +10,7 @@ pub mod gretea_lexer {
         crate::{
             ast::{
                 GreteaSyntax,
+                GreteaFunctionData,
                 GreteaVariableList
             },
             parser::{GreteaParser},
@@ -25,6 +26,7 @@ pub mod gretea_lexer {
         let mut parser = GreteaParser {
             init_ast : ast,
             data_list: GreteaVariableList::default(),
+            func_data: vec![],
             raw_data : init.clone(),
             func_list: init.func_list.clone()
         };

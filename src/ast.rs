@@ -5,7 +5,7 @@
 //
 //
 
-use std::collections::{HashMap};
+use std::collections::{HashMap, BTreeMap};
 
 #[derive(Copy, Clone, PartialEq)]
 pub enum GreteaKeywords {
@@ -117,6 +117,12 @@ pub struct GreteaVariableData {
     pub __keyword_type: GreteaKeywords,
     pub __name        : String,
     pub __data        : String
+}
+
+pub struct GreteaFunctionData {
+    pub __function_name       : String,
+    pub __function_return_type: String,
+    pub __function_arguments  : BTreeMap<String, String> // name, type
 }
 
 pub struct GreteaVariableList {

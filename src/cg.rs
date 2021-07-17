@@ -14,12 +14,16 @@ use {
             },
             GreteaKeywords
         },
+        parser::{GreteaParser},
         tokenizer::gretea_tokenizer::{TOKEN_LIST},
-        optimize::{optimizer}
+        optimize::{
+            OptimizeBlocks,
+            optimizer
+        }
     },
     std::collections::{BTreeMap}
 };
-use crate::optimize::OptimizeBlocks;
+use crate::ast::GreteaFunctionData;
 
 pub struct GreteaCodegen {
     pub generated: String,
@@ -56,6 +60,7 @@ impl GreteaCodegen {
     }
 
     pub fn function(&mut self,
+                    parser    : &mut GreteaParser,
                     args      : &BTreeMap<String, String>,
                     name      : &String,
                     return_val: &String,
@@ -68,6 +73,12 @@ impl GreteaCodegen {
                 "..."
             } else { "" }, generic).as_str())
         }
+
+        parser.func_data.push(GreteaFunctionData {
+            __function_name       : name.clone(),
+            __function_return_type: return_val.clone(),
+            __function_arguments  : args.clone()
+        });
 
         let mut arguments = String::new();
 

@@ -12,6 +12,7 @@ use {
 
             GreteaSyntax      ,
             GreteaVariableData,
+            GreteaFunctionData,
             GreteaVariableList,
 
             ast_helpers::{
@@ -44,6 +45,7 @@ use {
 pub struct GreteaParser {
     pub init_ast : GreteaSyntax      ,
     pub data_list: GreteaVariableList,
+    pub func_data: Vec<GreteaFunctionData>,
     pub raw_data : GreteaFileData,
     pub func_list: Vec<String>
 }
@@ -687,7 +689,7 @@ impl GreteaParser {
                                 if is_fn_return_value || is_void {
                                     fn_val = if is_fn_return_value { token.clone() } else { to("void") };
 
-                                    codegen.function(&fn_args,
+                                    codegen.function(self, &fn_args,
                                                      &fn_name.clone(),
                                                      &fn_val.clone(),
                                                      &fn_generic.clone(),
