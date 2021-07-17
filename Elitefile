@@ -3,6 +3,7 @@ required_version    is 0.1
 set package_manager as "cargo"
 set argument        as "install --path ."
 
+set fetch           as "wget"
 set sudo            as "sudo"
 set cp              as "cp"
 set cp_args         as "-rf"
@@ -12,7 +13,23 @@ set username        as env "USER"
 
 set stl_path        as "/usr/include/gretea/"
 
+set stl_green_path  as "tea/green/"
+
+set grexpr          as "https://raw.githubusercontent.com/ferhatgec/grexpr/master/stl/expr.tea"
+
 for signal "start" [
+    set is_grexpr_exists as "false"
+
+    for exists "{stl_green_path}expr.tea" [
+        println "elite: Fetching grexpr skipped."
+        set is_grexpr_exists as "true" 
+    ]
+
+    if eq "{is_grexpr_exists}" "false" [
+        println "elite: Fetching grexpr to STL path. (tool: {fetch})"
+        use exec "{fetch} -P {stl_green_path} {grexpr}"
+    ]
+
     for argument "install" [
         println "elite: Installing Gretea STL."
         use exec "{sudo} {cp} {cp_args} {from} {stl_path}"
