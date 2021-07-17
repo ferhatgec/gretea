@@ -13,6 +13,8 @@ import tea.green.type
 import tea.green.string
 
 `set character_ascii = 32
+`set character_blank = 0x20
+`set character_max   = 0x7E
 
 module ch {
     fn ch#upper(data: char) = char {
@@ -53,6 +55,18 @@ module ch {
 
     fn ch#is_alpha_num(ch: char) = bool {
         if ch#is_alpha(ch) || ch#is_digit(ch) {
+            . true
+        } . false
+    }
+
+    fn ch#is_blank(ch: char) = bool {
+        if ch == character_blank {
+            . true
+        } . false
+    }
+
+    fn ch#is_printable(ch: char) = bool {
+        if ch >= character_blank && ch <= character_max {
             . true
         } . false
     }
