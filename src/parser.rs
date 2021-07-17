@@ -131,6 +131,7 @@ impl GreteaParser {
 
         let mut is_enum           = false;
         let mut is_enum_type      = false;
+        let mut is_enum_data            = false;
         let mut enum_name        = String::new();
         let mut enum_type        = String::new();
         let mut enum_data        = String::new();
@@ -453,8 +454,16 @@ impl GreteaParser {
                     }
 
                     if is_enum {
-                        if token == "{" { continue; }
-                        if enum_name.is_empty() { enum_name = token.clone(); continue;
+                        if is_enum_data {
+                            enum_data.push_str(token.clone().as_str());
+                            if token == "," { enum_data.push('\n');
+                            } continue;
+                        }
+
+                        if token == "{" { is_enum_data = true; continue; }
+
+                        if enum_name.is_empty() {
+                            enum_name = token.clone(); continue;
                         } else {
                             if is_enum_type {
                                 enum_type = token.clone(); is_enum_type = false; continue;
@@ -464,8 +473,7 @@ impl GreteaParser {
                             }
                         }
 
-                        enum_data.push_str(token.clone().as_str());
-                        if token == "," { enum_data.push('\n'); } continue;
+                        continue;
                     }
 
                     if is_statement {
