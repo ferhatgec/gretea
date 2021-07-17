@@ -15,6 +15,7 @@ import tea.green.string
 `set character_ascii = 32
 `set character_blank = 0x20
 `set character_max   = 0x7E
+`set character_zero  = '0'
 
 module ch {
     fn ch#upper(data: char) = char {
@@ -27,6 +28,10 @@ module ch {
         if data >= 'A' && data <= 'Z' {
             . data + character_ascii
         } . data
+    }
+
+    fn ch#digit(data: char) = int8 {
+        . data - character_zero
     }
 
     fn ch#is_upper(ch: char) = bool {

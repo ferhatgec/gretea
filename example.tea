@@ -9,6 +9,7 @@ import tea.green.string
 import tea.green.char
 import tea.green.term
 import tea.green.process
+// import tea.green.expr
 
 import tea.black.vector
 
@@ -208,6 +209,8 @@ fn main() = int {
     term#enable_cursor()
 
     token()
+
+    // fmt#println(expr#eval("6 - 2 * 3 / 3 + 2 - 3"))
 
     process#exit(process_success)
 }

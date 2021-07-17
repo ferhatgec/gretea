@@ -981,6 +981,11 @@ impl GreteaParser {
 
                                 if !(token == "+"
                                     || token == "-"
+                                    || token == "*"
+                                    || token == "/"
+                                    || token == "%"
+                                    || token == "^"
+                                    || token == "&"
                                     || token == ">"
                                     || token == "<") {
                                     line.push(' ');
