@@ -38,4 +38,22 @@ module ch {
             . true
         } . false
     }
+
+    fn ch#is_alpha(ch: char) = bool {
+        if ch#is_upper(ch) || ch#is_lower(ch) {
+            . true
+        } . false
+    }
+
+    fn ch#is_digit(ch: char) = bool {
+        if ch >= '0' && ch <= '9' {
+            . true
+        } . false
+    }
+
+    fn ch#is_alpha_num(ch: char) = bool {
+        if ch#is_alpha(ch) || ch#is_digit(ch) {
+            . true
+        } . false
+    }
 } // ch
