@@ -26,4 +26,16 @@ module ch {
             . data + character_ascii
         } . data
     }
+
+    fn ch#is_upper(ch: char) = bool {
+        if ch >= 'A' && ch <= 'Z' {
+            . true
+        } . false
+    }
+
+    fn ch#is_lower(ch: char) = bool {
+        if ch >= 'a' && ch <= 'z' {
+            . true
+        } . false
+    }
 } // ch
