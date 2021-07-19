@@ -25,6 +25,10 @@ pub mod gretea_tokenizer {
         '>' ,
         '\'',
         ',' ,
+        '+' ,
+        '-' ,
+        '/' ,
+        '%' ,
         '@'
     ];
 
@@ -111,10 +115,24 @@ pub mod gretea_tokenizer {
             let mut token             = String::from(replace(&temporary_tokens[i].to_string()));
             let mut retokenize: Vec<_> = token.split(' ').collect::<Vec<&str>>();
 
+            let mut is_unpack = false;
+
             i += 1;
 
             for tokens in retokenize {
-                tokenized_data.push(tokens.to_string());
+                if is_unpack {
+                    is_unpack = false;
+
+                    if tokens == "_" {
+                        tokenized_data.push(to("+_")); continue;
+                    } else {
+                        tokenized_data.push(to("+"));
+                    }
+                }
+
+                if !is_unpack && tokens == "+" { is_unpack = true; continue; }
+
+                tokenized_data.push(to(tokens));
             }
         }
 

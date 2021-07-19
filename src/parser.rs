@@ -885,8 +885,11 @@ impl GreteaParser {
                     }
 
                     if is_inline_asm {
-                        if token.trim_end() == "\\" {
+                        let tok = token.trim_end();
+                        if tok == "\\" {
                             asm_block.push('\n'); continue;
+                        } else if tok == "%" {
+                            asm_block.push('%'); continue;
                         }
 
                         asm_block.push_str(format!("{} ", token).as_str()); continue;
