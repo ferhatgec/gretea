@@ -9,13 +9,10 @@ extern crate elite;
 
 use std::{
     io::{
-        Write,
-        Error
+        Write
     },
     process::{
         Command,
-        Output,
-        ExitStatus,
         exit
     }
 };
@@ -54,13 +51,13 @@ fn create_and_write(path: &std::path::Path, generated: String) {
 
     match file.write_all(generated.as_bytes()) {
         Err(why) => panic!("gretea: couldn't write to {}: {}", path.display(), why),
-        Ok(file) => println!("gretea: success: {}", path.display())
+        Ok(_) => println!("gretea: success: {}", path.display())
     }
 }
 
 fn remove_and_check(filename: &str) {
     match std::fs::remove_file(filename) {
-        Err(err) => panic!("gretea: failed to remove {}", filename),
+        Err(_) => panic!("gretea: failed to remove {}", filename),
         _ => {}
     }
 }
@@ -76,18 +73,17 @@ fn main() {
         exit(1);
     }
 
-    let mut filename       = commandline_arguments.get(1).unwrap();
-    let mut func_list: Vec<String> = Vec::new();
+    let filename       = commandline_arguments.get(1).unwrap();
 
     let mut gretea_read = read::GreteaFileData::default();
 
     gretea_read.read_raw_file(filename);
 
-    let (generated, files, func) = lexer::gretea_lexer::init_lexer(gretea_read.clone());
-    let mut object_name        = normalize(filename   .clone());
-    let mut generated_filename = add      (object_name.clone());
+    let (_, files, _) = lexer::gretea_lexer::init_lexer(gretea_read.clone());
+    let object_name = normalize(filename   .clone());
+    let generated_filename = add(object_name.clone());
 
-    let mut path           = std::path::Path::new(&generated_filename);
+    let path           = std::path::Path::new(&generated_filename);
 
     for file in files.clone() {
         if !file.1 {
@@ -113,7 +109,7 @@ fn main() {
 
     gretea_read.read_raw_file(filename);
 
-    let (generated, files, func) = lexer::gretea_lexer::init_lexer(gretea_read.clone());
+    let (generated, _, _) = lexer::gretea_lexer::init_lexer(gretea_read.clone());
 
     create_and_write(path, generated);
 
@@ -127,7 +123,16 @@ fn main() {
             build_output.arg(arg);
         }
     }
-    if build_output.status().unwrap().success() {
 
+    if build_output.status().unwrap().success() {
+        remove_and_check(generated_filename.as_str());
+
+        for file in files.to_owned() {
+            remove_and_check(header(normalize(file.0.split('/')
+                .last()
+                .unwrap()
+                .parse()
+                .unwrap())).as_str());
+        }
     }
 }

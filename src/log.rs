@@ -5,7 +5,6 @@
 //
 //
 
-#[allow(unused_variables)]
 #[derive(PartialEq)]
 pub enum LogTypes {
     Info,

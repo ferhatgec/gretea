@@ -43,10 +43,6 @@ pub mod gretea_tokenizer {
 
         let mut i: usize = 0;
 
-        let mut last_data: &str = "";
-
-        let mut is_vect = false;
-
         let mut is_data = false;
         let mut is_seq = false;
         let mut data = String::new();
@@ -118,8 +114,8 @@ pub mod gretea_tokenizer {
                 continue;
             }
 
-            let mut token             = String::from(replace(&temporary_tokens[i].to_string()));
-            let mut retokenize: Vec<_> = token.split(' ').collect::<Vec<&str>>();
+            let token             = String::from(replace(&temporary_tokens[i].to_string()));
+            let retokenize: Vec<_> = token.split(' ').collect::<Vec<&str>>();
 
             let mut is_unpack = false;
 
@@ -167,24 +163,6 @@ pub mod gretea_tokenizer {
         }
 
         tokenized_data
-    }
-
-    pub fn get_data  (tokens: &Vec<&str>, n: usize) -> (String, usize) {
-        let mut temporary = String::new();
-        let mut i        : usize = 0;
-
-        for (index, token) in tokens.iter().enumerate().skip(n) {
-            i = index; if token.is_empty() { continue; }
-
-            temporary.push_str(
-                format!("{} ", token).as_str());
-
-            if !is_data(token) { continue; }
-
-            break;
-        }
-
-        (temporary, i)
     }
 
     pub fn replace   (token: &String) -> String {

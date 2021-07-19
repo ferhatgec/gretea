@@ -56,7 +56,7 @@ pub enum GreteaKeywords {
 
     DirectiveEnd,
 
-    Unpack,
+    // Unpack,
 
     Undefined
 }
@@ -256,16 +256,6 @@ impl GreteaSyntax {
         if keyword_type.is_none() {
             return &GreteaKeywords::Undefined;
         } keyword_type.unwrap()
-    }
-
-    pub fn extract(self, data: &String) -> String {
-        return if data.starts_with('"') && data.ends_with('"') {
-            let mut temporary = data.chars();
-
-            temporary.next(); temporary.next_back();
-
-            ast_helpers::to(temporary.as_str())
-        } else { ast_helpers::to(" ") };
     }
 
     pub fn add(&mut self, __data: String, __type: GreteaKeywords) {

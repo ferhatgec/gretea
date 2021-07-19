@@ -11,11 +11,9 @@ use {
             ast_helpers::{
                 to,
                 from_module
-            },
-            GreteaKeywords
+            }
         },
         parser::{GreteaParser},
-        tokenizer::gretea_tokenizer::{TOKEN_LIST},
         optimize::{
             OptimizeBlocks,
             optimizer
@@ -31,11 +29,6 @@ pub struct GreteaCodegen {
     pub sources  : BTreeMap<String, bool>,
 
     pub optimize : bool
-}
-
-pub struct CodegenData {
-    pub return_type: String,
-    pub arguments  : Vec<String>
 }
 
 impl GreteaCodegen {
@@ -185,10 +178,6 @@ impl GreteaCodegen {
                                         if !struct_generic.is_empty() {
                                             format!("template<typename {}>\n", struct_generic)
                                         } else { to("") }, struct_name).as_str());
-    }
-
-    pub fn structure_var(&mut self, name: &String, data: &String) {
-        self.generated.push_str(format!(".{} = {}", name, data).as_str());
     }
 
     pub fn enumeration(&mut self, name: &String, _type: &String, data: &String) {

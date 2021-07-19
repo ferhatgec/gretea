@@ -10,7 +10,6 @@ pub mod gretea_lexer {
         crate::{
             ast::{
                 GreteaSyntax,
-                GreteaFunctionData,
                 GreteaVariableList
             },
             parser::{GreteaParser},

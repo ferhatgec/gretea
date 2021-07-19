@@ -52,8 +52,7 @@ pub mod optimizer {
                         __is_op = true; continue;
                     }
                 }
-            },
-            _ => {}
+            }
         }
 
         data.clone()

@@ -21,10 +21,7 @@ use {
                 make_vector
             }
         },
-        cg::{
-            CodegenData,
-            GreteaCodegen
-        },
+        cg::{GreteaCodegen},
         log::{
             LogTypes::{*},
             log::{gen}
@@ -36,10 +33,8 @@ use {
         collections::{
             HashMap,
             BTreeMap
-        },
-        env::{var}
-    },
-    elite::ast::ast_helpers::{extract_argument}
+        }
+    }
 };
 
 pub struct GreteaParser {
@@ -58,7 +53,7 @@ impl GreteaParser {
             optimize : true
         };
 
-        let mut matched_type = GreteaKeywords::Undefined;
+        let mut matched_type;
 
         let mut current_line = 0u32;
         let mut current_column = 0u32;
@@ -73,7 +68,7 @@ impl GreteaParser {
         let mut is_fn_argument    = false; let mut fn_args: BTreeMap<String, String>
                                                                        = BTreeMap::new();
 
-        let mut is_fn_return_value= false; let mut fn_val  = String ::new();
+        let mut is_fn_return_value= false; let mut fn_val ;
         let mut is_void           = false;
 
         let mut is_var            = false;
@@ -95,7 +90,7 @@ impl GreteaParser {
 
         let mut is_alias_replace  = false;
         let mut is_alias          = false; let mut alias_name = String::new();
-        let mut is_alias_name     = false; let mut alias_data = String::new();
+        let mut is_alias_name     = false; let mut alias_data;
 
         let mut alias_list: HashMap<String, String>
                                         = HashMap::new();
@@ -115,7 +110,7 @@ impl GreteaParser {
 
         let mut is_statement      = false; let mut statement_data: Vec<String> = Vec::new();
 
-        let mut is_module         = false; let mut module_name = String::new();
+        let mut is_module         = false; let mut module_name;
 
         let mut is_struct         = false; let mut struct_name = String::new();
         let mut is_struct_generic = false; let mut struct_generic = String::new();
@@ -138,24 +133,24 @@ impl GreteaParser {
 
         let mut is_for            = false;
         let mut is_for_variable   = false;
-        let mut is_for_in         = false; let mut for_var  = String::new();
-        let mut is_for_iter       = false; let mut for_iter = String::new();
+        let mut is_for_in         = false; let mut for_var= String::new();
+        let mut for_iter;
 
         let mut is_while          = false;
 
         let mut is_return         = false; let mut return_val = String::new();
-        let mut is_library        = false;
+        // let mut is_library        = false;
         let mut is_library_setter = false;
 
         let mut is_unsafe         = false;
 
         let mut is_vector         = false;
-        let mut is_func_vector    = false;
+        // let mut is_func_vector    = false;
 
-        let mut vector_type      = String::new();
+        let mut vector_type;
 
         let mut set_name = String::new();
-        let mut set_data = String::new();
+        let mut set_data;
 
         let mut is_line = false; let mut line     = String::new();
 
@@ -358,7 +353,7 @@ impl GreteaParser {
                         is_inline_asm = false; asm_block.clear();
                     }
                     else if is_runtime {
-                        let mut elite_read = elite::read::EliteFileData {
+                        let elite_read = elite::read::EliteFileData {
                             raw_data: runtime_block.clone(),
                             unparsed: vec![]
                         };
@@ -861,16 +856,13 @@ impl GreteaParser {
                         if is_for_variable {
                             if is_for_in {
                                 for_iter    = token.clone();
-                                is_for_iter = true;
-
                                 codegen.for_iter(&for_var, &for_iter);
 
                                 for_var.clear(); for_iter.clear();
 
                                 is_for          = false;
                                 is_for_variable = false;
-                                is_for_in       = false;
-                                is_for_iter     = false; continue;
+                                is_for_in       = false; continue;
                             }
                         }
 
