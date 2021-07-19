@@ -27,7 +27,7 @@ for signal "start" [
 
     if eq "{is_grexpr_exists}" "false" [
         println "elite: Fetching grexpr to STL path. (tool: {fetch})"
-        use exec "{fetch} -P {stl_green_path} {grexpr}"
+        use exec suppress "{fetch} -P {stl_green_path} {grexpr}"
     ]
 
     for argument "install" [
