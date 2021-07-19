@@ -134,7 +134,7 @@ pub mod gretea_tokenizer {
                     }
                 }
 
-                if !is_unpack && tokens == "+" { is_unpack = true; continue; }
+                if !is_unpack && !is_data && tokens == "+" { is_unpack = true; continue; }
 
                 if is_data {
                     if tokens.contains("\\x1b") {
