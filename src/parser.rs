@@ -330,7 +330,8 @@ impl GreteaParser {
                         self.data_list.variable_list.push(GreteaVariableData {
                             __keyword_type: GreteaKeywords::Var,
                             __name        : var_name.clone(),
-                            __data        : variable_type.clone()
+                            __type        : variable_type.clone(),
+                            __data        : var_data.clone()
                         });
 
                         is_var     = false;
@@ -824,7 +825,8 @@ impl GreteaParser {
                                     self.data_list.variable_list.push(GreteaVariableData {
                                         __keyword_type: GreteaKeywords::Var,
                                         __name        : var_name.clone(),
-                                        __data        : variable_type.clone()
+                                        __type        : variable_type.clone(),
+                                        __data        : var_data.clone()
                                     });
 
                                     is_var     = false;

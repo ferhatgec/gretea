@@ -116,6 +116,7 @@ pub struct GreteaSyntax {
 pub struct GreteaVariableData {
     pub __keyword_type: GreteaKeywords,
     pub __name        : String,
+    pub __type        : String,
     pub __data        : String
 }
 
