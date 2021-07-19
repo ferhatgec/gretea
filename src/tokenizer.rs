@@ -33,17 +33,21 @@ pub mod gretea_tokenizer {
     ];
 
     pub fn tokenize(raw_data: &GreteaFileData) -> Vec<String> {
-        let temporary_tokens  : Vec<_> = raw_data.raw_data.split(' ').collect();
-        let mut tokenized_data: Vec<String>  = Vec   ::new();
-        let mut variable_data         = String::new();
-        let mut optional              = String::new();
-        let mut found_data    : bool         = false;
+        let temporary_tokens: Vec<_> = raw_data.raw_data.split(' ').collect();
+        let mut tokenized_data: Vec<String> = Vec::new();
+        let mut variable_data = String::new();
+        let mut optional = String::new();
+        let mut found_data = false;
 
-        let mut i             : usize        = 0    ;
+        let mut i: usize = 0;
 
         let mut last_data: &str = "";
 
         let mut is_vect = false;
+
+        let mut is_data = false;
+        let mut is_seq = false;
+        let mut data = String::new();
 
         while i < temporary_tokens.len() {
             if temporary_tokens[i].contains("[]") && temporary_tokens[i].starts_with('[') {
@@ -131,6 +135,30 @@ pub mod gretea_tokenizer {
                 }
 
                 if !is_unpack && tokens == "+" { is_unpack = true; continue; }
+
+                if is_data {
+                    if tokens.contains("\\x1b") {
+                        is_seq = true;
+                    }
+
+                    if tokens.trim_end().ends_with('"') {
+                        is_data = false;
+                        data.push_str(tokens);
+                        tokenized_data.push(data.clone()); data.clear();
+                    } else {
+                        data.push_str(&*format!("{}{}", tokens.clone(), if is_seq {
+                            if tokens == "[" { is_seq = false; }
+                            ""
+                        } else { " " }));
+                    } continue;
+                }
+
+                if tokens.trim_start().starts_with('"') && !tokens.trim_end().ends_with('"') {
+                    is_data = true;
+                    data.push_str(&*format!("{}{}", tokens.clone(), if tokens[1..] != *"\\x1b" {
+                        " "
+                    } else { is_seq = true; "" })); continue;
+                }
 
                 tokenized_data.push(to(tokens));
             }
