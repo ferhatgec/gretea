@@ -32,6 +32,8 @@ pub mod gretea_tokenizer {
         '@'
     ];
 
+    pub static ESC: &'static str = "\\x1b";
+
     pub fn tokenize(raw_data: &GreteaFileData) -> Vec<String> {
         let temporary_tokens: Vec<_> = raw_data.raw_data.split(' ').collect();
         let mut tokenized_data: Vec<String> = Vec::new();
@@ -137,7 +139,7 @@ pub mod gretea_tokenizer {
                 if !is_unpack && !is_data && tokens == "+" { is_unpack = true; continue; }
 
                 if is_data {
-                    if tokens.contains("\\x1b") {
+                    if tokens.contains(ESC) {
                         is_seq = true;
                     }
 
@@ -155,7 +157,7 @@ pub mod gretea_tokenizer {
 
                 if tokens.trim_start().starts_with('"') && !tokens.trim_end().ends_with('"') {
                     is_data = true;
-                    data.push_str(&*format!("{}{}", tokens.clone(), if tokens[1..] != *"\\x1b" {
+                    data.push_str(&*format!("{}{}", tokens.clone(), if tokens[1..] != *ESC {
                         " "
                     } else { is_seq = true; "" })); continue;
                 }
