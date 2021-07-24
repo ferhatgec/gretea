@@ -316,6 +316,8 @@ impl GreteaParser {
                     else if is_enum {
                         codegen.enumeration(&enum_name, &enum_type, &enum_data);
                         is_enum = false;
+                        is_enum_data = false;
+                        is_enum_type = false;
                         enum_name.clear(); enum_type.clear(); enum_data.clear();
                     }
                     else if is_var_struct || is_var_data_vector {
