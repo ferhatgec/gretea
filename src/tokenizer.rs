@@ -68,7 +68,7 @@ pub mod gretea_tokenizer {
             }
             else if temporary_tokens[i].starts_with('\'') && temporary_tokens[i].trim_end().ends_with('\'') {
                 // ' x ' -> 'x'
-                tokenized_data.push(temporary_tokens[i].to_string()); i += 1; continue;   
+                tokenized_data.push(temporary_tokens[i].replace("\\w", " ").to_string()); i += 1; continue;   
             }
 
             if found_data {
