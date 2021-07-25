@@ -16,9 +16,11 @@ set stl_path        as "/usr/include/gretea/"
 set stl_green_path  as "tea/green/"
 
 set grexpr          as "https://raw.githubusercontent.com/ferhatgec/grexpr/master/stl/expr.tea"
+set colorite        as "https://raw.githubusercontent.com/ferhatgec/colorite/master/stl/color.tea"
 
 for signal "start" [
     set is_grexpr_exists as "false"
+    set is_colorite_exists as "false"
 
     for exists "{stl_green_path}expr.tea" [
         println "elite: Fetching grexpr skipped."
@@ -28,6 +30,19 @@ for signal "start" [
     if eq "{is_grexpr_exists}" "false" [
         println "elite: Fetching grexpr to STL path. (tool: {fetch})"
         use exec suppress "{fetch} -P {stl_green_path} {grexpr}"
+    ]
+
+    for exists "{stl_green_path}color.tea" [
+        print ""
+        println "elite: Fetching colorite skipped."
+
+        set is_colorite_exists as "true"
+    ]
+
+    if eq "{is_colorite_exists}" "false" [
+        println ""
+        println "elite: Fetching colorite to STL path. (tool: {fetch})"
+        use exec suppress "{fetch} -P {stl_green_path} {colorite}"
     ]
 
     for argument "install" [
