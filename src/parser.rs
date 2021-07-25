@@ -147,10 +147,12 @@ impl GreteaParser {
         let mut is_vector         = false;
         // let mut is_func_vector    = false;
 
+
         let mut vector_type;
 
         let mut set_name = String::new();
         let mut set_data;
+
 
         let mut is_line = false; let mut line     = String::new();
 

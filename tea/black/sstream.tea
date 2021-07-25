@@ -8,4 +8,21 @@
 // Distributed under the terms of the MIT License.
 //
 
-cpp { #include <sstream> }
+[[ cpp ]] {
+    #include <sstream> \
+    #include <string>
+}
+
+module cpp_sstream {
+    fn cpp_sstream#from_int(data: int) = string {
+        [[ cpp ]] {
+            std::ostringstream \
+                temp; \
+            temp << data; \
+            return \
+                temp.str \
+                    ( \
+                    ) ;
+        }
+    }
+} // cpp_sstream
