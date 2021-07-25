@@ -64,7 +64,7 @@ impl GreteaCodegen {
         if !generic.is_empty() {
             self.generated.push_str(format!("template<typename{} {}>\n", if is_expand {
                 "..."
-            } else { "" }, generic).as_str())
+            } else { "" }, generic).as_str());
         }
 
         parser.func_data.push(GreteaFunctionData {
