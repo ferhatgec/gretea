@@ -25,5 +25,7 @@ fn main() = int {
  * Compile-time statements.
  * Variadics.
  * C++ codegen backend support.
+ * *A bit better* [STL](tea/) called [*tea.green*](tea/green/) (STL) and [*tea.black*](tea/black) (FFI)
+ * `compile` keyword for `[[ x ]]` flags (like `default`)
 
 ### Gretea licensed under the terms of MIT License.
