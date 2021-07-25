@@ -15,6 +15,9 @@ use {
             GreteaFunctionData,
             GreteaVariableList,
 
+            GreteaCompileType,
+            GreteaCompileData,
+
             ast_helpers::{
                 to,
                 from_module,
@@ -38,11 +41,12 @@ use {
 };
 
 pub struct GreteaParser {
-    pub init_ast : GreteaSyntax      ,
-    pub data_list: GreteaVariableList,
-    pub func_data: Vec<GreteaFunctionData>,
-    pub raw_data : GreteaFileData,
-    pub func_list: Vec<String>
+    pub init_ast    : GreteaSyntax      ,
+    pub data_list   : GreteaVariableList,
+    pub func_data   : Vec<GreteaFunctionData>,
+    pub raw_data    : GreteaFileData,
+    pub func_list   : Vec<String>,
+    pub compile_list: Vec<GreteaCompileData>
 }
 
 impl GreteaParser {
@@ -60,92 +64,98 @@ impl GreteaParser {
 
         let mut is_import = false;
 
-        let mut is_fn_data        = false;
-        let mut is_fn             = false;
-        let mut is_fn_name        = false; let mut fn_name   = String ::new();
-        let mut is_generic        = false; let mut fn_generic= String::new();
-        let mut is_expandable     = false;
-        let mut is_fn_argument    = false; let mut fn_args: BTreeMap<String, String>
+        let mut is_fn_data = false;
+        let mut is_fn = false;
+        let mut is_fn_name = false; let mut fn_name = String ::new();
+        let mut is_generic = false; let mut fn_generic = String::new();
+        let mut is_expandable = false;
+        let mut is_fn_argument = false; let mut fn_args: BTreeMap<String, String>
                                                                        = BTreeMap::new();
 
-        let mut is_fn_return_value= false; let mut fn_val ;
-        let mut is_void           = false;
+        let mut is_fn_return_value = false; let mut fn_val;
+        let mut is_void = false;
 
-        let mut is_var            = false;
-        let mut is_mutable        = false; let mut var_name = String::new();
-        let mut is_var_data       = false; let mut var_data = String::new();
-        let mut is_var_type       = false; let mut variable_type    = String::new();
+        let mut is_var = false;
+        let mut is_mutable = false; let mut var_name = String::new();
+        let mut is_var_data = false; let mut var_data = String::new();
+        let mut is_var_type = false; let mut variable_type = String::new();
 
         let mut is_var_data_vector = false;
 
-        let mut is_var_struct         = false;
+        let mut is_var_struct = false;
         let mut var_struct_init_name = String::new();
         let mut var_struct_init_data = String::new();
 
-        let mut is_inline_asm     = false; let mut asm_block     = String::new();
-        let mut is_cpp_linker     = false; let mut cpp_block     = String::new();
-        let mut is_runtime        = false; let mut runtime_block = String::new();
+        let mut is_inline_asm = false; let mut asm_block = String::new();
+        let mut is_cpp_linker = false; let mut cpp_block = String::new();
+        let mut is_runtime = false; let mut runtime_block = String::new();
 
-        let mut is_fn_call        = false;
+        let mut is_fn_call = false;
 
-        let mut is_alias_replace  = false;
-        let mut is_alias          = false; let mut alias_name = String::new();
-        let mut is_alias_name     = false; let mut alias_data;
+        let mut is_alias_replace = false;
+        let mut is_alias = false; let mut alias_name = String::new();
+        let mut is_alias_name = false; let mut alias_data;
 
-        let mut alias_list: HashMap<String, String>
-                                        = HashMap::new();
+        let mut alias_list: HashMap<String, String> = HashMap::new();
 
         let (mut argument_name,
              mut argument_value) = (String::new(), String::new());
 
-        let mut function_name       = String::new();
-        let mut function_args: Vec<String> = Vec   ::new();
+        let mut function_name = String::new();
+        let mut function_args: Vec<String> = Vec::new();
 
-        let mut is_pretty_arg     = false;
-        let mut pretty_arg       = String::new();
+        let mut is_pretty_arg = false;
+        let mut pretty_arg = String::new();
 
-        let mut is_preprocessor   = false;
-        let mut is_directive      = false;
-        let mut is_set            = false;
+        let mut is_preprocessor = false;
+        let mut is_directive = false;
+        let mut is_set = false;
 
-        let mut is_statement      = false; let mut statement_data: Vec<String> = Vec::new();
+        let mut is_statement = false; let mut statement_data: Vec<String> = Vec::new();
 
-        let mut is_module         = false; let mut module_name;
+        let mut is_module = false; let mut module_name;
 
-        let mut is_struct         = false; let mut struct_name = String::new();
+        let mut is_struct = false; let mut struct_name = String::new();
         let mut is_struct_generic = false; let mut struct_generic = String::new();
 
-        let mut is_struct_member  = false;
+        let mut is_struct_member = false;
 
-        let mut struct_list: Vec<String>= Vec::new();
+        let mut struct_list: Vec<String> = Vec::new();
 
-        let mut struct_member_name    = String::new();
-        let mut struct_member_type    = String::new();
+        let mut struct_member_name = String::new();
+        let mut struct_member_type = String::new();
         let mut struct_member_default = String::new(); let mut is_default = false;
-        let mut struct_member_immutable= true;
+        let mut struct_member_immutable = true;
 
-        let mut is_enum           = false;
-        let mut is_enum_type      = false;
-        let mut is_enum_data            = false;
-        let mut enum_name        = String::new();
-        let mut enum_type        = String::new();
-        let mut enum_data        = String::new();
+        let mut is_enum = false;
+        let mut is_enum_type = false;
+        let mut is_enum_data = false;
+        let mut enum_name = String::new();
+        let mut enum_type = String::new();
+        let mut enum_data = String::new();
 
-        let mut is_for            = false;
-        let mut is_for_variable   = false;
-        let mut is_for_in         = false; let mut for_var= String::new();
+        let mut is_for = false;
+        let mut is_for_variable = false;
+        let mut is_for_in = false; let mut for_var = String::new();
         let mut for_iter;
 
-        let mut is_while          = false;
+        let mut is_while = false;
 
-        let mut is_return         = false; let mut return_val = String::new();
-        // let mut is_library        = false;
+        let mut is_compile = false;
+        let mut is_compile_data = false;
+        let mut compile_config = GreteaCompileType::Undefined;
+        let mut compile_type = String::new();
+        let mut compile_data = String::new();
+        let mut count_compile_parentheses = 0u32;
+
+        let mut is_return = false; let mut return_val = String::new();
+        // let mut is_library = false;
         let mut is_library_setter = false;
 
-        let mut is_unsafe         = false;
+        let mut is_unsafe = false;
 
-        let mut is_vector         = false;
-        // let mut is_func_vector    = false;
+        let mut is_vector = false;
+        // let mut is_func_vector = false;
 
 
         let mut vector_type;
@@ -202,6 +212,21 @@ impl GreteaParser {
 
             matched_type = *self.init_ast.match_keyword(&token);
 
+            if matched_type == GreteaKeywords::FlagRight 
+                && is_var_data 
+                && is_default {
+                    let variable_type = to(variable_type.trim_end());
+                    for arg in &self.compile_list {
+                        if arg.__name == variable_type {
+                            token = arg.__data.clone();
+                            is_library_setter = false;
+                            is_default = false;
+                            matched_type = *self.init_ast.match_keyword(&token);
+                            break;
+                        }
+                    }
+            }
+
             match matched_type {
                 GreteaKeywords::Import => {
                     is_import = true; continue;
@@ -251,6 +276,10 @@ impl GreteaParser {
                     statement_data.push(token.clone()); continue;
                 },
 
+                GreteaKeywords::Compile => {
+                    is_compile = true;
+                },
+
                 GreteaKeywords::Module => {
                     is_module = true; continue;
                 },
@@ -264,12 +293,13 @@ impl GreteaParser {
                 },
 
                 GreteaKeywords::For => {
-                    if !is_runtime || !is_cpp_linker { is_for = true; continue; }
+                    if !is_runtime && !is_cpp_linker && !is_compile { is_for = true; continue; }
 
-                    if is_runtime {
+                    if is_compile {
+                        continue;
+                    } else if is_runtime {
                         runtime_block.push_str("for ");
-                    }
-                    else if is_cpp_linker {
+                    } else if is_cpp_linker {
                         cpp_block.push_str("for ");
                     }
                 },
@@ -294,6 +324,26 @@ impl GreteaParser {
 
                 GreteaKeywords::RightCurlyBracket=> {
                     if is_directive { continue; }
+
+                    if is_compile_data {
+                        count_compile_parentheses -= 1;
+                        
+                        if count_compile_parentheses == 0 {
+                            self.compile_list.push(GreteaCompileData {
+                                __type: compile_config.clone(),
+                                __name: to(compile_type.trim_end()),
+                                __data: compile_data.clone()
+                            });
+
+                            is_compile = false;
+                            is_compile_data = false;
+                            compile_config = GreteaCompileType::Undefined;
+                            compile_data.clear();
+                            compile_type.clear();
+                        } else {
+                            compile_data.push('}');
+                        } continue;
+                    }
 
                     if is_struct && is_struct_member {
                         if !struct_member_name.is_empty() {
@@ -409,6 +459,42 @@ impl GreteaParser {
                 },
 
                 _ => {
+                    if is_compile {
+                        if is_compile_data {
+                            if token.trim_end() == "{" { 
+                                count_compile_parentheses += 1; 
+                                
+                                if count_compile_parentheses == 1 { continue; }
+                            }
+
+                            compile_data.push_str(&*format!("{} ", token.clone()));
+                            continue;
+                        }
+
+                        if compile_config != GreteaCompileType::Undefined {
+                            if compile_type.is_empty() {
+                                compile_type = token.clone();
+                            } else {
+                                if token.trim_end() == "{" {
+                                    count_compile_parentheses += 1;
+                                    is_compile_data = true;
+                                }
+                            } continue;
+                        }
+
+                        compile_config = 
+                            match token.trim() {
+                                "default" => GreteaCompileType::Default,
+                                _ => { 
+                                    // undefined
+                                    GreteaCompileType::Undefined
+                                } 
+                            };
+                        
+                        continue;
+                    }
+
+
                     if is_vector {
                         vector_type = token.clone();
 
@@ -424,6 +510,7 @@ impl GreteaParser {
                             continue;
                         }
                     }
+
 
                     if is_library_setter {
                         if is_default {
@@ -758,7 +845,6 @@ impl GreteaParser {
                     }
 
                     if token == "{" {
-
                         if is_var_struct {
                             var_data.push_str("{\n");
                         } else if is_var {

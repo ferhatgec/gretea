@@ -36,12 +36,22 @@ struct Test {
     mut age    : int64  [[ default = 16    ]]
 }
 
+
+compile default for string {
+    "\'default\' is much better & faster way to assign a data when you work with same variable types"
+}
+
+compile default for int8 {
+    42
+}
+
+
 struct MyData<Data> {
     mut data   : Data
 }
 
 fn test(pi: double) {
-    [[ cpp ]] { std::cout << "Green tea\n" << pi << '\n' ; }
+    [[ cpp ]] {  std::cout << "Green tea\n" << pi << '\n' ;  }
 
     . _ // return _
 }
@@ -75,7 +85,6 @@ fn hmm() = int8 {
     // return can be used by general,
     // .<ws> can be used by declared variables.
 }
-
 
 fn is_this_linux() = string {
     if os == "gnu/linux" {
@@ -113,9 +122,14 @@ fn main() = int {
     let end: char = '\0'
     var empty_str: string = ""
 
+    var hahahaha: string = [[ default ]]
+    var hahaha  : int8   = [[ default ]]
+
     if str#is_empty(empty_str) {
         fmt#println("yes")
     }
+
+    fmt#println(hahahaha, "\n", hahaha)
 
     [[ unsafe ]] {
         [[ assembly ]] {

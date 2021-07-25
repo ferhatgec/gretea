@@ -7,7 +7,7 @@
 
 use std::collections::{HashMap, BTreeMap};
 
-#[derive(Copy, Clone, PartialEq)]
+#[derive(Copy, Clone, PartialEq, Debug)]
 pub enum GreteaKeywords {
     Import,
     Fn,
@@ -31,6 +31,8 @@ pub enum GreteaKeywords {
 
     For,
     While,
+
+    Compile,
 
     Continue,
     Break,
@@ -86,6 +88,8 @@ pub struct GreteaSyntax {
     pub ast_for                 : String,
     pub ast_while               : String,
 
+    pub ast_compile             : String,
+
     pub ast_continue            : String,
     pub ast_break               : String,
 
@@ -111,6 +115,18 @@ pub struct GreteaSyntax {
     pub ast_directive_end       : String,
 
     pub syntax_list             : HashMap<String, GreteaKeywords>
+}
+
+#[derive(PartialEq, Copy, Clone)]
+pub enum GreteaCompileType {
+    Default,
+    Undefined
+}
+
+pub struct GreteaCompileData {
+    pub __type: GreteaCompileType,
+    pub __name: String,
+    pub __data: String
 }
 
 pub struct GreteaVariableData {
@@ -156,6 +172,8 @@ impl Default for GreteaSyntax {
 
             ast_for                 : ast_helpers::to("for"     ),
             ast_while               : ast_helpers::to("while"   ),
+
+            ast_compile             : ast_helpers::to("compile" ),
 
             ast_continue            : ast_helpers::to("continue"),
             ast_break               : ast_helpers::to("break"   ),
@@ -207,6 +225,8 @@ impl Default for GreteaSyntax {
 
         init.add(init.ast_for     .clone(), GreteaKeywords::For            );
         init.add(init.ast_while   .clone(), GreteaKeywords::While          );
+
+        init.add(init.ast_compile .clone(), GreteaKeywords::Compile        );
 
         init.add(init.ast_continue.clone(), GreteaKeywords::Continue       );
         init.add(init.ast_break   .clone(), GreteaKeywords::Break          );

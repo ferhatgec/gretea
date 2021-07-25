@@ -27,7 +27,8 @@ pub mod gretea_lexer {
             data_list: GreteaVariableList::default(),
             func_data: vec![],
             raw_data : init.clone(),
-            func_list: init.func_list.clone()
+            func_list: init.func_list.clone(),
+            compile_list: vec![]
         };
         let data = parser.parse(&tokens);
 
