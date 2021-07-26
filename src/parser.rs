@@ -741,7 +741,7 @@ impl GreteaParser {
 
                     if is_fn {
                         if is_fn_name {
-                            if token == "<" {
+                            if token == "<" && !is_fn_argument {
                                 is_generic = true; continue;
                             }
 
@@ -760,7 +760,7 @@ impl GreteaParser {
                             }
 
                             if is_fn_argument {
-                                if token == ":" || token == "," {
+                                if token == ":" {
                                     continue;
                                 }
 
@@ -816,7 +816,9 @@ impl GreteaParser {
                                 if argument_value.is_empty() {
                                     if token != ")" {
                                         argument_value = token.clone();
-
+                                    } continue;
+                                } else {
+                                    if token.trim() == "," || token.trim() == ")" {
                                         if is_expandable {
                                             if argument_value == fn_generic {
                                                 argument_value.push_str("...");
@@ -825,6 +827,8 @@ impl GreteaParser {
 
                                         fn_args.insert(argument_name.clone(), argument_value.clone());
                                         argument_name.clear(); argument_value.clear();
+                                    } else {
+                                        argument_value.push_str(format!("{} ", token).as_str());
                                     } continue;
                                 }
 
