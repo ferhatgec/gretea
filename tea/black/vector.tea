@@ -14,7 +14,7 @@ import tea.green.type
 cpp { #include <vector> }
 
 module cpp_vector {
-    fn cpp_vector#push_back(&data: []string , what: string) {
+    fn cpp_vector#push_back<Type>(&data: []Type , what: Type) {
         [[ unsafe ]] {
             data.push_back(what)
         }
