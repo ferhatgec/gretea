@@ -11,12 +11,39 @@
 import tea.green.string
 import tea.green.type
 
-cpp { #include <vector> }
+import tea.green.log
+
+[[ cpp ]] { #include <vector> }
 
 module cpp_vector {
     fn cpp_vector#push_back<Type>(&data: []Type , what: Type) {
         [[ unsafe ]] {
             data.push_back(what)
+        }
+    }
+
+    fn cpp_vector#size<Type>(&data: []Type ) = usize {
+        [[ unsafe ]] {
+            [[ cpp ]] {
+                return \
+                    data.size();
+            }
+        }
+    }
+
+    fn cpp_vector#at<Type>(&data: []Type , index: usize) = Type {
+        if cpp_vector#size(data) > index {
+            [[ unsafe ]] {
+                [[ cpp ]] {
+                    return \
+                        data.at(index);
+                }
+            }
+        } else {
+            log#print(
+                Warning, 
+                "\'cpp_vector#at\' index is out of bounds"
+            )
         }
     }
 } // cpp_vector
