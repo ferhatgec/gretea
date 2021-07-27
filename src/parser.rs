@@ -111,7 +111,8 @@ impl GreteaParser {
         let mut is_directive = false;
         let mut is_set = false;
 
-        let mut is_statement = false; let mut statement_data: Vec<String> = Vec::new();
+        let mut is_statement = false;
+        let mut statement_data: Vec<String> = Vec::new();
 
         let mut is_module = false; let mut module_name;
 
@@ -381,9 +382,16 @@ impl GreteaParser {
                             is_struct = false;
                             is_struct_member = false;
                             is_struct_generic = false;
-
+    
                             codegen.variable_definition(&struct_member_default, &struct_member_type,
                                                         &struct_member_name, true);
+
+                            self.data_list.variable_list.push(GreteaVariableData {
+                                __keyword_type: GreteaKeywords::Var,
+                                __name        : struct_member_name.clone(),
+                                __type        : struct_member_type.clone(),
+                                __data        : struct_member_default.clone()
+                            });
 
                             struct_generic.clear();
 
@@ -498,7 +506,7 @@ impl GreteaParser {
                                 if count_compile_parentheses == 1 { continue; }
                             }
 
-                            compile_data.push_str(&*format!("{} ", token.clone()));
+                            compile_data.push_str(&*format!("{} ", from_module(&token)));
                             continue;
                         }
 
@@ -638,6 +646,13 @@ impl GreteaParser {
                                     if token.ends_with('\n') || token.ends_with(',') || token.ends_with('\\') {
                                         codegen.variable_definition(&struct_member_default, &struct_member_type,
                                                                     &struct_member_name, struct_member_immutable);
+
+                                        self.data_list.variable_list.push(GreteaVariableData {
+                                            __keyword_type: GreteaKeywords::Var,
+                                            __name        : struct_member_name.clone(),
+                                            __type        : struct_member_type.clone(),
+                                            __data        : struct_member_default.clone()
+                                        });
 
                                         struct_member_name.clear();
                                         struct_member_type.clear();
@@ -1118,9 +1133,9 @@ impl GreteaParser {
                                 } continue;
                             }
 
-
                             for variable in &self.data_list.variable_list {
-                                if token == variable.__name {
+                                if token == variable.__name
+                                    || token.split('.').last().unwrap() == variable.__name {
                                     is_line = true;
                                     line.push_str(format!("{}", token.clone()).as_str()); break;
                                 }
