@@ -9,6 +9,7 @@ pub mod gretea_lexer {
     use {
         crate::{
             ast::{
+                GreteaCompileData,
                 GreteaSyntax,
                 GreteaVariableList
             },
@@ -19,7 +20,10 @@ pub mod gretea_lexer {
         std::collections::{BTreeMap}
     };
 
-    pub fn init_lexer(init: GreteaFileData) -> (String, BTreeMap<String, bool>, Vec<String>) {
+    pub fn init_lexer(init: GreteaFileData) -> (String,
+                                                BTreeMap<String, bool>,
+                                                Vec<String>,
+                                                Vec<GreteaCompileData>) {
         let tokens = tokenize(&init);
         let ast   = GreteaSyntax::default();
         let mut parser = GreteaParser {
@@ -28,10 +32,10 @@ pub mod gretea_lexer {
             func_data: vec![],
             raw_data : init.clone(),
             func_list: init.func_list.clone(),
-            compile_list: vec![]
+            compile_list: init.comp_list.clone()
         };
         let data = parser.parse(&tokens);
 
-        (data.generated, data.sources, parser.func_list)
+        (data.generated, data.sources, parser.func_list, parser.compile_list)
     }
 }

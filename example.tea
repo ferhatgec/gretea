@@ -12,8 +12,7 @@ import tea.green.process
 import tea.green.expr
 import tea.green.color
 import tea.green.log
-
-// import tea.green.expr
+import tea.green.bufsize
 
 import tea.black.vector
 import tea.black.sstream
@@ -121,6 +120,14 @@ fn main() = int {
 
     let end: char = '\0'
     var empty_str: string = ""
+
+    var term_buf_size: BufSize = [[ default ]]
+
+    fmt#println(
+        term_buf_size.columns, 
+        '\w' , 
+        term_buf_size.rows
+    )
 
     var hahahaha: string = [[ default ]]
     var hahaha  : int8   = [[ default ]]

@@ -9,7 +9,11 @@ use {
     std::io::BufRead,
 
     crate::{
-        ast::ast_helpers::{to},
+        ast::{
+            GreteaCompileData,
+
+            ast_helpers::{to}
+        },
         tokenizer::gretea_tokenizer::{is_comment}
     }
 };
@@ -19,7 +23,8 @@ pub struct GreteaFileData {
     pub raw_data : String,
     pub unparsed : Vec<String>,
     pub lines    : Vec<String>,
-    pub func_list: Vec<String>
+    pub func_list: Vec<String>,
+    pub comp_list: Vec<GreteaCompileData>
 }
 
 impl Default for GreteaFileData {
@@ -28,7 +33,8 @@ impl Default for GreteaFileData {
             raw_data : to(""),
             unparsed : vec![],
             lines    : vec![],
-            func_list: vec![]
+            func_list: vec![],
+            comp_list: vec![]
         }
     }
 }

@@ -79,7 +79,7 @@ fn main() {
 
     gretea_read.read_raw_file(filename);
 
-    let (_, files, _) = lexer::gretea_lexer::init_lexer(gretea_read.clone());
+    let (_, files, _, _comp_list) = lexer::gretea_lexer::init_lexer(gretea_read.clone());
     let object_name = normalize(filename   .clone());
     let generated_filename = add(object_name.clone());
 
@@ -88,20 +88,22 @@ fn main() {
     for file in files.clone() {
         if !file.1 {
             gretea_read.read_raw_file(&to_gretea(file.0.clone()));
-            let (generated_data, _, mut func) = lexer::gretea_lexer::init_lexer(gretea_read.clone());
+            let (generated_data, _, mut func, mut _comp_list) = lexer::gretea_lexer::init_lexer(gretea_read.clone());
             let object_name         = header(normalize(file.0));
 
             gretea_read.func_list.append(&mut func);
+            gretea_read.comp_list.append(&mut _comp_list);
 
             create_and_write(std::path::Path::new(&object_name), generated_data);
         }
         else {
             gretea_read.read_raw_file(&to_gretea(
                 format!("/usr/include/gretea/{}", file.0.clone())));
-            let (generated_data, _, mut func) = lexer::gretea_lexer::init_lexer(gretea_read.clone());
+            let (generated_data, _, mut func, mut _comp_list) = lexer::gretea_lexer::init_lexer(gretea_read.clone());
             let object_name         = header(normalize(file.0.split('/').last().unwrap().parse().unwrap()));
 
             gretea_read.func_list.append(&mut func);
+            gretea_read.comp_list.append(&mut _comp_list);
 
             create_and_write(std::path::Path::new(&object_name), generated_data);
         }
@@ -109,7 +111,7 @@ fn main() {
 
     gretea_read.read_raw_file(filename);
 
-    let (generated, _, _) = lexer::gretea_lexer::init_lexer(gretea_read.clone());
+    let (generated, _, _, _) = lexer::gretea_lexer::init_lexer(gretea_read.clone());
 
     create_and_write(path, generated);
 

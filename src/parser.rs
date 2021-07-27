@@ -30,7 +30,8 @@ use {
             log::{gen}
         },
         tokenizer::gretea_tokenizer::{is_data},
-        read::{GreteaFileData}
+        read::{GreteaFileData},
+        elite::ast::ast_helpers::{extract_argument}
     },
     std::{
         collections::{
@@ -571,7 +572,12 @@ impl GreteaParser {
                             "default" => {
                                 is_default = true;
                             },
-                            _ => {}
+                            _ => {
+                                if token.starts_with('"') && token.ends_with('"') {
+
+                                }
+                                codegen.character(&extract_argument(&token));
+                            }
                         } continue;
                     }
 

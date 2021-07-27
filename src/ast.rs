@@ -123,6 +123,7 @@ pub enum GreteaCompileType {
     Undefined
 }
 
+#[derive(Clone)]
 pub struct GreteaCompileData {
     pub __type: GreteaCompileType,
     pub __name: String,
