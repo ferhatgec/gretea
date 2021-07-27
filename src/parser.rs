@@ -284,7 +284,18 @@ impl GreteaParser {
                     is_module = true; continue;
                 },
                 GreteaKeywords::Struct => {
-                    is_struct = true; continue;
+                    if !is_var { 
+                        is_struct = true; 
+                    } else {
+                        if is_var_type {
+                            variable_type.push_str(&*token.clone());
+                            variable_type.push(' ');
+                        } else if is_var_data {
+                            var_data.push_str(&*token.clone());
+                            var_data.push(' ');
+                        }
+                    }
+                    continue;
                 },
                 GreteaKeywords::Enum => {
                     if !is_fn_data {
