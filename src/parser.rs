@@ -257,7 +257,27 @@ impl GreteaParser {
                     is_runtime = true; continue;
                 },
                 GreteaKeywords::Unsafe => {
-                    is_unsafe = true; continue;
+                    if is_var && is_var_data {
+                        codegen.variable_definition(&var_data, &variable_type, &var_name, is_mutable);
+
+                        self.data_list.variable_list.push(GreteaVariableData {
+                            __keyword_type: GreteaKeywords::Var,
+                            __name        : var_name.clone(),
+                            __type        : variable_type.clone(),
+                            __data        : var_data.clone()
+                        });
+
+                        is_var     = false;
+                        is_var_type= false;
+                        is_var_data= false;
+                        is_mutable = false;
+
+                        var_data     .clear();
+                        variable_type.clear();
+                        var_name     .clear();
+                    } else {
+                        is_unsafe = true;
+                    } continue;
                 },
 
                 GreteaKeywords::Alias=> {

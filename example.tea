@@ -125,6 +125,9 @@ fn main() = int {
     var hahahaha: string = [[ default ]]
     var hahaha  : int8   = [[ default ]]
 
+    var mut test: int8   = [[ unsafe ]]
+    // ^^^^^ (uninitialized value)
+
     if str#is_empty(empty_str) {
         fmt#println("yes")
     }
