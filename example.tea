@@ -13,6 +13,7 @@ import tea.green.expr
 import tea.green.color
 import tea.green.log
 import tea.green.bufsize
+import tea.green.escape
 
 import tea.black.vector
 import tea.black.sstream
@@ -109,7 +110,7 @@ fn main() = int {
 
     var mut tea: string   = "green"
     var gt     : string   = "gREEnTeA"
-
+    
     var __true            = true
     var __false           = false
     var mut x      : int8 = 0
@@ -140,6 +141,10 @@ fn main() = int {
     }
 
     fmt#println(hahahaha, "\n", hahaha)
+
+    var escape_seq: string = "escafe\\wis\\winteresting\\n\\x1b[0;33mtest\\x1b[0m\\n\\\\"
+    
+    fmt#println(escape#run(escape_seq))
 
     [[ unsafe ]] {
         [[ assembly ]] {
