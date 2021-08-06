@@ -952,7 +952,7 @@ impl GreteaParser {
                                         var_data.push_str(&token.clone()); continue;
                                     }
 
-                                    var_data = to(token.clone().trim());
+                                    var_data = token.clone();
 
                                     for structure in struct_list.clone() {
                                         if structure == var_data {
@@ -960,6 +960,10 @@ impl GreteaParser {
                                         }
                                     } if is_var_struct { /*var_data.push_str("
                                         }{\n"); */ continue; }
+
+                                    if variable_type.trim() == "_" {
+                                        variable_type.clear();
+                                    }
 
                                     codegen.variable_definition(&var_data, &variable_type, &var_name, is_mutable);
 

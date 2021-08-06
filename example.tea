@@ -103,14 +103,13 @@ fn main() = int {
 
     term#clear()
     term#disable_cursor()
-
     var pi: double    = 3.14        // immutable
     var three         = 3           // immutable, without type declaration
     var mut green_tea = ProjectName // mutable, without type declaration
 
     var mut tea: string   = "green"
     var gt     : string   = "gREEnTeA"
-    
+
     var __true            = true
     var __false           = false
     var mut x      : int8 = 0
@@ -125,8 +124,8 @@ fn main() = int {
     var term_buf_size: BufSize = [[ default ]]
 
     fmt#println(
-        term_buf_size.columns, 
-        '\w' , 
+        term_buf_size.columns,
+        '\w' ,
         term_buf_size.rows
     )
 
@@ -143,7 +142,15 @@ fn main() = int {
     fmt#println(hahahaha, "\n", hahaha)
 
     var escape_seq: string = "escafe\\wis\\winteresting\\n\\x1b[0;33mtest\\x1b[0m\\n\\\\"
-    
+
+    compile default for _ {
+        is_this_linux()
+    }
+
+    var lets_find_out: _ = [[ default ]]
+
+    fmt#println(lets_find_out)
+
     fmt#println(escape#run(escape_seq))
 
     [[ unsafe ]] {
@@ -247,7 +254,7 @@ fn main() = int {
     fmt#println(expr#eval("6 - 2 * 3 / 3 + 2 - 3"))
 
     color#print("Hello much better & colorful text.\n", LightGreen, Bold)
-    
+
     log#print(
         Info, "Blah blah is deprecated. Use blah instead."
     )
