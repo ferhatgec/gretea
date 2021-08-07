@@ -155,6 +155,7 @@ impl GreteaParser {
         let mut is_library_setter = false;
 
         let mut is_unsafe = false;
+        let mut is_safe = false;
 
         let mut is_vector = false;
         // let mut is_func_vector = false;
@@ -281,6 +282,12 @@ impl GreteaParser {
                         is_unsafe = true;
                     } continue;
                 },
+                GreteaKeywords::Safe => {
+                    if is_unsafe {
+                        is_safe = true;
+                        is_unsafe = false;
+                    }
+                },
 
                 GreteaKeywords::Alias=> {
                     is_alias = true; continue;
@@ -402,6 +409,14 @@ impl GreteaParser {
                             is_default = false;
                         } codegen.character(&to("};"));
                     }
+                    else if is_inline_asm {
+                        codegen.assembly(&asm_block);
+                        is_inline_asm = false; asm_block.clear();
+                    }
+                    else if is_safe {
+                        is_safe = false;
+                        is_unsafe = true;
+                    }
                     else if is_unsafe {
                         is_unsafe = false;
                     }
@@ -441,10 +456,6 @@ impl GreteaParser {
                     else if is_cpp_linker {
                         codegen.character(&cpp_block);
                         is_cpp_linker = false; cpp_block.clear();
-                    }
-                    else if is_inline_asm {
-                        codegen.assembly(&asm_block);
-                        is_inline_asm = false; asm_block.clear();
                     }
                     else if is_runtime {
                         let elite_read = elite::read::EliteFileData {
@@ -581,7 +592,7 @@ impl GreteaParser {
                         } continue;
                     }
 
-                    if is_unsafe {
+                    if is_unsafe || is_safe {
                         if token == "{" { continue; }
                     }
 

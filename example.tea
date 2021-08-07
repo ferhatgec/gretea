@@ -161,6 +161,10 @@ fn main() = int {
                 : "+r" (foo) : "g" (three) : "cc" \
             _?
         }
+
+        [[ safe ]] {
+            fmt#println("unsafe to safe")
+        }
     }
 
     fmt#println(foo)
