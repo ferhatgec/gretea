@@ -97,6 +97,9 @@ impl GreteaParser {
         let mut is_alias = false; let mut alias_name = String::new();
         let mut is_alias_name = false; let mut alias_data;
 
+        let mut is_type = false;
+        let mut type_name = String::new();
+
         let mut alias_list: HashMap<String, String> = HashMap::new();
 
         let (mut argument_name,
@@ -213,7 +216,23 @@ impl GreteaParser {
                 is_alias_replace = true; continue;
             }
 
+            if is_type {
+                for val in &self.data_list.variable_list {
+                    if val.__name == token {
+                        token = format!("\"{}\"", val.__type);
+                        is_type = false;
+                        break;
+                    }
+                }
+            }
+
             matched_type = *self.init_ast.match_keyword(&token);
+
+            if matched_type == GreteaKeywords::Type {
+                if !is_fn_call && !is_var_data {
+                    matched_type = GreteaKeywords::Undefined;
+                }
+            }
 
             if matched_type == GreteaKeywords::FlagRight 
                 && is_var_data 
@@ -291,6 +310,11 @@ impl GreteaParser {
 
                 GreteaKeywords::Alias=> {
                     is_alias = true; continue;
+                },
+                GreteaKeywords::Type => {
+                    //if is_preprocessor {
+                        is_type = true;
+                    //}
                 },
 
                 GreteaKeywords::If |

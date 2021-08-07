@@ -22,6 +22,7 @@ pub enum GreteaKeywords {
     Safe,
 
     Alias,
+    Type,
 
     If,
     Else,
@@ -79,6 +80,7 @@ pub struct GreteaSyntax {
     pub ast_safe                : String,
 
     pub ast_alias               : String,
+    pub ast_type                : String,
 
     pub ast_if                  : String,
     pub ast_else                : String,
@@ -166,6 +168,7 @@ impl Default for GreteaSyntax {
             ast_safe                : ast_helpers::to("safe"    ),
 
             ast_alias               : ast_helpers::to("alias"   ),
+            ast_type                : ast_helpers::to("type"    ),
 
             ast_if                  : ast_helpers::to("if"      ),
             ast_else                : ast_helpers::to("else"    ),
@@ -220,6 +223,7 @@ impl Default for GreteaSyntax {
         init.add(init.ast_safe    .clone(), GreteaKeywords::Safe           );
 
         init.add(init.ast_alias   .clone(), GreteaKeywords::Alias          );
+        init.add(init.ast_type    .clone(), GreteaKeywords::Type           );
 
         init.add(init.ast_if      .clone(), GreteaKeywords::If             );
         init.add(init.ast_else    .clone(), GreteaKeywords::Else           );

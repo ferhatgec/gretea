@@ -143,6 +143,8 @@ fn main() = int {
 
     var escape_seq: string = "escafe\\wis\\winteresting\\n\\x1b[0;33mtest\\x1b[0m\\n\\\\"
 
+    fmt#println("test", '\w' , type escape_seq)
+
     compile default for _ {
         is_this_linux()
     }
@@ -166,8 +168,6 @@ fn main() = int {
             fmt#println("unsafe to safe")
         }
     }
-
-    fmt#println(foo)
 
     fmt#print("L")
 
