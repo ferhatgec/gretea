@@ -396,4 +396,24 @@ module str {
             . true
         } . false
     }
+
+    fn str#split(data: string, delim: char) = []string {
+        var mut __data: []string = [[ unsafe ]]
+        var mut temp: string = ""
+
+        for &ch in data {
+            if ch == delim && !str#is_empty(temp) {
+                cpp_vector#push_back(__data, temp)
+                cpp_str#erase(temp)
+
+                continue
+            }
+
+            cpp_str#push_back(temp, ch)
+        }
+
+        cpp_vector#push_back(__data, temp)
+
+        . __data
+    }
 } // str

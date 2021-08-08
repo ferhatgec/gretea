@@ -563,605 +563,694 @@ impl GreteaParser {
                 },
 
                 _ => {
-                    if is_compile {
-                        if is_compile_data {
-                            if token.trim_end() == "{" { 
-                                count_compile_parentheses += 1; 
-                                
-                                if count_compile_parentheses == 1 { continue; }
-                            }
-
-                            compile_data.push_str(&*format!("{} ", from_module(&token)));
-                            continue;
-                        }
-
-                        if compile_config != GreteaCompileType::Undefined {
-                            if compile_type.is_empty() {
-                                compile_type = token.clone();
-                            } else {
+                    if !is_line {
+                        if is_compile {
+                            if is_compile_data {
                                 if token.trim_end() == "{" {
                                     count_compile_parentheses += 1;
-                                    is_compile_data = true;
+
+                                    if count_compile_parentheses == 1 { continue; }
                                 }
-                            } continue;
-                        }
 
-                        compile_config = 
-                            match token.trim() {
-                                "default" => GreteaCompileType::Default,
-                                _ => { 
-                                    // undefined
-                                    GreteaCompileType::Undefined
-                                } 
-                            };
-                        
-                        continue;
-                    }
+                                compile_data.push_str(&*format!("{} ", from_module(&token)));
+                                continue;
+                            }
 
-
-                    if is_vector {
-                        vector_type = token.clone();
-
-                        is_vector = false;
-
-                        if is_fn_argument || is_var {
-                            token = make_vector(&token);
-                        } else {
-                            codegen.cpp_vector(&vector_type);
-
-                            vector_type.clear();
-
-                            continue;
-                        }
-                    }
-
-
-                    if is_library_setter {
-                        if is_default {
-                            if token == "=" { continue; }
-
-                            struct_member_default = token.clone(); continue;
-                        }
-
-                        match token.as_str() {
-                            "library" | "stl" => {
-                                codegen.header_guards();
-                            },
-                            "no_optimize" => {
-                                codegen.optimize = false;
-                            },
-                            "optimize" => {
-                                codegen.optimize = true;
-                            },
-                            "default" => {
-                                is_default = true;
-                            },
-                            _ => {
-                                if token.starts_with('"') && token.ends_with('"') {
-                                    codegen.character(&extract_argument(&token));
+                            if compile_config != GreteaCompileType::Undefined {
+                                if compile_type.is_empty() {
+                                    compile_type = token.clone();
                                 } else {
-                                    gen(Warning,
-                                        "[[ ]] flag not found.",
-                                        &*token,
-                                        &self.raw_data,
-                                        &(current_line as usize),
-                                        &current_column);
-
-                                    gen(Help,
-                                        "you may have missed this: [[ \"..\" ]]",
-                                        &*token,
-                                        &self.raw_data,
-                                        &(current_line as usize),
-                                        &current_column);
-                                }
-                            }
-                        } continue;
-                    }
-
-                    if is_unsafe || is_safe {
-                        if token == "{" { continue; }
-                    }
-
-                    if is_enum {
-                        if is_enum_data {
-                            enum_data.push_str(token.clone().as_str());
-                            if token == "," { enum_data.push('\n');
-                            } continue;
-                        }
-
-                        if token == "{" { is_enum_data = true; continue; }
-
-                        if enum_name.is_empty() {
-                            enum_name = token.clone(); continue;
-                        } else {
-                            if is_enum_type {
-                                enum_type = token.clone(); is_enum_type = false; continue;
-                            }
-                            if token == "=" {
-                                is_enum_type = true; continue;
-                            }
-                        }
-
-                        continue;
-                    }
-
-                    if is_statement {
-                        if token == "{" {
-                            if is_preprocessor {
-                                codegen.statement_directive(&statement_data);
-
-                                is_directive = true;
-                            } else { codegen.statement(&statement_data, is_while); }
-
-                            is_statement    = false;
-                            is_preprocessor = false;
-                            is_while        = false;
-
-                            statement_data.clear(); continue;
-                        }
-
-                        statement_data.push(token.clone()); continue;
-                    }
-
-                    if is_struct {
-                        if is_struct_member {
-                            if token == ">" {  is_struct_generic = if is_struct_generic { false } else { false }; continue; }
-                            if is_struct_generic {
-                                struct_generic = token.clone(); continue;
-                            }
-
-                            if token == "<" {
-                                is_struct_generic = true; continue;
-                            }
-
-
-                            if token == "{" {
-                                codegen.structure(&struct_name, &struct_generic);
-                                struct_list.push(struct_name.clone());
-
-                                codegen.character(&to("{\npublic:")); continue;
-                            }
-
-                            if !struct_member_name.is_empty() {
-                                if token == ":" { continue; }
-
-                                if !struct_member_type.is_empty() {
-                                    if token.ends_with('\n') || token.ends_with(',') || token.ends_with('\\') {
-                                        codegen.variable_definition(&struct_member_default, &struct_member_type,
-                                                                    &struct_member_name, struct_member_immutable);
-
-                                        self.data_list.variable_list.push(GreteaVariableData {
-                                            __keyword_type: GreteaKeywords::Var,
-                                            __name        : struct_member_name.clone(),
-                                            __type        : struct_member_type.clone(),
-                                            __data        : struct_member_default.clone()
-                                        });
-
-                                        struct_member_name.clear();
-                                        struct_member_type.clear();
-                                        struct_member_default.clear();
-                                        is_default = false;
-                                        struct_member_immutable = true;  continue;
+                                    if token.trim_end() == "{" {
+                                        count_compile_parentheses += 1;
+                                        is_compile_data = true;
                                     }
                                 }
-
-                                struct_member_type = token.clone(); continue;
+                                continue;
                             }
 
-                            struct_member_name = token.clone(); continue;
-                        }
-
-                        struct_name = token.clone(); is_struct_member = true; continue;
-                    }
-
-                    if is_module {
-                        // if token == "{" { }
-                        module_name = token.clone();
-
-                        codegen.module(&module_name);
-
-                        is_module = false;
-                        module_name.clear(); continue;
-                    }
-
-                    if is_set {
-                        if token == "=" { continue; }
-
-                        if !set_name.is_empty() {
-                            set_data = token.clone();
-
-                            codegen.preprocess_set(&set_data, &set_name);
-
-                            is_preprocessor = false;
-                            is_set          = false;
-                            set_name.clear(); set_data.clear(); continue;
-                        }
-
-                        set_name = token.clone(); continue;
-                    }
-
-                    if is_fn_call {
-                        if token == "(" {
-                            if is_pretty_arg {
-                                pretty_arg.push_str(token.clone().as_str());
-                            }
-                            else {
-                                if count_parentheses >= 1 {
-                                    function_args.push(token.clone());
-                                }
-                            }
-
-                            count_parentheses += 1; continue;
-                        }
-
-                        if token == ")" {
-                            if count_parentheses > 1 {
-                                if is_pretty_arg {
-                                    pretty_arg.push_str(token.clone().as_str());
-
-                                    if count_parentheses == 2 {
-                                        is_pretty_arg = false;
-                                        function_args
-                                            .push(pretty_arg.clone()); pretty_arg.clear();
+                            compile_config =
+                                match token.trim() {
+                                    "default" => GreteaCompileType::Default,
+                                    _ => {
+                                        // undefined
+                                        GreteaCompileType::Undefined
                                     }
-                                }
-                                else {
-                                    function_args.push(token.clone());
-                                }
-                            }
-
-                            count_parentheses -= 1;
-                        }
-
-                        if token == "(" || token == ")" || token == "," {
-                            if count_parentheses == 0 {
-                                if token == ")" {
-                                    codegen.function_call(&function_args,
-                                                          &function_name, is_expandable);
-
-                                    is_fn_call       = false;
-                                    is_expandable    = false;
-
-                                    count_parentheses = 0;
-
-                                    function_name.clear();
-                                    function_args.clear();
-                                }
-                            } else if is_pretty_arg && token == "," {
-                                pretty_arg.push_str(token.as_str());
-                            }
+                                };
 
                             continue;
                         }
 
-                        match token.as_str() {
-                            "+_" => {
-                                is_expandable = true; continue;
-                            },
-                            _ => {
-                                if is_pretty_arg {
-                                    pretty_arg.push_str(from_module(&token).as_str());
-                                    continue;
-                                }
 
-                                let __token = token.split('#').last().unwrap().trim().to_string();
+                        if is_vector {
+                            vector_type = token.clone();
 
-                                for name in self.func_list.clone() {
-                                    if name == __token.clone() {
-                                        pretty_arg    = from_module(&token);
-                                        is_pretty_arg = true; break;
-                                    }
-                                }
+                            is_vector = false;
 
-                                if is_pretty_arg { continue; }
+                            if is_fn_argument || is_var {
+                                token = make_vector(&token);
+                            } else {
+                                codegen.cpp_vector(&vector_type);
 
-                                function_args.push(token.clone());
+                                vector_type.clear();
+
+                                continue;
                             }
                         }
 
-                        continue;
-                    }
 
-                    if is_import {
-                        codegen.import(token.clone());
+                        if is_library_setter {
+                            if is_default {
+                                if token == "=" { continue; }
 
-                        is_import = false; continue;
-                    }
-
-                    if is_fn {
-                        if is_fn_name {
-                            if token == "<" && !is_fn_argument {
-                                is_generic = true; continue;
+                                struct_member_default = token.clone();
+                                continue;
                             }
 
-                            if is_generic {
-                                if token == ">" { is_generic = false; continue; }
-
-                                if token == "'" {
-                                    is_expandable = true; continue;
-                                }
-
-                                fn_generic = token.clone(); continue;
-                            }
-
-                            if token == "(" {
-                                is_fn_argument = true; continue;
-                            }
-
-                            if is_fn_argument {
-                                if token == ":" {
-                                    continue;
-                                }
-
-                                if token == "=" {
-                                    is_fn_return_value = true; is_void = false; continue;
-                                }
-
-                                if token == "{"  {
-                                    if is_fn_return_value {
-                                        gen(Error,
-                                            "no such return type found after type operator declaration",
+                            match token.as_str() {
+                                "library" | "stl" => {
+                                    codegen.header_guards();
+                                },
+                                "no_optimize" => {
+                                    codegen.optimize = false;
+                                },
+                                "optimize" => {
+                                    codegen.optimize = true;
+                                },
+                                "default" => {
+                                    is_default = true;
+                                },
+                                _ => {
+                                    if token.starts_with('"') && token.ends_with('"') {
+                                        codegen.character(&extract_argument(&token));
+                                    } else {
+                                        gen(Warning,
+                                            "[[ ]] flag not found.",
                                             &*token,
                                             &self.raw_data,
                                             &(current_line as usize),
-                                                &current_column);
+                                            &current_column);
+
+                                        gen(Help,
+                                            "you may have missed this: [[ \"..\" ]]",
+                                            &*token,
+                                            &self.raw_data,
+                                            &(current_line as usize),
+                                            &current_column);
+                                    }
+                                }
+                            }
+                            continue;
+                        }
+
+                        if is_unsafe || is_safe {
+                            if token == "{" { continue; }
+                        }
+
+                        if is_enum {
+                            if is_enum_data {
+                                enum_data.push_str(token.clone().as_str());
+                                if token == "," {
+                                    enum_data.push('\n');
+                                }
+                                continue;
+                            }
+
+                            if token == "{" {
+                                is_enum_data = true;
+                                continue;
+                            }
+
+                            if enum_name.is_empty() {
+                                enum_name = token.clone();
+                                continue;
+                            } else {
+                                if is_enum_type {
+                                    enum_type = token.clone();
+                                    is_enum_type = false;
+                                    continue;
+                                }
+                                if token == "=" {
+                                    is_enum_type = true;
+                                    continue;
+                                }
+                            }
+
+                            continue;
+                        }
+
+                        if is_statement {
+                            if token == "{" {
+                                if is_preprocessor {
+                                    codegen.statement_directive(&statement_data);
+
+                                    is_directive = true;
+                                } else { codegen.statement(&statement_data, is_while); }
+
+                                is_statement = false;
+                                is_preprocessor = false;
+                                is_while = false;
+
+                                statement_data.clear();
+                                continue;
+                            }
+
+                            statement_data.push(token.clone());
+                            continue;
+                        }
+
+                        if is_struct {
+                            if is_struct_member {
+                                if token == ">" {
+                                    is_struct_generic = if is_struct_generic { false } else { false };
+                                    continue;
+                                }
+                                if is_struct_generic {
+                                    struct_generic = token.clone();
+                                    continue;
+                                }
+
+                                if token == "<" {
+                                    is_struct_generic = true;
+                                    continue;
+                                }
+
+
+                                if token == "{" {
+                                    codegen.structure(&struct_name, &struct_generic);
+                                    struct_list.push(struct_name.clone());
+
+                                    codegen.character(&to("{\npublic:"));
+                                    continue;
+                                }
+
+                                if !struct_member_name.is_empty() {
+                                    if token == ":" { continue; }
+
+                                    if !struct_member_type.is_empty() {
+                                        if token.ends_with('\n') || token.ends_with(',') || token.ends_with('\\') {
+                                            codegen.variable_definition(&struct_member_default, &struct_member_type,
+                                                                        &struct_member_name, struct_member_immutable);
+
+                                            self.data_list.variable_list.push(GreteaVariableData {
+                                                __keyword_type: GreteaKeywords::Var,
+                                                __name: struct_member_name.clone(),
+                                                __type: struct_member_type.clone(),
+                                                __data: struct_member_default.clone()
+                                            });
+
+                                            struct_member_name.clear();
+                                            struct_member_type.clear();
+                                            struct_member_default.clear();
+                                            is_default = false;
+                                            struct_member_immutable = true;
+                                            continue;
+                                        }
                                     }
 
-                                    is_void = true;
+                                    struct_member_type = token.clone();
+                                    continue;
                                 }
 
-                                if is_fn_return_value || is_void {
-                                    fn_val = if is_fn_return_value { token.clone() } else { to("void") };
+                                struct_member_name = token.clone();
+                                continue;
+                            }
 
-                                    codegen.function(self, &fn_args,
-                                                     &fn_name.clone(),
-                                                     &fn_val.clone(),
-                                                     &fn_generic.clone(),
-                                                     is_expandable,
-                                                     is_void);
+                            struct_name = token.clone();
+                            is_struct_member = true;
+                            continue;
+                        }
 
-                                    fn_args.clear(); fn_val.clear();
+                        if is_module {
+                            // if token == "{" { }
+                            module_name = token.clone();
 
-                                    is_fn_data        = true ;
-                                    is_fn             = false;
-                                    is_fn_name        = false;
-                                    is_generic        = false;
-                                    is_expandable     = false;
-                                    is_fn_argument    = false;
-                                    is_fn_return_value= false;
-                                    is_void           = false;
+                            codegen.module(&module_name);
 
-                                    fn_generic.clear(); continue;
-                                }
+                            is_module = false;
+                            module_name.clear();
+                            continue;
+                        }
 
-                                if argument_name.is_empty() {
-                                    if token != ")" {
-                                        argument_name = token.clone();
-                                    } else {
-                                        argument_name.clear(); argument_value.clear();
-                                    } continue;
-                                }
+                        if is_set {
+                            if token == "=" { continue; }
 
-                                if argument_value.is_empty() {
-                                    if token != ")" {
-                                        argument_value = token.clone();
-                                    } continue;
+                            if !set_name.is_empty() {
+                                set_data = token.clone();
+
+                                codegen.preprocess_set(&set_data, &set_name);
+
+                                is_preprocessor = false;
+                                is_set = false;
+                                set_name.clear();
+                                set_data.clear();
+                                continue;
+                            }
+
+                            set_name = token.clone();
+                            continue;
+                        }
+
+                        if is_fn_call {
+                            if token == "(" {
+                                if is_pretty_arg {
+                                    pretty_arg.push_str(token.clone().as_str());
                                 } else {
-                                    if token.trim() == "," || token.trim() == ")" {
-                                        if is_expandable {
-                                            if argument_value == fn_generic {
-                                                argument_value.push_str("...");
-                                            }
-                                        }
-
-                                        fn_args.insert(argument_name.clone(), argument_value.clone());
-                                        argument_name.clear(); argument_value.clear();
-                                    } else {
-                                        argument_value.push_str(format!("{} ", token).as_str());
-                                    } continue;
+                                    if count_parentheses >= 1 {
+                                        function_args.push(token.clone());
+                                    }
                                 }
 
-                                argument_name.clear(); argument_value.clear(); continue;
+                                count_parentheses += 1;
+                                continue;
                             }
 
                             if token == ")" {
-                                is_void = true; continue;
+                                if count_parentheses > 1 {
+                                    if is_pretty_arg {
+                                        pretty_arg.push_str(token.clone().as_str());
+
+                                        if count_parentheses == 2 {
+                                            is_pretty_arg = false;
+                                            function_args
+                                                .push(pretty_arg.clone());
+                                            pretty_arg.clear();
+                                        }
+                                    } else {
+                                        function_args.push(token.clone());
+                                    }
+                                }
+
+                                count_parentheses -= 1;
                             }
 
-                            is_fn = false; is_fn_name = false; continue;
-                        }
+                            if token == "(" || token == ")" || token == "," {
+                                if count_parentheses == 0 {
+                                    if token == ")" {
+                                        codegen.function_call(&function_args,
+                                                              &function_name, is_expandable);
 
-                        fn_name    = token.split('#').last().unwrap().to_string();
-                        is_fn_name = true;
+                                        is_fn_call = false;
+                                        is_expandable = false;
 
-                        self.func_list.push(fn_name.clone()); continue;
-                    }
+                                        count_parentheses = 0;
 
-                    if token == "{" {
-                        if is_var_struct {
-                            var_data.push_str("{\n");
-                        } else if is_var {
-                            is_var_data_vector = true;
-                            var_data.push_str("{\n");
-                        } else if  !is_inline_asm
-                            &&!is_cpp_linker
-                            && !is_runtime
-                            && !is_var_struct { codegen.character(&self.init_ast.ast_curly_left_bracket);
-                        }
+                                        function_name.clear();
+                                        function_args.clear();
+                                    }
+                                } else if is_pretty_arg && token == "," {
+                                    pretty_arg.push_str(token.as_str());
+                                }
 
-                        continue;
-                    }
-
-                    if is_var {
-                        if !var_name.is_empty() {
-                            if is_var_type {
-                                if token == "=" {
-                                    is_var_type = false;
-                                } else { variable_type.push_str(format!("{} ", token.clone()).as_str()); continue; }
+                                continue;
                             }
 
-                            if !is_var_type {
-                                if is_var_data {
-                                    if is_var_struct {
-                                        if token == "{" {
-                                            var_data.push_str("{\n"); continue;
+                            match token.as_str() {
+                                "+_" => {
+                                    is_expandable = true;
+                                    continue;
+                                },
+                                _ => {
+                                    if is_pretty_arg {
+                                        pretty_arg.push_str(from_module(&token).as_str());
+                                        continue;
+                                    }
+
+                                    let __token = token.split('#').last().unwrap().trim().to_string();
+
+                                    for name in self.func_list.clone() {
+                                        if name == __token.clone() {
+                                            pretty_arg = from_module(&token);
+                                            is_pretty_arg = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if is_pretty_arg { continue; }
+
+                                    function_args.push(token.clone());
+                                }
+                            }
+
+                            continue;
+                        }
+
+                        if is_import {
+                            codegen.import(token.clone());
+
+                            is_import = false;
+                            continue;
+                        }
+
+                        if is_fn {
+                            if is_fn_name {
+                                if token == "<" && !is_fn_argument {
+                                    is_generic = true;
+                                    continue;
+                                }
+
+                                if is_generic {
+                                    if token == ">" {
+                                        is_generic = false;
+                                        continue;
+                                    }
+
+                                    if token == "'" {
+                                        is_expandable = true;
+                                        continue;
+                                    }
+
+                                    fn_generic = token.clone();
+                                    continue;
+                                }
+
+                                if token == "(" {
+                                    is_fn_argument = true;
+                                    continue;
+                                }
+
+                                if is_fn_argument {
+                                    if token == ":" {
+                                        continue;
+                                    }
+
+                                    if token == "=" {
+                                        is_fn_return_value = true;
+                                        is_void = false;
+                                        continue;
+                                    }
+
+                                    if token == "{" {
+                                        if is_fn_return_value {
+                                            gen(Error,
+                                                "no such return type found after type operator declaration",
+                                                &*token,
+                                                &self.raw_data,
+                                                &(current_line as usize),
+                                                &current_column);
                                         }
 
-                                        if !var_struct_init_name.is_empty() {
-                                            if token == ":" { continue; }
-                                            if !var_struct_init_data.is_empty() {
-                                                if token == "," || token.ends_with('\n') {
-                                                    var_data.push_str(format!(".{}={},", var_struct_init_name,
-                                                                               var_struct_init_data).as_str());
-                                                    var_struct_init_name.clear(); var_struct_init_data.clear(); continue;
+                                        is_void = true;
+                                    }
+
+                                    if is_fn_return_value || is_void {
+                                        fn_val = if is_fn_return_value { token.clone() } else { to("void") };
+
+                                        codegen.function(self, &fn_args,
+                                                         &fn_name.clone(),
+                                                         &fn_val.clone(),
+                                                         &fn_generic.clone(),
+                                                         is_expandable,
+                                                         is_void);
+
+                                        fn_args.clear();
+                                        fn_val.clear();
+
+                                        is_fn_data = true;
+                                        is_fn = false;
+                                        is_fn_name = false;
+                                        is_generic = false;
+                                        is_expandable = false;
+                                        is_fn_argument = false;
+                                        is_fn_return_value = false;
+                                        is_void = false;
+
+                                        fn_generic.clear();
+                                        continue;
+                                    }
+
+                                    if argument_name.is_empty() {
+                                        if token != ")" {
+                                            argument_name = token.clone();
+                                        } else {
+                                            argument_name.clear();
+                                            argument_value.clear();
+                                        }
+                                        continue;
+                                    }
+
+                                    if argument_value.is_empty() {
+                                        if token != ")" {
+                                            argument_value = token.clone();
+                                        }
+                                        continue;
+                                    } else {
+                                        if token.trim() == "," || token.trim() == ")" {
+                                            if is_expandable {
+                                                if argument_value == fn_generic {
+                                                    argument_value.push_str("...");
                                                 }
                                             }
 
-                                            var_struct_init_data = token.clone(); continue;
+                                            fn_args.insert(argument_name.clone(), argument_value.clone());
+                                            argument_name.clear();
+                                            argument_value.clear();
+                                        } else {
+                                            argument_value.push_str(format!("{} ", token).as_str());
                                         }
-
-                                        var_struct_init_name = token.clone(); continue;
-                                    } else if is_var_data_vector {
-                                        if token.trim_end() == "\\" {
-                                            var_data.push_str(",\n"); continue;
-                                        }
-
-                                        var_data.push_str(&token.clone()); continue;
+                                        continue;
                                     }
 
-                                    var_data = token.clone();
+                                    argument_name.clear();
+                                    argument_value.clear();
+                                    continue;
+                                }
 
-                                    for structure in struct_list.clone() {
-                                        if structure == var_data {
-                                            is_var_struct = true; break;
+                                if token == ")" {
+                                    is_void = true;
+                                    continue;
+                                }
+
+                                is_fn = false;
+                                is_fn_name = false;
+                                continue;
+                            }
+
+                            fn_name = token.split('#').last().unwrap().to_string();
+                            is_fn_name = true;
+
+                            self.func_list.push(fn_name.clone());
+                            continue;
+                        }
+
+                        if token == "{" {
+                            if is_var_struct {
+                                var_data.push_str("{\n");
+                            } else if is_var {
+                                is_var_data_vector = true;
+                                var_data.push_str("{\n");
+                            } else if !is_inline_asm
+                                && !is_cpp_linker
+                                && !is_runtime
+                                && !is_var_struct {
+                                codegen.character(&self.init_ast.ast_curly_left_bracket);
+                            }
+
+                            continue;
+                        }
+
+                        if is_var {
+                            if !var_name.is_empty() {
+                                if is_var_type {
+                                    if token == "=" {
+                                        is_var_type = false;
+                                    } else {
+                                        variable_type.push_str(format!("{} ", token.clone()).as_str());
+                                        continue;
+                                    }
+                                }
+
+                                if !is_var_type {
+                                    if is_var_data {
+                                        if is_var_struct {
+                                            if token == "{" {
+                                                var_data.push_str("{\n");
+                                                continue;
+                                            }
+
+                                            if !var_struct_init_name.is_empty() {
+                                                if token == ":" { continue; }
+                                                if !var_struct_init_data.is_empty() {
+                                                    if token == "," || token.ends_with('\n') {
+                                                        var_data.push_str(format!(".{}={},", var_struct_init_name,
+                                                                                  var_struct_init_data).as_str());
+                                                        var_struct_init_name.clear();
+                                                        var_struct_init_data.clear();
+                                                        continue;
+                                                    }
+                                                }
+
+                                                var_struct_init_data = token.clone();
+                                                continue;
+                                            }
+
+                                            var_struct_init_name = token.clone();
+                                            continue;
+                                        } else if is_var_data_vector {
+                                            if token.trim_end() == "\\" {
+                                                var_data.push_str(",\n");
+                                                continue;
+                                            }
+
+                                            var_data.push_str(&token.clone());
+                                            continue;
                                         }
-                                    } if is_var_struct { /*var_data.push_str("
-                                        }{\n"); */ continue; }
 
-                                    if variable_type.trim() == "_" {
+                                        var_data = token.clone();
+
+                                        for structure in struct_list.clone() {
+                                            if structure == var_data {
+                                                is_var_struct = true;
+                                                break;
+                                            }
+                                        }
+                                        if is_var_struct {
+                                            /*var_data.push_str("
+                                        }{\n"); */ continue;
+                                        }
+
+                                        if variable_type.trim() == "_" {
+                                            variable_type.clear();
+                                        }
+
+                                        codegen.variable_definition(&var_data, &variable_type, &var_name, is_mutable);
+
+                                        self.data_list.variable_list.push(GreteaVariableData {
+                                            __keyword_type: GreteaKeywords::Var,
+                                            __name: var_name.clone(),
+                                            __type: variable_type.clone(),
+                                            __data: var_data.clone()
+                                        });
+
+                                        is_var = false;
+                                        is_var_type = false;
+                                        is_var_data = false;
+                                        is_mutable = false;
+
+                                        var_data.clear();
                                         variable_type.clear();
+                                        var_name.clear();
+                                        continue;
                                     }
 
-                                    codegen.variable_definition(&var_data, &variable_type, &var_name, is_mutable);
-
-                                    self.data_list.variable_list.push(GreteaVariableData {
-                                        __keyword_type: GreteaKeywords::Var,
-                                        __name        : var_name.clone(),
-                                        __type        : variable_type.clone(),
-                                        __data        : var_data.clone()
-                                    });
-
-                                    is_var     = false;
-                                    is_var_type= false;
-                                    is_var_data= false;
-                                    is_mutable = false;
-
-                                    var_data     .clear();
-                                    variable_type.clear();
-                                    var_name     .clear(); continue;
+                                    if token == "=" {
+                                        is_var_data = true;
+                                        continue;
+                                    }
                                 }
 
-                                if token == "=" {
-                                    is_var_data = true; continue;
+                                if token == ":" {
+                                    is_var_type = true;
+                                    continue;
                                 }
                             }
 
-                            if token == ":" {
-                                is_var_type = true; continue;
+                            var_name = token.clone();
+                            continue;
+                        }
+
+                        if is_for {
+                            if token == "_" {
+                                codegen.for_loop();
+                                is_for = false;
+                                continue;
                             }
-                        }
 
-                        var_name = token.clone(); continue;
-                    }
+                            if is_for_variable {
+                                if is_for_in {
+                                    for_iter = token.clone();
+                                    codegen.for_iter(&for_var, &for_iter);
 
-                    if is_for {
-                        if token == "_" {
-                            codegen.for_loop();
-                            is_for = false; continue;
-                        }
+                                    for_var.clear();
+                                    for_iter.clear();
 
-                        if is_for_variable {
-                            if is_for_in {
-                                for_iter    = token.clone();
-                                codegen.for_iter(&for_var, &for_iter);
-
-                                for_var.clear(); for_iter.clear();
-
-                                is_for          = false;
-                                is_for_variable = false;
-                                is_for_in       = false; continue;
+                                    is_for = false;
+                                    is_for_variable = false;
+                                    is_for_in = false;
+                                    continue;
+                                }
                             }
+
+                            for_var = token.clone();
+                            is_for_variable = true;
+                            continue;
                         }
 
-                        for_var         = token.clone();
-                        is_for_variable = true; continue;
-                    }
-
-                    if is_cpp_linker {
-                        if token.trim_end() == "\\" {
-                            cpp_block.push('\n'); continue;
-                        }
-
-                        cpp_block.push_str(token.as_str()); continue;
-                    }
-
-                    if is_inline_asm {
-                        let tok = token.trim_end();
-                        if tok == "\\" {
-                            asm_block.push('\n'); continue;
-                        } else if tok == "%" {
-                            asm_block.push('%'); continue;
-                        }
-
-                        asm_block.push_str(format!("{} ", token).as_str()); continue;
-                    }
-
-                    if is_alias {
-                        if is_alias_name {
-                            if token == "=" { continue; }
-
-                            alias_data    = from_module(&to(token.clone().trim_end()));
-
-                            if is_preprocessor {
-                                codegen.preprocess_set(&alias_data, &alias_name);
-                                is_preprocessor = false;
+                        if is_cpp_linker {
+                            if token.trim_end() == "\\" {
+                                cpp_block.push('\n');
+                                continue;
                             }
-                            else { alias_list.insert(alias_name.clone(), alias_data.clone()); }
 
-                            is_alias        = false; alias_name.clear();
-                            is_alias_name   = false; alias_data.clear(); continue;
+                            cpp_block.push_str(token.as_str());
+                            continue;
                         }
 
-                        alias_name = token.clone(); is_alias_name = true;
+                        if is_inline_asm {
+                            let tok = token.trim_end();
+                            if tok == "\\" {
+                                asm_block.push('\n');
+                                continue;
+                            } else if tok == "%" {
+                                asm_block.push('%');
+                                continue;
+                            }
 
-                        continue;
-                    }
-
-                    if is_runtime {
-                        if token.trim_end() == "\\" {
-                            runtime_block.push('\n'); continue;
+                            asm_block.push_str(format!("{} ", token).as_str());
+                            continue;
                         }
 
-                        runtime_block.push_str(format!("{} ", token).as_str()); continue;
-                    }
+                        if is_alias {
+                            if is_alias_name {
+                                if token == "=" { continue; }
 
-                    let function_token = token.clone().split('#').last().unwrap().to_string();
+                                alias_data = from_module(&to(token.clone().trim_end()));
 
-                    if is_unsafe {
-                        if function_token.contains('.') {
-                            let function_token = token.clone().split('.').last().unwrap().to_string();
-                            if !function_token.is_empty() {
-                                is_fn_call = true;
-                                function_name = token.clone();
-                            } continue;
+                                if is_preprocessor {
+                                    codegen.preprocess_set(&alias_data, &alias_name);
+                                    is_preprocessor = false;
+                                } else { alias_list.insert(alias_name.clone(), alias_data.clone()); }
+
+                                is_alias = false;
+                                alias_name.clear();
+                                is_alias_name = false;
+                                alias_data.clear();
+                                continue;
+                            }
+
+                            alias_name = token.clone();
+                            is_alias_name = true;
+
+                            continue;
                         }
-                    }
-                    else {
-                        for name in self.func_list.clone() {
-                            if name.split('#').last().unwrap().trim() == function_token.trim() {
-                                is_fn_call = true;
-                                function_name = from_module(&token);
-                                break;
+
+                        if is_runtime {
+                            if token.trim_end() == "\\" {
+                                runtime_block.push('\n');
+                                continue;
+                            }
+
+                            runtime_block.push_str(format!("{} ", token).as_str());
+                            continue;
+                        }
+
+                        let function_token = token.clone().split('#').last().unwrap().to_string();
+
+                        if is_unsafe {
+                            if function_token.contains('.') {
+                                let function_token = token.clone().split('.').last().unwrap().to_string();
+                                if !function_token.is_empty() {
+                                    is_fn_call = true;
+                                    function_name = token.clone();
+                                }
+                                continue;
+                            }
+                        } else {
+                            for name in self.func_list.clone() {
+                                if name.split('#').last().unwrap().trim() == function_token.trim() {
+                                    is_fn_call = true;
+                                    function_name = from_module(&token);
+                                    break;
+                                }
                             }
                         }
                     }
@@ -1201,7 +1290,7 @@ impl GreteaParser {
                             }
                         } else {
                             if is_line {
-                                line.push_str(token.as_str());
+                                line.push_str(from_module(&token).as_str());
 
                                 if !(token == "+"
                                     || token == "-"
@@ -1215,8 +1304,8 @@ impl GreteaParser {
                                     line.push(' ');
                                 }
 
-                                if token.ends_with('\n') {
-                                    codegen.character(&format!("{};", line)); line.clear(); is_line = false; continue;
+                                if token.ends_with('\n') || token.ends_with(';') {
+                                    codegen.character(&format!("{};", line)); line.clear(); is_line = false;
                                 } continue;
                             }
 

@@ -96,6 +96,14 @@ fn is_this_linux() = string {
 }
 
 fn main() = int {
+    var mut split_test: []string = [[ unsafe ]]
+
+    split_test = str#split("test.test.test2.test3", '.' );
+
+    for val in split_test {
+        fmt#println(val)
+    }
+
     [[ runtime ]] {
         set HOME as env "HOME" \
 
