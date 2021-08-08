@@ -170,6 +170,8 @@ impl GreteaParser {
         let mut set_data;
 
 
+        let mut is_element = false;
+
         let mut is_line = false; let mut line     = String::new();
 
         let mut count_parentheses: u64 = 0;
@@ -227,6 +229,11 @@ impl GreteaParser {
             }
 
             matched_type = *self.init_ast.match_keyword(&token);
+
+            if is_element && matched_type != GreteaKeywords::RightSqBracket {
+                pretty_arg.push_str(token.as_str());
+                continue;
+            }
 
             if matched_type == GreteaKeywords::Type {
                 if !is_fn_call && !is_var_data {
@@ -375,11 +382,32 @@ impl GreteaParser {
                 },
 
                 GreteaKeywords::LeftSqBracket => {
+                    if is_line {
+                        codegen.character(&to("["));
+                    } else if is_statement {
+                        statement_data.push(to("["));
+                    } else if is_fn_call {
+                        let last = function_args.last().unwrap().clone();
+                        function_args.pop();
+                        pretty_arg.push_str(format!("{}[", last).as_str());
+                        is_element = true;
+                    }
+
                     //if is_library { is_library_setter = true; continue; }
 
                     //is_library = true; continue;
                 },
                 GreteaKeywords::RightSqBracket => {
+                    if is_line {
+                        codegen.character(&to("]"));
+                    } else if is_statement {
+                        statement_data.push(to("]"));
+                    } else if is_fn_call {
+                        pretty_arg.push(']');
+                        function_args.push(pretty_arg.clone());
+                        pretty_arg.clear();
+                        is_element = false;
+                    }
                     //if is_library || is_library_setter {
                     //    is_library        = false;
                     //   is_library_setter = false;
