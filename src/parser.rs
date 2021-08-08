@@ -40,6 +40,7 @@ use {
         }
     }
 };
+use elite::logger::elite_logger::log;
 
 pub struct GreteaParser {
     pub init_ast    : GreteaSyntax      ,
@@ -60,7 +61,7 @@ impl GreteaParser {
 
         let mut matched_type;
 
-        let mut current_line = 0u32;
+        let mut current_line = 1u32;
         let mut current_column = 0u32;
 
         let mut is_import = false;
@@ -180,13 +181,13 @@ impl GreteaParser {
         let mut get_data = String::new();
 
         for mut token in tokens.clone() {
+            current_column += 1;
+
             if token.is_empty() || token == " " || token == "\n" {
                 if token == "\n" {
                     current_line += 1;
                 } continue;
             } if token.ends_with('\n') { current_line += 1; }
-
-            current_column += 1;
 
             if is_get_data {
                 get_data.push_str(token.clone().as_str());
@@ -637,9 +638,22 @@ impl GreteaParser {
                             },
                             _ => {
                                 if token.starts_with('"') && token.ends_with('"') {
+                                    codegen.character(&extract_argument(&token));
+                                } else {
+                                    gen(Warning,
+                                        "[[ ]] flag not found.",
+                                        &*token,
+                                        &self.raw_data,
+                                        &(current_line as usize),
+                                        &current_column);
 
+                                    gen(Help,
+                                        "you may have missed this: [[ \"..\" ]]",
+                                        &*token,
+                                        &self.raw_data,
+                                        &(current_line as usize),
+                                        &current_column);
                                 }
-                                codegen.character(&extract_argument(&token));
                             }
                         } continue;
                     }

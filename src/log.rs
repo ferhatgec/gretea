@@ -38,7 +38,7 @@ pub mod log {
             LogTypes::Help => {
                 "36m help"
             }
-        }, line, column, matched_token, error, line, data.lines[*line]);
+        }, line, column, matched_token, error, line, data.lines[*line - 1]);
 
         if log_type == LogTypes::Error {
             std::process::exit(1);
