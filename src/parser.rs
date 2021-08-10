@@ -242,19 +242,30 @@ impl GreteaParser {
                 }
             }
 
-            if matched_type == GreteaKeywords::FlagRight 
-                && is_var_data 
+            if matched_type == GreteaKeywords::FlagRight
                 && is_default {
-                    let variable_type = to(variable_type.trim_end());
-                    for arg in &self.compile_list {
-                        if arg.__name == variable_type {
-                            token = arg.__data.clone();
-                            is_library_setter = false;
-                            is_default = false;
-                            matched_type = *self.init_ast.match_keyword(&token);
-                            break;
+                    if is_var_data {
+                        let variable_type = to(variable_type.trim_end());
+                        for arg in &self.compile_list {
+                            if arg.__name == variable_type {
+                                token = arg.__data.clone();
+                                break;
+                            }
+                        }
+                    } else if is_return {
+                        let __type = &self.func_data.last().unwrap().__function_return_type;
+
+                        for arg in &self.compile_list {
+                            if arg.__name == *__type {
+                                token = arg.__data.clone();
+                                break;
+                            }
                         }
                     }
+
+                    is_library_setter = false;
+                    is_default = false;
+                    matched_type = *self.init_ast.match_keyword(&token);
             }
 
             match matched_type {
@@ -422,11 +433,24 @@ impl GreteaParser {
                         count_compile_parentheses -= 1;
                         
                         if count_compile_parentheses == 0 {
-                            self.compile_list.push(GreteaCompileData {
-                                __type: compile_config.clone(),
-                                __name: to(compile_type.trim_end()),
-                                __data: compile_data.clone()
-                            });
+                            let __compile_type = to(compile_type.trim_end());
+                            let mut found = false;
+
+                            for arg in &mut self.compile_list {
+                                if arg.__name == __compile_type {
+                                    arg.__data = compile_data.clone();
+                                    found = true;
+                                    break;
+                                }
+                            }
+
+                            if !found {
+                                self.compile_list.push(GreteaCompileData {
+                                    __type: compile_config.clone(),
+                                    __name: to(compile_type.trim_end()),
+                                    __data: compile_data.clone()
+                                });
+                            }
 
                             is_compile = false;
                             is_compile_data = false;

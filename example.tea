@@ -95,7 +95,12 @@ fn is_this_linux() = string {
     . "hmm no"
 }
 
+fn compile_for_return_test() = string {
+    return [[ default ]]
+}
+
 fn main() = int {
+    fmt#println(compile_for_return_test())
     var mut split_test: []string = [[ unsafe ]]
 
     split_test = str#split("test.test.test2.test3", '.' );
