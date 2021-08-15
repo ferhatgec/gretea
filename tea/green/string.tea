@@ -368,6 +368,22 @@ module str {
         } . (char)__last
     }
 
+    fn str#upper(data: string) = string {
+        var mut val: string = ""
+
+        for &ch in data {
+            cpp_str#push_back(val, ch#upper(ch))
+        } . val
+    }
+
+    fn str#lower(data: string) = string {
+        var mut val: string = ""
+
+        for &ch in data {
+            cpp_str#push_back(val, ch#lower(ch))
+        } . val
+    }
+
     fn str#append(data: string, what: string) = string {
         cpp_str#append(data, what)
 
