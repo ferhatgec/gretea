@@ -403,6 +403,8 @@ impl GreteaParser {
                         function_args.pop();
                         pretty_arg.push_str(format!("{}[", last).as_str());
                         is_element = true;
+                    } else if is_return {
+                        return_val.push_str("[");
                     }
 
                     //if is_library { is_library_setter = true; continue; }
@@ -419,7 +421,10 @@ impl GreteaParser {
                         function_args.push(pretty_arg.clone());
                         pretty_arg.clear();
                         is_element = false;
+                    } else if is_return {
+                        return_val.push_str("]");
                     }
+
                     //if is_library || is_library_setter {
                     //    is_library        = false;
                     //   is_library_setter = false;

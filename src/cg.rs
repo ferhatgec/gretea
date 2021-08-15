@@ -75,10 +75,15 @@ impl GreteaCodegen {
 
         let mut arguments = String::new();
 
-        for    map in args.iter() {
-            // ^^^ (name, type) -> (type, name)
-            arguments.push_str(&*format!("{} {},", map.1.clone(), map.0.clone()));
-        } arguments.pop();
+        if *name == "main" {
+            arguments = format!("int argc, char** argv");
+        } else {
+            for map in args.iter() {
+                // ^^^ (name, type) -> (type, name)
+                arguments.push_str(&*format!("{} {},", map.1.clone(), map.0.clone()));
+            }
+            arguments.pop();
+        }
 
         self.generated.push_str(&*format!("{} {}({}) {}\n",
                                           return_val, name, arguments, if is_void {
