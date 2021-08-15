@@ -100,6 +100,10 @@ fn compile_for_return_test() = string {
 }
 
 fn main() = int {
+    [[ include_args ]]
+
+    fmt#println(argc, __newline__, arguments[0])
+
     fmt#println(compile_for_return_test())
     var mut split_test: []string = [[ unsafe ]]
 

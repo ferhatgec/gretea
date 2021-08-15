@@ -164,6 +164,7 @@ impl GreteaParser {
         let mut is_vector = false;
         // let mut is_func_vector = false;
 
+        let mut is_include_args = false;
 
         let mut vector_type;
 
@@ -227,6 +228,13 @@ impl GreteaParser {
                         break;
                     }
                 }
+            }
+
+            if is_include_args {
+                codegen.cpp_args();
+                is_library_setter = false;
+                is_include_args = false;
+                continue;
             }
 
             matched_type = *self.init_ast.match_keyword(&token);
@@ -325,6 +333,9 @@ impl GreteaParser {
                         is_safe = true;
                         is_unsafe = false;
                     }
+                },
+                GreteaKeywords::IncludeArgs => {
+                    is_include_args = true;
                 },
 
                 GreteaKeywords::Alias=> {
@@ -667,6 +678,9 @@ impl GreteaParser {
                                 },
                                 "default" => {
                                     is_default = true;
+                                },
+                                "include_args" => {
+                                    is_include_args = true;
                                 },
                                 _ => {
                                     if token.starts_with('"') && token.ends_with('"') {
