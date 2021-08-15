@@ -16,6 +16,7 @@ import tea.black.vector
 [[ cpp ]] { #include <sstream> }
 
 `set __empty__char__ = '\0'
+`set __newline__     = '\n'
 
 compile default for string { "" }
 
@@ -413,6 +414,14 @@ module str {
         }
 
         cpp_vector#push_back(__data, temp)
+
+        . __data
+    }
+
+    fn str#splitlines(data: string) = []string {
+        var mut __data: []string = [[ unsafe ]]
+
+        __data = str#split(data, __newline__);
 
         . __data
     }
