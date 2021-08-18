@@ -996,7 +996,15 @@ impl GreteaParser {
                                     }
 
                                     if is_fn_return_value || is_void {
-                                        fn_val = if is_fn_return_value { token.clone() } else { to("void") };
+                                        fn_val = if is_fn_return_value {
+                                                    if fn_name == "main" {
+                                                        to("int")
+                                                    } else {
+                                                        token.clone()
+                                                    }
+                                                } else if fn_name == "main" {
+                                                     to("int")
+                                                 } else { to("void") };
 
                                         codegen.function(self, &fn_args,
                                                          &fn_name.clone(),
