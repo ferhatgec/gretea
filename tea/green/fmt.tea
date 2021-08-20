@@ -16,12 +16,25 @@ module fmt {
         [[ cpp ]] { std::cout << argument ; }
     }
 
+    fn fmt#basic_fprint<Arg>(argument: Arg) {
+        [[ cpp ]] { std::cout << argument << std::flush ; }
+    }
+
     fn fmt#print<'Args>(arguments: Args) {
         fmt#basic_print(arguments, +_)
+    }
+
+    fn fmt#fprint<'Args>(arguments: Args) {
+        fmt#basic_fprint(arguments, +_)
     }
 
     fn fmt#println<'Args>(arguments: Args) {
         fmt#print(arguments, +_)
         fmt#basic_print("\n")
+    }
+
+    fn fmt#fprintln<'Args>(arguments: Args) {
+        fmt#fprint(arguments, +_)
+        fmt#basic_fprint("\n")
     }
 } // fmt
