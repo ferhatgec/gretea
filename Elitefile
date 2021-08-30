@@ -20,6 +20,7 @@ set colorite        as "https://raw.githubusercontent.com/ferhatgec/colorite/mas
 set logre           as "https://raw.githubusercontent.com/ferhatgec/logre/master/stl/log.tea"
 set bufsize         as "https://raw.githubusercontent.com/ferhatgec/bufsize.tea/master/stl/bufsize.tea"
 set escafe          as "https://raw.githubusercontent.com/ferhatgec/escafe.tea/master/stl/escape.tea"
+set gechprng        as "https://raw.githubusercontent.com/ferhatgec/gechprng.tea/master/stl/gechprng.tea"
 
 for signal "start" [
     set is_grexpr_exists   as "false"
@@ -27,6 +28,7 @@ for signal "start" [
     set is_logre_exists    as "false"
     set is_bufsize_exists  as "false"
     set is_escafe_exists   as "false"
+    set is_gechprng_exists as "false"
 
     for exists "{stl_green_path}expr.tea" [
         println "elite: Fetching grexpr skipped."
@@ -88,6 +90,19 @@ for signal "start" [
         println ""
         println "elite: Fetching escafe to STL path. (tool: {fetch})"
         use exec suppress "{fetch} -P {stl_green_path} {escafe}"
+    ]
+
+    for exists "{stl_green_path}gechprng.tea" [
+        print ""
+        println "elite: Fetching gechprng skipped."
+
+        set is_gechprng_exists as "true"
+    ]
+
+    if eq "{is_gechprng_exists}" "false" [
+        println ""
+        println "elite: Fetching gechprng to STL path. (tool: {fetch})"
+        use exec suppress "{fetch} -P {stl_green_path} {gechprng}"
     ]
 
     for argument "install" [
