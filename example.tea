@@ -15,6 +15,7 @@ import tea.green.color
 import tea.green.log
 import tea.green.bufsize
 import tea.green.escape
+import tea.green.gechprng
 
 import tea.black.vector
 import tea.black.sstream
@@ -301,6 +302,9 @@ fn main() {
     fmt#println(str#upper("this will be UPPERCASE"))
 
     fmt#fprintln("flushed stdout")
+
+    fmt#println("Your lucky number:",
+        gechprng#generate(gechprng#feed(gechprng#seedtime())) % 42)
 
     process#exit(process_success)
 }

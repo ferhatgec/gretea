@@ -1317,7 +1317,7 @@ impl GreteaParser {
                                 is_return = false; continue;
                             }
 
-                            return_val.push_str(format!("{} ", token.clone()).as_str());
+                            return_val.push_str(token.as_str());
 
                             if token.ends_with('\n') || token.ends_with(';') {
                                 is_return = false;
@@ -1351,7 +1351,9 @@ impl GreteaParser {
                                     || token == "^"
                                     || token == "&"
                                     || token == ">"
-                                    || token == "<") {
+                                    || token == "<"
+                                    || token == "|"
+                                    || token == "~") {
                                     line.push(' ');
                                 }
 

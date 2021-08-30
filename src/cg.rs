@@ -96,7 +96,25 @@ impl GreteaCodegen {
 
         if name != &"main" {
             for arg in args.iter() {
+                match arg.as_str() {
+                    "+" |
+                    "-" |
+                    "/" |
+                    "*" |
+                    "%" => { arguments.pop(); },
+                    _   => {}
+                }
+
                 arguments.push_str(&*format!("{},", arg));
+
+                match arg.as_str() {
+                    "+" |
+                    "-" |
+                    "/" |
+                    "*" |
+                    "%" => { arguments.pop(); },
+                    _   => {}
+                }
             } arguments.pop();
         }
 
