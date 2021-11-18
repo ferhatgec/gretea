@@ -20,6 +20,13 @@ import tea.green.gechprng
 import tea.black.vector
 import tea.black.sstream
 
+// import c/c++ libraries directly (use with unsafe flag)
+include [[ "<iostream>" ]]
+
+`if defined(linux) || defined(freebsd) {
+    include [[ ""unistd.h"" ]]
+}@
+
 enum ProgrammingLanguages = int8 {
     Gretea,
     Cpp,

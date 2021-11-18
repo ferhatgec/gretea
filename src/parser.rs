@@ -65,6 +65,7 @@ impl GreteaParser {
         let mut current_column = 0u32;
 
         let mut is_import = false;
+        let mut is_include = false;
 
         let mut is_fn_data = false;
         let mut is_fn = false;
@@ -279,6 +280,9 @@ impl GreteaParser {
             match matched_type {
                 GreteaKeywords::Import => {
                     is_import = true; continue;
+                },
+                GreteaKeywords::Include => {
+                    is_include = true;
                 },
                 GreteaKeywords::Fn => {
                     is_fn = true; continue;
@@ -657,6 +661,11 @@ impl GreteaParser {
                             }
                         }
 
+                        if is_include {
+                            codegen.import( extract_argument(&token).clone(), true);
+                            is_include = false;
+                            continue;
+                        }
 
                         if is_library_setter {
                             if is_default {
@@ -938,7 +947,7 @@ impl GreteaParser {
                         }
 
                         if is_import {
-                            codegen.import(token.clone());
+                            codegen.import(token.clone(), false);
 
                             is_import = false;
                             continue;

@@ -10,6 +10,7 @@ use std::collections::{HashMap, BTreeMap};
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub enum GreteaKeywords {
     Import,
+    Include,
     Fn,
 
     Var,
@@ -68,6 +69,7 @@ pub enum GreteaKeywords {
 
 pub struct GreteaSyntax {
     pub ast_import              : String,
+    pub ast_include             : String,
     pub ast_fn                  : String,
 
     pub ast_var                 : String,
@@ -157,6 +159,7 @@ impl Default for GreteaSyntax {
     fn default() -> Self {
         let mut init = GreteaSyntax {
             ast_import              : ast_helpers::to("import"      ),
+            ast_include             : ast_helpers::to("include"          ),
             ast_fn                  : ast_helpers::to("fn"          ),
 
             ast_var                 : ast_helpers::to("var"         ),
@@ -212,6 +215,7 @@ impl Default for GreteaSyntax {
         };
 
         init.add(init.ast_import       .clone(), GreteaKeywords::Import         );
+        init.add(init.ast_include      .clone(), GreteaKeywords::Include        );
         init.add(init.ast_fn           .clone(), GreteaKeywords::Fn             );
 
         init.add(init.ast_var          .clone(), GreteaKeywords::Var            );

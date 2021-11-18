@@ -32,7 +32,13 @@ pub struct GreteaCodegen {
 }
 
 impl GreteaCodegen {
-    pub fn import(&mut self, subdirectory: String) {
+    pub fn import(&mut self, subdirectory: String, is_include: bool) {
+        if is_include {
+            self.generated.push_str(
+                &*format!("#{} {}\n", "include", subdirectory));
+            return;
+        }
+
         let subdirectories: Vec<String> = subdirectory.split('.')
             .map(|data| data.to_string()).collect();
         let mut dir = String::new();
