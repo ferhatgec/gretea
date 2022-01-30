@@ -4,7 +4,7 @@
 //
 // MIT License
 //
-// Copyright (c) 2021 Ferhat Geçdoğan All Rights Reserved.
+// Copyright (c) 2021-2022 Ferhat Geçdoğan All Rights Reserved.
 // Distributed under the terms of the MIT License.
 //
 //
@@ -13,51 +13,51 @@ import tea.green.type
 import tea.green.char
 import tea.black.vector
 
-[[ cpp ]] { #include <sstream> }
+include [[ "<sstream>" ]]
 
 `set __empty__char__ = '\0'
 `set __newline__     = '\n'
 
-compile default for string { "" }
+compile default for cstring { "" }
 
 module cpp_str {
-    fn cpp_str#append(&data: string, what: string) {
+    fn cpp_str#append(&data: cstring, what: cstring) {
         [[ unsafe ]] {
             data.append(what)
         }
     }
 
-    fn cpp_str#append(&data: string, what: string, pos: int64, len: uint64) {
+    fn cpp_str#append(&data: cstring, what: cstring, pos: int64, len: uint64) {
         [[ unsafe ]] {
             data.append(what, pos, len)
         }
     }
 
-    fn cpp_str#append(&data: string, n: int64, ch: char) {
+    fn cpp_str#append(&data: cstring, n: int64, ch: char) {
         [[ unsafe ]] {
             data.append(n, ch)
         }
     }
 
-    fn cpp_str#assign(&data: string, what: string) {
+    fn cpp_str#assign(&data: cstring, what: cstring) {
         [[ unsafe ]] {
             data.assign(what)
         }
     }
 
-    fn cpp_str#assign(&data: string, what: string, pos: int64, len: uint64) {
+    fn cpp_str#assign(&data: cstring, what: cstring, pos: int64, len: uint64) {
         [[ unsafe ]] {
             data.assign(what, pos, len)
         }
     }
 
-    fn cpp_str#assign(&data: string, n: int64, ch: char) {
+    fn cpp_str#assign(&data: cstring, n: int64, ch: char) {
         [[ unsafe ]] {
             data.assign(n, ch)
         }
     }
 
-    fn cpp_str#at(data: string, n: uint64) = char {
+    fn cpp_str#at(data: cstring, n: uint64) = char {
         [[ unsafe ]] {
             [[ cpp ]] {
                 return \
@@ -66,7 +66,7 @@ module cpp_str {
         }
     }
 
-    fn cpp_str#back(data: string) = char {
+    fn cpp_str#back(data: cstring) = char {
         [[ unsafe ]] {
             [[ cpp ]] {
                 return \
@@ -75,7 +75,7 @@ module cpp_str {
         }
     }
 
-    fn cpp_str#capacity(data: string) = uint64 {
+    fn cpp_str#capacity(data: cstring) = uint64 {
         [[ unsafe ]] {
             [[ cpp ]] {
                 return \
@@ -84,13 +84,13 @@ module cpp_str {
         }
     }
 
-    fn cpp_str#erase(&data: string) {
+    fn cpp_str#erase(&data: cstring) {
         [[ unsafe ]] {
             data.erase()
         }
     }
 
-    fn cpp_str#compare(data: string, &compare: string) = int8 {
+    fn cpp_str#compare(data: cstring, &compare: cstring) = int8 {
         [[ unsafe ]] {
             [[ cpp ]] {
                 return \
@@ -99,7 +99,7 @@ module cpp_str {
         }
     }
 
-    fn cpp_str#empty(data: string) = bool {
+    fn cpp_str#empty(data: cstring) = bool {
         [[ unsafe ]] {
             [[ cpp ]] {
                 return \
@@ -108,7 +108,7 @@ module cpp_str {
         }
     }
 
-    fn cpp_str#erase(data: string, pos: uint64, len: int64) = string {
+    fn cpp_str#erase(data: cstring, pos: uint64, len: int64) = cstring {
         [[ unsafe ]] {
             [[ cpp ]] {
                 return \
@@ -117,7 +117,7 @@ module cpp_str {
         }
     }
 
-    fn cpp_str#find(data: string, &what: string, pos: uint64) = int64 {
+    fn cpp_str#find(data: cstring, &what: cstring, pos: uint64) = int64 {
         [[ unsafe ]] {
             [[ cpp ]] {
                 return \
@@ -126,7 +126,7 @@ module cpp_str {
         }
     }
 
-    fn cpp_str#find(data: string, ch: char, pos: uint64) = int64 {
+    fn cpp_str#find(data: cstring, ch: char, pos: uint64) = int64 {
         [[ unsafe ]] {
             [[ cpp ]] {
                 return \
@@ -135,7 +135,7 @@ module cpp_str {
         }
     }
 
-    fn cpp_str#find_first_not_of(data: string, &what: string, pos: uint64) = int64 {
+    fn cpp_str#find_first_not_of(data: cstring, &what: cstring, pos: uint64) = int64 {
         [[ unsafe ]] {
             [[ cpp ]] {
                 return \
@@ -144,7 +144,7 @@ module cpp_str {
         }
     }
 
-    fn cpp_str#find_first_not_of(data: string, ch: char, pos: uint64) = int64 {
+    fn cpp_str#find_first_not_of(data: cstring, ch: char, pos: uint64) = int64 {
         [[ unsafe ]] {
             [[ cpp ]] {
                 return \
@@ -153,7 +153,7 @@ module cpp_str {
         }
     }
 
-    fn cpp_str#find_first_of(data: string, &what: string, pos: uint64) = int64 {
+    fn cpp_str#find_first_of(data: cstring, &what: cstring, pos: uint64) = int64 {
         [[ unsafe ]] {
             [[ cpp ]] {
                 return \
@@ -162,7 +162,7 @@ module cpp_str {
         }
     }
 
-    fn cpp_str#find_first_of(data: string, ch: char, pos: uint64) = int64 {
+    fn cpp_str#find_first_of(data: cstring, ch: char, pos: uint64) = int64 {
         [[ unsafe ]] {
             [[ cpp ]] {
                 return \
@@ -171,7 +171,7 @@ module cpp_str {
         }
     }
 
-    fn cpp_str#find_last_not_of(data: string, &what: string, pos: uint64) = int64 {
+    fn cpp_str#find_last_not_of(data: cstring, &what: cstring, pos: uint64) = int64 {
         [[ unsafe ]] {
             [[ cpp ]] {
                 return \
@@ -180,7 +180,7 @@ module cpp_str {
         }
     }
 
-    fn cpp_str#find_last_not_of(data: string, ch: char, pos: uint64) = int64 {
+    fn cpp_str#find_last_not_of(data: cstring, ch: char, pos: uint64) = int64 {
         [[ unsafe ]] {
             [[ cpp ]] {
                 return \
@@ -189,7 +189,7 @@ module cpp_str {
         }
     }
 
-    fn cpp_str#find_last_of(data: string, &what: string, pos: uint64) = int64 {
+    fn cpp_str#find_last_of(data: cstring, &what: cstring, pos: uint64) = int64 {
         [[ unsafe ]] {
             [[ cpp ]] {
                 return \
@@ -198,7 +198,7 @@ module cpp_str {
         }
     }
 
-    fn cpp_str#find_last_of(data: string, ch: char, pos: uint64) = int64 {
+    fn cpp_str#find_last_of(data: cstring, ch: char, pos: uint64) = int64 {
         [[ unsafe ]] {
             [[ cpp ]] {
                 return \
@@ -207,7 +207,7 @@ module cpp_str {
         }
     }
 
-    fn cpp_str#front(data: string) = char {
+    fn cpp_str#front(data: cstring) = char {
         [[ unsafe ]] {
             [[ cpp ]] {
                 return \
@@ -216,7 +216,7 @@ module cpp_str {
         }
     }
 
-    fn cpp_str#insert(data: string, pos: int64, &what: string) = string {
+    fn cpp_str#insert(data: cstring, pos: int64, &what: cstring) = cstring {
         [[ unsafe ]] {
             [[ cpp ]] {
                 return \
@@ -225,7 +225,7 @@ module cpp_str {
         }
     }
 
-    fn cpp_str#length(data: string) = uint64 {
+    fn cpp_str#length(data: cstring) = uint64 {
         [[ unsafe ]] {
             [[ cpp ]] {
                 return \
@@ -234,7 +234,7 @@ module cpp_str {
         }
     }
 
-    fn cpp_str#max_size(data: string) = uint64 {
+    fn cpp_str#max_size(data: cstring) = uint64 {
         [[ unsafe ]] {
             [[ cpp ]] {
                 return \
@@ -243,19 +243,19 @@ module cpp_str {
         }
     }
 
-    fn cpp_str#pop_back(&data: string) {
+    fn cpp_str#pop_back(&data: cstring) {
         [[ unsafe ]] {
             data.pop_back()
         }
     }
 
-    fn cpp_str#push_back(&data: string, ch: char) {
+    fn cpp_str#push_back(&data: cstring, ch: char) {
         [[ unsafe ]] {
             data.push_back(ch)
         }
     }
 
-    fn cpp_str#replace(data: string, &what: string, pos: int64, len: uint64) = string {
+    fn cpp_str#replace(data: cstring, &what: cstring, pos: int64, len: uint64) = cstring {
         [[ unsafe ]] {
             [[ cpp ]] {
                 return \
@@ -264,25 +264,25 @@ module cpp_str {
         }
     }
 
-    fn cpp_str#reserve(&data: string, n: int64) {
+    fn cpp_str#reserve(&data: cstring, n: int64) {
         [[ unsafe ]] {
             data.reserve(n)
         }
     }
 
-    fn cpp_str#resize(&data: string, n: int64) {
+    fn cpp_str#resize(&data: cstring, n: int64) {
         [[ unsafe ]] {
             data.resize(n)
         }
     }
 
-    fn cpp_str#resize(&data: string, n: int64, ch: char) {
+    fn cpp_str#resize(&data: cstring, n: int64, ch: char) {
         [[ unsafe ]] {
             data.resize(n, ch)
         }
     }
 
-    fn cpp_str#rfind(data: string, &what: string, pos: uint64) = int64 {
+    fn cpp_str#rfind(data: cstring, &what: cstring, pos: uint64) = int64 {
         [[ unsafe ]] {
             [[ cpp ]] {
                 return \
@@ -291,7 +291,7 @@ module cpp_str {
         }
     }
 
-    fn cpp_str#rfind(data: string, ch: char, pos: uint64) = int64 {
+    fn cpp_str#rfind(data: cstring, ch: char, pos: uint64) = int64 {
         [[ unsafe ]] {
             [[ cpp ]] {
                 return \
@@ -300,13 +300,13 @@ module cpp_str {
         }
     }
 
-    fn cpp_str#shrink_to_fit(&data: string) {
+    fn cpp_str#shrink_to_fit(&data: cstring) {
         [[ unsafe ]] {
             data.shrink_to_fit()
         }
     }
 
-    fn cpp_str#size(&data: string) = int64 {
+    fn cpp_str#size(&data: cstring) = int64 {
         [[ unsafe ]] {
             [[ cpp ]] {
                 return \
@@ -315,7 +315,7 @@ module cpp_str {
         }
     }
 
-    fn cpp_str#substr(data: string, pos: int64, len: int64) = string {
+    fn cpp_str#substr(data: cstring, pos: int64, len: int64) = cstring {
         [[ unsafe ]] {
             [[ cpp ]] {
                 return \
@@ -324,13 +324,13 @@ module cpp_str {
         }
     }
 
-    fn cpp_str#swap(&data: string, what: string) {
+    fn cpp_str#swap(&data: cstring, what: cstring) {
         [[ unsafe ]] {
             data.swap(what)
         }
     }
 
-    fn cpp_str#to_string<Arg>(data: Arg) = string {
+    fn cpp_str#to_string<Arg>(data: Arg) = cstring {
         [[ unsafe ]] {
             [[ cpp ]] {
                 return \
@@ -339,7 +339,7 @@ module cpp_str {
         }
     }
 
-    fn cpp_str#c_str(data: string) = char* {
+    fn cpp_str#c_str(data: cstring) = char* {
         [[ unsafe ]] {
             [[ cpp ]] {
                 return \
@@ -350,7 +350,7 @@ module cpp_str {
 }
 
 module str {
-    fn str#first(data: string) = char {
+    fn str#first(data: cstring) = char {
         var mut __first: int64 = 0
 
         for &ch in data {
@@ -358,7 +358,7 @@ module str {
         } . (char)__first
     }
 
-    fn str#last(data: string) = char {
+    fn str#last(data: cstring) = char {
         var mut __last: int64 = 0
 
         for &ch in data {
@@ -368,30 +368,30 @@ module str {
         } . (char)__last
     }
 
-    fn str#upper(data: string) = string {
-        var mut val: string = ""
+    fn str#upper(data: cstring) = cstring {
+        var mut val: cstring = ""
 
         for &ch in data {
             cpp_str#push_back(val, ch#upper(ch))
         } . val
     }
 
-    fn str#lower(data: string) = string {
-        var mut val: string = ""
+    fn str#lower(data: cstring) = cstring {
+        var mut val: cstring = ""
 
         for &ch in data {
             cpp_str#push_back(val, ch#lower(ch))
         } . val
     }
 
-    fn str#append(data: string, what: string) = string {
+    fn str#append(data: cstring, what: cstring) = cstring {
         cpp_str#append(data, what)
 
         . data
     }
 
-    fn str#capitalize(data: string) = string {
-        var mut __data: string = ""
+    fn str#capitalize(data: cstring) = cstring {
+        var mut __data: cstring = ""
         var mut first : bool   = false
 
         for &ch in data {
@@ -408,15 +408,15 @@ module str {
         } . __data
     }
 
-    fn str#is_empty(data: string) = bool {
+    fn str#is_empty(data: cstring) = bool {
         if cpp_str#length(data) == 0 {
             . true
         } . false
     }
 
-    fn str#split(data: string, delim: char) = []string {
-        var mut __data: []string = [[ unsafe ]]
-        var mut temp: string = ""
+    fn str#split(data: cstring, delim: char) = []cstring {
+        var mut __data: []cstring = [[ unsafe ]]
+        var mut temp: cstring = ""
 
         for &ch in data {
             if ch == delim && !str#is_empty(temp) {
@@ -434,8 +434,8 @@ module str {
         . __data
     }
 
-    fn str#splitlines(data: string) = []string {
-        var mut __data: []string = [[ unsafe ]]
+    fn str#splitlines(data: cstring) = []cstring {
+        var mut __data: []cstring = [[ unsafe ]]
 
         __data = str#split(data, __newline__);
 

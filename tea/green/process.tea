@@ -4,7 +4,7 @@
 //
 // MIT License
 //
-// Copyright (c) 2021 Ferhat Geçdoğan All Rights Reserved.
+// Copyright (c) 2021-2022 Ferhat Geçdoğan All Rights Reserved.
 // Distributed under the terms of the MIT License.
 //
 //
@@ -12,7 +12,7 @@
 import tea.green.type
 import tea.green.string
 
-[[ cpp ]] { #include <cstdlib> }
+include [[ "<cstdlib>" ]]
 
 `set process_success = 0
 `set process_failed  = 1
@@ -34,7 +34,7 @@ module process {
         }
     }
 
-    fn process#env(data: string) = string {
+    fn process#env(data: cstring) = cstring {
         [[ unsafe ]] {
             [[ cpp ]] {
                 return \
@@ -43,7 +43,7 @@ module process {
         }
     }
 
-    fn process#execute(data: string) = int {
+    fn process#execute(data: cstring) = int {
         [[ unsafe ]] {
             [[ cpp ]] {
                 return \

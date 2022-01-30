@@ -14,7 +14,7 @@
 }
 
 module cpp_sstream {
-    fn cpp_sstream#from_int(data: int) = string {
+    fn cpp_sstream#from_int(data: int) = cstring {
         [[ cpp ]] {
             std::ostringstream \
                 temp; \

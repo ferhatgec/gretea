@@ -4,14 +4,13 @@
 //
 // MIT License
 //
-// Copyright (c) 2021 Ferhat Geçdoğan All Rights Reserved.
+// Copyright (c) 2021-2022 Ferhat Geçdoğan All Rights Reserved.
 // Distributed under the terms of the MIT License.
 //
 
-[[ cpp ]] {
-    #include <cstdint> \
-    #include <string>
-}
+include [[ "<cstdint>" ]]
+include [[ "<iostream>" ]]
+include [[ "<string>" ]]
 
 `alias int8   = std#int8_t
 `alias int16  = std#int16_t
@@ -24,7 +23,7 @@
 
 `alias usize  = std#size_t
 
-`alias string = std#string
+`alias cstring = std#string
 
 compile default for int8   { 0 }
 compile default for int16  { 0 }

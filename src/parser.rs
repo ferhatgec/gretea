@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2021 Ferhat Geçdoğan All Rights Reserved.
+// Copyright (c) 2021-2022 Ferhat Geçdoğan All Rights Reserved.
 // Distributed under the terms of the MIT License.
 //
 //
@@ -413,7 +413,7 @@ impl GreteaParser {
                         codegen.character(&to("["));
                     } else if is_statement {
                         statement_data.push(to("["));
-                    } else if is_fn_call {
+                    } else if is_fn_call && !function_args.is_empty() {
                         let last = function_args.last().unwrap().clone();
                         function_args.pop();
                         pretty_arg.push_str(format!("{}[", last).as_str());

@@ -280,7 +280,7 @@ impl GreteaCodegen {
     }
 
     pub fn cpp_args(&mut self) {
-        self.generated.push_str("std::vector<string> arguments(argv, argv + argc);\n");
+        self.generated.push_str("std::vector<cstring> arguments(argv, argv + argc);\n");
     }
 
     pub fn character(&mut self, character: &String) {

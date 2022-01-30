@@ -40,13 +40,13 @@ alias linker = cpp
 var today: int8 = 21
 
 struct Test {
-    mut name   : string [[ default = "Foo" ]] \
-    mut surname: string [[ default = "Foo" ]] \
+    mut name   : cstring [[ default = "Foo" ]] \
+    mut surname: cstring [[ default = "Foo" ]] \
     mut age    : int64  [[ default = 16    ]]
 }
 
 
-compile default for string {
+compile default for cstring {
     "\'default\' is much better & faster way to assign a data when you work with same variable types"
 }
 
@@ -65,17 +65,17 @@ fn test(pi: double) {
     . _ // return _
 }
 
-// = []string
+// = []cstring
 fn token()
 {
-    var mut test: []string = {
+    var mut test: []cstring = {
         "fn" \
         "test" \
         "(" \
         ")" \
         "=" \
         "[]" \
-        "string" \
+        "cstring" \
     }
 
     for arg in test {
@@ -95,7 +95,7 @@ fn hmm() = int8 {
     // .<ws> can be used by declared variables.
 }
 
-fn is_this_linux() = string {
+fn is_this_linux() = cstring {
     if os == "gnu/linux" {
         . "hmm yes"
     }
@@ -103,7 +103,7 @@ fn is_this_linux() = string {
     . "hmm no"
 }
 
-fn compile_for_return_test() = string {
+fn compile_for_return_test() = cstring {
     return [[ default ]]
 }
 
@@ -113,7 +113,7 @@ fn main() {
     fmt#println(argc, __newline__, arguments[0])
 
     fmt#println(compile_for_return_test())
-    var mut split_test: []string = [[ unsafe ]]
+    var mut split_test: []cstring = [[ unsafe ]]
 
     split_test = str#split("test.test.test2.test3", '.' );
 
@@ -133,8 +133,8 @@ fn main() {
     var three         = 3           // immutable, without type declaration
     var mut green_tea = ProjectName // mutable, without type declaration
 
-    var mut tea: string   = "green"
-    var gt     : string   = "gREEnTeA"
+    var mut tea: cstring   = "green"
+    var gt     : cstring   = "gREEnTeA"
 
     if gt[0] == 'g' {
         fmt#println(gt[0])
@@ -149,7 +149,7 @@ fn main() {
  // 'let' and 'var' are same things (GreteaKeywords::Var)
 
     let end: char = '\0'
-    var empty_str: string = ""
+    var empty_str: cstring = ""
 
     var term_buf_size: BufSize = [[ default ]]
 
@@ -159,7 +159,7 @@ fn main() {
         term_buf_size.rows
     )
 
-    var hahahaha: string = [[ default ]]
+    var hahahaha: cstring = [[ default ]]
     var hahaha  : int8   = [[ default ]]
 
     var mut test: int8   = [[ unsafe ]]
@@ -171,7 +171,7 @@ fn main() {
 
     fmt#println(hahahaha, "\n", hahaha)
 
-    var escape_seq: string = "escafe\\wis\\winteresting\\n\\x1b[0;33mtest\\x1b[0m\\n\\\\"
+    var escape_seq: cstring = "escafe\\wis\\winteresting\\n\\x1b[0;33mtest\\x1b[0m\\n\\\\"
 
     fmt#println("test", '\w' , type escape_seq)
 
