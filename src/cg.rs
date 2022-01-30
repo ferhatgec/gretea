@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2021 Ferhat Geçdoğan All Rights Reserved.
+// Copyright (c) 2021-2022 Ferhat Geçdoğan All Rights Reserved.
 // Distributed under the terms of the MIT License.
 //
 //
@@ -107,7 +107,11 @@ impl GreteaCodegen {
                     "-" |
                     "/" |
                     "*" |
-                    "%" => { arguments.pop(); },
+                    "%" |
+                    "(" |
+                    ")" |
+                    "[" |
+                    "]" => {  if arguments.chars().last().unwrap() == ',' { arguments.pop(); } },
                     _   => {}
                 }
 
@@ -118,10 +122,14 @@ impl GreteaCodegen {
                     "-" |
                     "/" |
                     "*" |
-                    "%" => { arguments.pop(); },
+                    "%" |
+                    "(" |
+                    ")" |
+                    "[" |
+                    "]" => { if arguments.chars().last().unwrap() == ',' { arguments.pop(); } },
                     _   => {}
                 }
-            } arguments.pop();
+            } if !arguments.is_empty() && arguments.chars().last().unwrap() == ',' { arguments.pop(); }
         }
 
         self.generated.push_str(&*format!("{}{}({}){};\n", if is_unpack {
