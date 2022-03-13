@@ -16,6 +16,7 @@ import tea.green.log
 import tea.green.bufsize
 import tea.green.escape
 import tea.green.gechprng
+import tea.green.posix
 
 import tea.black.vector
 import tea.black.sstream
@@ -122,7 +123,7 @@ fn main() {
     }
 
     [[ runtime ]] {
-        set HOME as env "HOME" \
+        set HOME as env "HOME"
 
         println "Your home path: {HOME}"
     }
@@ -303,15 +304,17 @@ fn main() {
 
     log#print(
         Help, "Remove \'=\' after function definition (no_return)."
-    )
+    );
 
-    fmt#println(str#lower("THIS WILL BE lowercase"))
-    fmt#println(str#upper("this will be UPPERCASE"))
+    fmt#println(str#lower("THIS WILL BE lowercase"));
+    fmt#println(str#upper("this will be UPPERCASE"));
 
-    fmt#fprintln("flushed stdout")
+    fmt#fprintln("flushed stdout");
 
     fmt#println("Your lucky number:",
-        gechprng#generate(gechprng#feed(gechprng#seedtime())) % 42)
+        gechprng#generate(gechprng#feed(gechprng#seedtime())) % 42);
 
-    process#exit(process_success)
+    posix#alarm(10);
+
+    process#exit(process_success);
 }

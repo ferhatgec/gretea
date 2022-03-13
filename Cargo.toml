@@ -5,4 +5,4 @@ authors = ["ferhatgec"]
 edition = "2018"
 
 [dependencies]
-elite = "0.1.0"
+elite = "0.1.4"

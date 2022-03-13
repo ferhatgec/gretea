@@ -11,7 +11,9 @@ use {
             ast_helpers::{
                 to,
                 from_module
-            }
+            },
+
+            GreteaFunctionArgument
         },
         parser::{GreteaParser},
         optimize::{
@@ -60,7 +62,7 @@ impl GreteaCodegen {
 
     pub fn function(&mut self,
                     parser    : &mut GreteaParser,
-                    args      : &BTreeMap<String, String>,
+                    args      : &Vec<GreteaFunctionArgument>,
                     name      : &String,
                     return_val: &String,
                     generic   : &String,
@@ -86,7 +88,7 @@ impl GreteaCodegen {
         } else {
             for map in args.iter() {
                 // ^^^ (name, type) -> (type, name)
-                arguments.push_str(&*format!("{} {},", map.1.clone(), map.0.clone()));
+                arguments.push_str(&*format!("{} {},", map.__arg_type.clone(), map.__arg_name.clone()));
             }
             arguments.pop();
         }

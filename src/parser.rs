@@ -13,6 +13,7 @@ use {
             GreteaSyntax      ,
             GreteaVariableData,
             GreteaFunctionData,
+            GreteaFunctionArgument,
             GreteaVariableList,
 
             GreteaCompileType,
@@ -40,6 +41,7 @@ use {
         }
     }
 };
+
 use elite::logger::elite_logger::log;
 
 pub struct GreteaParser {
@@ -72,8 +74,8 @@ impl GreteaParser {
         let mut is_fn_name = false; let mut fn_name = String ::new();
         let mut is_generic = false; let mut fn_generic = String::new();
         let mut is_expandable = false;
-        let mut is_fn_argument = false; let mut fn_args: BTreeMap<String, String>
-                                                                       = BTreeMap::new();
+        let mut is_fn_argument = false; let mut fn_args: Vec<GreteaFunctionArgument>
+                                                                       = Vec::new();
 
         let mut is_fn_return_value = false; let mut fn_val;
         let mut is_void = false;
@@ -560,7 +562,7 @@ impl GreteaParser {
                             unparsed: vec![]
                         };
 
-                        elite::lexer::elite_lexer::init_lexer(&elite_read);
+                        elite::lexer::elite_lexer::init_lexer(&elite_read, false);
                         is_runtime = false; runtime_block.clear();
                     }
                 },
@@ -1061,7 +1063,12 @@ impl GreteaParser {
                                                 }
                                             }
 
-                                            fn_args.insert(argument_name.clone(), argument_value.clone());
+                                            fn_args.push(GreteaFunctionArgument {
+                                                __arg_name: argument_name.clone(),
+                                                __arg_type: argument_value.clone(),
+                                                __is_mutable: true
+                                            });
+
                                             argument_name.clear();
                                             argument_value.clear();
                                         } else {
